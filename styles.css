@@ -30,6 +30,9 @@ header h1 {
 
 nav ul {
     list-style: none;
+    background-color: #000;
+    padding: 10px 0;
+    border-radius: 5px;
 }
 
 nav ul li {
@@ -94,6 +97,14 @@ section::before {
     background-size: cover;
     background-position: center;
     opacity: 0.5; /* Adjust the opacity */
+}
+
+.about-us-image {
+    width: 100px; /* Ajustar el tamaño de la imagen */
+    height: 100px; /* Asegurar que sea cuadrada */
+    border-radius: 50%; /* Hacerla circular */
+    object-fit: cover; /* Ajustar el contenido dentro del círculo */
+    border: 3px solid #fff; /* Opcional: Agregar un borde blanco */
 }
 
 /* Background for How To Play section */
