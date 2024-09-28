@@ -20,7 +20,10 @@ body {
 
 /* Header Styles */
 header {
-    margin-bottom: 30px;
+    margin: 0 auto 30px auto; /* Esto centrará el header */
+    width: 660px; /* Igualar el ancho de la ventana del juego */
+    padding: 12px;
+    border-radius: 10px;
 }
 
 header h1 {
