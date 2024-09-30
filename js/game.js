@@ -6,7 +6,7 @@ const config = {
     parent: 'game-placeholder',
     width: 960,
     height: 540,
-    scene: [MenuInicial , LoadScene],
+    scene: [LoadScene , MenuInicial],
     physics: {
         default: 'arcade',
         arcade: {
