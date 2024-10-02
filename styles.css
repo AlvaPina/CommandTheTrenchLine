@@ -9,6 +9,11 @@ html {
     scroll-behavior: smooth;
 }
 
+.logo {
+    width: 300px; /* Cambia este valor al tamaño que prefieras */
+    height: auto; /* Mantiene la proporción de la imagen */
+}
+
 /* Styling for the body and basic layout */
 body {
     font-family: Arial, sans-serif;
