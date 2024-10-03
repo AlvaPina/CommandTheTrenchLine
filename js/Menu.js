@@ -16,10 +16,5 @@ export class MenuInicial extends Phaser.Scene{
     // Musica
     const backgroundMusic = this.sound.add('backgroundMusic');
     backgroundMusic.play({ loop: true });
-
-    // Opcional
-    introVideo.on('complete', () => {
-        console.log('El video ha terminado');
-    });
     }
 }
