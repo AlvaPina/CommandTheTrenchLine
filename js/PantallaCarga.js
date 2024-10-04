@@ -6,15 +6,15 @@ export class LoadScene extends Phaser.Scene
 
     preload() {
         //IMAGES
-       this.load.image("GameplayBackground", "/Assets/Images/GameplayBackground.png");
+       this.load.image("gameplayBackground", "Assets/Images/GameplayBackground.png");
 
        // AUDIOS
-       this.load.audio('backgroundMusic', ['/Assets/Audio/SendThemAllToTheTrench.mp3']); // Cambia la ruta y el nombre del archivo según sea necesario
+       this.load.audio('backgroundMusic', ['Assets/Audio/SendThemAllToTheTrench.mp3']); // Cambia la ruta y el nombre del archivo según sea necesario
 
        //VIDEOS
        this.load.video({
         key: 'intro',
-        url: ['/Assets/Videos/VideoTrailer.mp4'],
+        url: ['Assets/Videos/VideoTrailer.mp4'],
         asBlob: false,
         noAudio: true
         });
