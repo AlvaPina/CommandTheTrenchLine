@@ -38,7 +38,7 @@ export class LoadScene extends Phaser.Scene
        })
 
        this.load.on("complete", ()=>{
-            this.scene.start('Gameplay');
+            this.scene.start('TestScene');
         })
     }
     create() {
