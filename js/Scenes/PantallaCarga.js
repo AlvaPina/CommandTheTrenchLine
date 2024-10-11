@@ -11,6 +11,7 @@ export class LoadScene extends Phaser.Scene
        //SPRITESHEETS
        this.load.spritesheet('infanterySoldierSheetRun', 'Assets/Images/SpriteSheets/Run.png', { frameWidth: 256, frameHeight: 256 });
        this.load.spritesheet('infanterySoldierSheetIdle', 'Assets/Images/SpriteSheets/Idle.png', { frameWidth: 256, frameHeight: 256 });
+       this.load.spritesheet('infanterySoldierSheetShoot', 'Assets/Images/SpriteSheets/Shoot.png', { frameWidth: 256, frameHeight: 256 });
        this.load.spritesheet('infanterySoldierSheetShootCrouch', 'Assets/Images/SpriteSheets/ShootCrouch.png', { frameWidth: 256, frameHeight: 256 });
        this.load.spritesheet('infanterySoldierSheetDeadCrouch', 'Assets/Images/SpriteSheets/DeadCrouch.png', { frameWidth: 256, frameHeight: 256 });
        this.load.spritesheet('infanterySoldierSheetDead', 'Assets/Images/SpriteSheets/Dead.png', { frameWidth: 256, frameHeight: 256 });
@@ -45,7 +46,7 @@ export class LoadScene extends Phaser.Scene
         //ANIMS
         this.anims.create({
             key: 'infanterySoldierRun',
-            frames: this.anims.generateFrameNumbers('infanterySoldierSheetRun', { start: 0, end: 9 }),
+            frames: this.anims.generateFrameNumbers('infanterySoldierSheetRun', { start: 0, end: 5 }),
             frameRate: 15,
             repeat: -1
         });
@@ -59,7 +60,7 @@ export class LoadScene extends Phaser.Scene
 
         this.anims.create({
             key: 'infanterySoldierShoot',
-            frames: this.anims.generateFrameNumbers('infanterySoldierSheetRun', { start: 0, end: 9 }),
+            frames: this.anims.generateFrameNumbers('infanterySoldierSheetShoot', { start: 0, end: 5 }),
             frameRate: 15,
             repeat: -1
         });

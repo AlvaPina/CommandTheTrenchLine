@@ -8,7 +8,7 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         
         this.speed = 100;
 
-        this.play('infanterySoldierRun');
+        this.play('infanterySoldierDead');
     }
 
     moveTo(targetX, targetY){
