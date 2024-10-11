@@ -1,5 +1,5 @@
 import Army from '../Armies/Army.js';
-import Infantery from '../Armies/Soldiers/Infantery.js';
+import InfanteryArmy from '../Armies/Types/InfanteryArmy.js';
 
 export class Gameplay extends Phaser.Scene{
     constructor() {
@@ -18,7 +18,7 @@ export class Gameplay extends Phaser.Scene{
         let background = this.add.image(gameWidth / 2, gameHeight / 2, 'gameplayBackground').setOrigin(0.5, 0.5);
 
         // Crear un Army de Infanteria y moverlo
-        this.army = new Army(this,100, Infantery);
+        this.army = new Army(this,100, InfanteryArmy);
         this.army.moveArmy(300);
 
 

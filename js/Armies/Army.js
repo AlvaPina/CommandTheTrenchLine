@@ -1,14 +1,19 @@
 import LifeComponent from './LifeComponent.js';
 
 import { getRandomInt, delay } from '../utils.js';
+import Humanoid from './Humanoid.js';
 
 export default class Army {
-    constructor(scene, xPos, SoldierClass) {
+    constructor(scene, xPos, ArmyClass) {
         this.scene = scene;
         this.soldiers = []; // Contiene los soldados del army
-        
-        this.ArmyHealth = 200;
-        this.numberOfSoldiers = 20;
+
+        const config = ArmyClass.getConfig();
+
+        this.ArmyHealth = config.ArmyHealth;
+        this.numberOfSoldiers = config.NumberOfSoldiers;
+        this.ArmySpeed = config.ArmySpeed;
+        this.ArmyAnimKey = config.ArmyAnimKey;
         
         this.lifeComponent = new LifeComponent(this.ArmyHealth, this);
 
@@ -34,7 +39,7 @@ export default class Army {
 
             y += getRandomInt(1, maxVariation);
 
-            let soldier = new SoldierClass(scene, x, y);
+            let soldier = new Humanoid(scene, x, y, this.ArmySpeed, this.ArmyAnimKey);
             soldier.setDepth(y);
             soldier.setScale(0.25);
             this.soldiers.push(soldier);

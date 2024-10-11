@@ -23,7 +23,7 @@ export class LoadScene extends Phaser.Scene
        this.load.video({
         key: 'intro',
         url: ['Assets/Videos/VideoTrailer.mp4'],
-        asBlob: false, // mirar -------------
+        asBlob: false, // mirar si poner un video como un blob arregla los problemas de compatibilidad con firefox
         noAudio: true
         });
 
@@ -39,7 +39,7 @@ export class LoadScene extends Phaser.Scene
        })
 
        this.load.on("complete", ()=>{
-            this.scene.start('TestScene');
+            this.scene.start('Gameplay');
         })
     }
     create() {

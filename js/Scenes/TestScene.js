@@ -1,5 +1,5 @@
 import Army from '../Armies/Army.js';
-import Infantery from '../Armies/Soldiers/Infantery.js';
+import Infantery from '../Armies/Types/InfanteryArmy.js';
 
 export class TestScene extends Phaser.Scene{
     constructor() {

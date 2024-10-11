@@ -1,18 +1,21 @@
 export default class Humanoid extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y) {
+    constructor(scene, x, y, speed, animKey) {
         super(scene, x, y);
         this.scene = scene;
         this.scene.add.existing(this);
 
         this.targetPosition = null;
-        
-        this.speed = 100;
 
-        this.play('infanterySoldierDead');
+        this.speed = speed;
+        this.animKey = animKey;
+
+        this.currentAnim = this.animKey + 'Idle';
+        this.previousAnim = this.animKey + 'Idle';
     }
 
     moveTo(targetX, targetY){
         this.targetPosition = { x: targetX, y: targetY };
+        this.currentAnim = this.animKey + 'Run';
     }
 
     // Metodo de movimiento hacia la target position
@@ -30,20 +33,30 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         if (distance < 1) {
             this.targetPosition = null;  // Al llegar, eliminamos el target
             console.log('Destino alcanzado');
+            this.currentAnim = this.animKey + 'Idle';
             return;
         }
 
-        // Calcular la dirección normalizada hacia el objetivo
+        // Calcular la direccion normalizada hacia el objetivo
         const directionX = distanceX / distance;
         const directionY = distanceY / distance;
 
-        // Actualizar la posición del soldado en base a la velocidad y el tiempo
+        // Actualizar la posicion del soldado en base a la velocidad y el tiempo
         this.x += directionX * this.speed * this.scene.game.loop.delta / 1000;
         this.y += directionY * this.speed * this.scene.game.loop.delta / 1000;
+    }
+
+    manageAnims(){
+        // Hacemos play solo cuando currentAnim se ha actualizado
+        if (this.currentAnim !== this.previousAnim) {
+            this.play(this.currentAnim);
+            this.previousAnim = this.currentAnim;
+        }
     }
 
     preUpdate(time, delta) {
         super.preUpdate(time, delta);
         this.movement();
+        this.manageAnims();
     }
 }
