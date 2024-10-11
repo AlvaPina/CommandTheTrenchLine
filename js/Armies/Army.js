@@ -14,6 +14,7 @@ export default class Army {
         this.numberOfSoldiers = config.NumberOfSoldiers;
         this.ArmySpeed = config.ArmySpeed;
         this.ArmyAnimKey = config.ArmyAnimKey;
+        this.x = 100;
         
         this.lifeComponent = new LifeComponent(this.ArmyHealth, this);
 
@@ -55,9 +56,13 @@ export default class Army {
 
     // Metodo para mover todo el ejercito hacia una posicion objetivo en el eje X
     moveArmy(movementX) {
+        // Actualizo posicion general de la army
+        this.x += movementX
+        console.log(this.x);
+        // Actualizo la posicion de los soldados
         this.soldiers.forEach(soldier => {
             this.executeWithRandomDelay(() => {
-                soldier.moveTo(soldier.x + movementX, soldier.y);
+                soldier.moveTo(this.x, soldier.y);
             });
         });
     }
