@@ -19,11 +19,21 @@ export class Gameplay extends Phaser.Scene{
 
         // Crear un Army de Infanteria y moverlo
         this.army = new Army(this,100, InfanteryArmy);
-        this.army.moveArmy(300);
-
+        this.army.moveArmy(100);
 
         // Musica
         const backgroundMusic = this.sound.add('backgroundMusic');
         backgroundMusic.play({ loop: true });
+
+        // Configurar las teclas de entrada
+        this.cursors = this.input.keyboard.createCursorKeys();
+    }
+
+    update() {
+        if (this.cursors.right.isDown) {
+            this.army.moveArmy(100);
+        } else if (this.cursors.left.isDown) {
+            this.army.moveArmy(-100);
+        }
     }
 }

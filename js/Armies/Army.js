@@ -47,16 +47,28 @@ export default class Army {
 
     }
 
+    // Ejecutar una accion con un retraso aleatorio
+    executeWithRandomDelay(action) {
+        const randomDelay = getRandomInt(0, 1000);
+        setTimeout(action, randomDelay);
+    }
+
     // Metodo para mover todo el ejercito hacia una posicion objetivo en el eje X
     moveArmy(movementX) {
         this.soldiers.forEach(soldier => {
-            soldier.moveTo(soldier.x + movementX, soldier.y); // Dar la orden de moverse a cada soldado
+            this.executeWithRandomDelay(() => {
+                soldier.moveTo(soldier.x + movementX, soldier.y);
+            });
         });
     }
 
-    // Para a los soldados de forma irregular, se usara cuando avisten a un enemigo al que disparar
-    ArmyAttack(){
-
+    // Metodo que se usara cuando avisten a un enemigo al que disparar
+    ArmyAttack() {
+        this.soldiers.forEach(soldier => {
+            this.executeWithRandomDelay(() => {
+                soldier.attack();
+            });
+        });
     }
 
     // Reagrupa los soldados para rellenar posiciones de soldados muertos, se usara cuando lleguen a la trinchera

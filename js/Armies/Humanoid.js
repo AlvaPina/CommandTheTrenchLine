@@ -46,6 +46,11 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         this.y += directionY * this.speed * this.scene.game.loop.delta / 1000;
     }
 
+    // Es solo un rasgo visual a excepcion de la generacion de granadas.
+    attack(){
+
+    }
+
     manageAnims(){
         // Hacemos play solo cuando currentAnim se ha actualizado
         if (this.currentAnim !== this.previousAnim) {
