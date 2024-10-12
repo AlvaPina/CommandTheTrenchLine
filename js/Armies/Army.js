@@ -11,6 +11,7 @@ export default class Army {
         this.ArmyHealth = config.ArmyHealth;
         this.numberOfSoldiers = config.NumberOfSoldiers;
         this.ArmySpeed = config.ArmySpeed;
+        this.team = config.ArmyTeam;
         this.ArmyAnimKey = config.ArmyAnimKey;
         this.x = 100;
         

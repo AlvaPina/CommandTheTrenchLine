@@ -2,11 +2,12 @@ import Army from "../Army.js";
 
 export default class InfanteryArmy extends Army {
 
-    constructor(scene, x) {
+    constructor(scene, x, team) {
         const config = {
             ArmyHealth: 200,
             NumberOfSoldiers: 20,
             ArmySpeed: 80,
+            ArmyTeam: team,
             ArmyAnimKey: 'infanterySoldier'
         };
         super(scene, x, config);

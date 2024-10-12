@@ -12,6 +12,9 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
 
         this.currentAnim = this.animKey + 'Idle';
         this.previousAnim = this.animKey + 'Idle';
+
+        this.xImageOffsetRight = this.displayOriginX + 100;
+        this.xImageOffsetLeft = this.displayOriginX + 50;
     }
 
     moveTo(targetX, targetY){
@@ -38,10 +41,11 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         if (distance < 1) {
             this.targetPosition = null;  // Al llegar, eliminamos el target
             console.log('Destino alcanzado');
-            if (directionX < 0 && this.lastDirection === 'left') {
+            if (directionX < 0 && this.lastDirection === 'left') { // Queremos que siempre se quede mirando para la derecha.
                 this.setFlipX(false);
                 this.lastDirection = 'right';
-                this.x += 13;
+                //this.x += 13;
+                this.setDisplayOrigin(this.xImageOffsetLeft, this.displayOriginY);
             }
             this.currentAnim = this.animKey + 'Idle';
             return;
@@ -52,11 +56,11 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
             if (directionX > 0 && this.lastDirection !== 'right') {
                 this.setFlipX(false);
                 this.lastDirection = 'right';
-                this.x += 13;
+                this.setDisplayOrigin(this.xImageOffsetLeft, this.displayOriginY);
             } else if (directionX < 0 && this.lastDirection !== 'left') {
                 this.setFlipX(true);
                 this.lastDirection = 'left';
-                this.x -= 13;
+                this.setDisplayOrigin(this.xImageOffsetRight, this.displayOriginY);
             }
 
             // Actualizar la posicion del soldado en base a la velocidad y el tiempo
