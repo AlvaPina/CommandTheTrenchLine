@@ -30,7 +30,7 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
 
         // Si estamos lo suficientemente cerca del objetivo, detenemos el movimiento
-        if (distance < 1) {
+        if (distance < 1.5) {
             this.targetPosition = null;  // Al llegar, eliminamos el target
             console.log('Destino alcanzado');
             this.currentAnim = this.animKey + 'Idle';

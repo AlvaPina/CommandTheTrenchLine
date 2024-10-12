@@ -18,7 +18,7 @@ export class Gameplay extends Phaser.Scene{
         let background = this.add.image(gameWidth / 2, gameHeight / 2, 'gameplayBackground').setOrigin(0.5, 0.5);
 
         // Crear un Army de Infanteria y moverlo
-        this.army = new Army(this,100, InfanteryArmy);
+        this.army = new InfanteryArmy(this, 100);
         this.army.moveArmy(100);
 
         // Musica

@@ -4,11 +4,9 @@ import { getRandomInt, delay } from '../utils.js';
 import Humanoid from './Humanoid.js';
 
 export default class Army {
-    constructor(scene, xPos, ArmyClass) {
+    constructor(scene, xPos, config) {
         this.scene = scene;
         this.soldiers = []; // Contiene los soldados del army
-
-        const config = ArmyClass.getConfig();
 
         this.ArmyHealth = config.ArmyHealth;
         this.numberOfSoldiers = config.NumberOfSoldiers;
