@@ -5,6 +5,7 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         this.scene.add.existing(this);
 
         this.targetPosition = null;
+        this.lastDirection = 'right';
 
         this.speed = speed;
         this.animKey = animKey;
@@ -28,22 +29,40 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
 
         // Calcular la distancia total al objetivo
         const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
-
-        // Si estamos lo suficientemente cerca del objetivo, detenemos el movimiento
-        if (distance < 1.5) {
-            this.targetPosition = null;  // Al llegar, eliminamos el target
-            console.log('Destino alcanzado');
-            this.currentAnim = this.animKey + 'Idle';
-            return;
-        }
-
+        
         // Calcular la direccion normalizada hacia el objetivo
         const directionX = distanceX / distance;
         const directionY = distanceY / distance;
 
-        // Actualizar la posicion del soldado en base a la velocidad y el tiempo
-        this.x += directionX * this.speed * this.scene.game.loop.delta / 1000;
-        this.y += directionY * this.speed * this.scene.game.loop.delta / 1000;
+        // Si estamos lo suficientemente cerca del objetivo, detenemos el movimiento
+        if (distance < 1) {
+            this.targetPosition = null;  // Al llegar, eliminamos el target
+            console.log('Destino alcanzado');
+            if (directionX < 0 && this.lastDirection === 'left') {
+                this.setFlipX(false);
+                this.lastDirection = 'right';
+                this.x += 13;
+            }
+            this.currentAnim = this.animKey + 'Idle';
+            return;
+        }
+        else{
+
+            // Que mire hacia donde camine
+            if (directionX > 0 && this.lastDirection !== 'right') {
+                this.setFlipX(false);
+                this.lastDirection = 'right';
+                this.x += 13;
+            } else if (directionX < 0 && this.lastDirection !== 'left') {
+                this.setFlipX(true);
+                this.lastDirection = 'left';
+                this.x -= 13;
+            }
+
+            // Actualizar la posicion del soldado en base a la velocidad y el tiempo
+            this.x += directionX * this.speed * this.scene.game.loop.delta / 1000;
+            this.y += directionY * this.speed * this.scene.game.loop.delta / 1000;
+        }
     }
 
     // Es solo un rasgo visual a excepcion de la generacion de granadas.
