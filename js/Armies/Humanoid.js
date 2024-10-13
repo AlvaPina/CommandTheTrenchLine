@@ -13,6 +13,7 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         this.currentAnim = this.animKey + 'Idle';
         this.previousAnim = this.animKey + 'Idle';
 
+        this.setOrigin(0.3,0.5);
         this.xImageOffsetRight = this.displayOriginX + 100;
         this.xImageOffsetLeft = this.displayOriginX + 50;
     }
@@ -44,7 +45,6 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
             if (directionX < 0 && this.lastDirection === 'left') { // Queremos que siempre se quede mirando para la derecha.
                 this.setFlipX(false);
                 this.lastDirection = 'right';
-                //this.x += 13;
                 this.setDisplayOrigin(this.xImageOffsetLeft, this.displayOriginY);
             }
             this.currentAnim = this.animKey + 'Idle';

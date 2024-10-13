@@ -27,28 +27,27 @@ export class Gameplay extends Phaser.Scene{
 
         // Configurar las teclas de entrada
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.moveDelay = 300; // Retraso en milisegundos
-        this.canMoveRight = true;
-        this.canMoveLeft = true;
+        this.moveDelay = 1000; // Retraso en milisegundos
+        this.canMove = true;
     }
 
     update() {
         //Input flechas
-        if (this.cursors.right.isDown && this.canMoveRight) {
-            this.canMoveRight = false;
+        if (this.cursors.right.isDown && this.canMove) {
+            this.canMove = false;
             this.army.moveArmy(100); 
 
-            // Temporizador antes de poner canMoveRight = true
+            // Temporizador antes de poner canMove = true
             setTimeout(() => {
-                this.canMoveRight = true;
+                this.canMove = true;
             }, this.moveDelay);
 
-        } else if (this.cursors.left.isDown && this.canMoveLeft) {
-            this.canMoveLeft = false;
+        } else if (this.cursors.left.isDown && this.canMove) {
+            this.canMove = false;
             this.army.moveArmy(-100);
 
             setTimeout(() => {
-                this.canMoveLeft = true;
+                this.canMove = true;
             }, this.moveDelay);
         }
     }
