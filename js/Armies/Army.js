@@ -14,7 +14,11 @@ export default class Army {
         this.team = config.ArmyTeam;
         this.ArmyAnimKey = config.ArmyAnimKey;
         this.x = 100;
-        
+
+        //Delays
+        this.moveDelay = 1000; // Retraso en milisegundos
+        this.canMove = true;
+
         this.lifeComponent = new LifeComponent(this.ArmyHealth, this);
 
         // Definir los limites del area vertical para los soldados
@@ -30,7 +34,7 @@ export default class Army {
         console.log(minSpacing);
 
         // Variacion maxima en la posicion Y segun el numero de soldados
-        const maxVariation = Math.max(1, minSpacing/2);
+        const maxVariation = Math.max(1, minSpacing / 2);
 
         // Crear los humanoids con espaciado uniforme y luego añadir variacion
         for (let i = 0; i < this.numberOfSoldiers; i++) {
@@ -55,15 +59,21 @@ export default class Army {
 
     // Metodo para mover todo el ejercito hacia una posicion objetivo en el eje X
     moveArmy(movementX) {
-        // Actualizo posicion general de la army
-        this.x += movementX
-        console.log(this.x);
-        // Actualizo la posicion de los soldados
-        this.soldiers.forEach(soldier => {
-            this.executeWithRandomDelay(() => {
-                soldier.moveTo(this.x, soldier.y);
+        if (this.canMove) {
+            this.canMove = false;
+            // Actualizo posicion general de la army
+            this.x += movementX
+            console.log(this.x);
+            // Actualizo la posicion de los soldados
+            this.soldiers.forEach(soldier => {
+                this.executeWithRandomDelay(() => {
+                    soldier.moveTo(this.x, soldier.y);
+                });
             });
-        });
+            setTimeout(() => {
+                this.canMove = true;
+            }, this.moveDelay);
+        }
     }
 
     // Metodo que se usara cuando avisten a un enemigo al que disparar
@@ -76,10 +86,10 @@ export default class Army {
     }
 
     // Reagrupa los soldados para rellenar posiciones de soldados muertos, se usara cuando lleguen a la trinchera
-    groupArmy(){
+    groupArmy() {
 
     }
-    
+
     // Modificar vida del ejercito, puede restar quitar vida tambien
     addHealth(amount) {
         this.lifeComponent.addHealth(amount);

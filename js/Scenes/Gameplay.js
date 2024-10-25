@@ -19,36 +19,32 @@ export class Gameplay extends Phaser.Scene{
 
         // Crear un Army de Infanteria y moverlo
         this.army = new InfanteryArmy(this, 100);
-        this.army.moveArmy(100);
-
-        // Musica
-        const backgroundMusic = this.sound.add('backgroundMusic');
-        backgroundMusic.play({ loop: true });
+        this.army.moveArmy(50);
 
         // Configurar las teclas de entrada
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.moveDelay = 1000; // Retraso en milisegundos
-        this.canMove = true;
+        this.inputDelay = 100; // Retraso en milisegundos
+        this.canInteract = true;
     }
 
     update() {
         //Input flechas
-        if (this.cursors.right.isDown && this.canMove) {
-            this.canMove = false;
-            this.army.moveArmy(100); 
+        if (this.cursors.right.isDown && this.canInteract) {
+            this.canInteract = false;
+            this.army.moveArmy(450); 
 
-            // Temporizador antes de poner canMove = true
+            // Temporizador antes de poner canInteract = true
             setTimeout(() => {
-                this.canMove = true;
-            }, this.moveDelay);
+                this.canInteract = true;
+            }, this.inputDelay);
 
-        } else if (this.cursors.left.isDown && this.canMove) {
-            this.canMove = false;
-            this.army.moveArmy(-100);
+        } else if (this.cursors.left.isDown && this.canInteract) {
+            this.canInteract = false;
+            this.army.moveArmy(-450);
 
             setTimeout(() => {
-                this.canMove = true;
-            }, this.moveDelay);
+                this.canInteract = true;
+            }, this.inputDelay);
         }
     }
 }
