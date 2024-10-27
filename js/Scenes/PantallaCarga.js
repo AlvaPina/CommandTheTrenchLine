@@ -47,63 +47,63 @@ export class LoadScene extends Phaser.Scene
         this.anims.create({
             key: 'infanterySoldierRun',
             frames: this.anims.generateFrameNumbers('infanterySoldierSheetRun', { start: 0, end: 5 }),
-            frameRate: 15,
+            frameRate: 13,
             repeat: -1
         });
 
         this.anims.create({
             key: 'infanterySoldierIdle',
             frames: this.anims.generateFrameNumbers('infanterySoldierSheetIdle', { start: 0, end: 9 }),
-            frameRate: 10,
+            frameRate: 8,
             repeat: -1
         });
 
         this.anims.create({
             key: 'infanterySoldierShoot',
             frames: this.anims.generateFrameNumbers('infanterySoldierSheetShoot', { start: 0, end: 5 }),
-            frameRate: 15,
+            frameRate: 13,
             repeat: -1
         });
 
         this.anims.create({
             key: 'infanterySoldierShootCrouch',
             frames: this.anims.generateFrameNumbers('infanterySoldierSheetShootCrouch', { start: 0, end: 5 }),
-            frameRate: 15,
+            frameRate: 13,
             repeat: -1
         });
 
         this.anims.create({
             key: 'infanterySoldierReload',
             frames: this.anims.generateFrameNumbers('infanterySoldierSheetRun', { start: 0, end: 9 }),
-            frameRate: 15,
+            frameRate: 13,
             repeat: -1
         });
 
         this.anims.create({
             key: 'infanterySoldierReloadCrouch',
             frames: this.anims.generateFrameNumbers('infanterySoldierSheetRun', { start: 0, end: 9 }),
-            frameRate: 15,
+            frameRate: 13,
             repeat: -1
         });
 
         this.anims.create({
             key: 'infanterySoldierIdleCrouch',
             frames: this.anims.generateFrameNumbers('infanterySoldierSheetRun', { start: 0, end: 9 }),
-            frameRate: 15,
+            frameRate: 13,
             repeat: -1
         });
 
         this.anims.create({
             key: 'infanterySoldierDead',
             frames: this.anims.generateFrameNumbers('infanterySoldierSheetDead', { start: 0, end: 19 }),
-            frameRate: 8,
+            frameRate: 6,
             repeat: -1
         });
 
         this.anims.create({
             key: 'infanterySoldierDeadCrouch',
             frames: this.anims.generateFrameNumbers('infanterySoldierSheetDeadCrouch', { start: 0, end: 9 }),
-            frameRate: 7,
+            frameRate: 6,
             repeat: 0
         });
 

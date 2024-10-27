@@ -23,7 +23,7 @@ export class Gameplay extends Phaser.Scene{
 
         // Configurar las teclas de entrada
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.inputDelay = 100; // Retraso en milisegundos
+        this.inputDelay = 100; // Cooldown en milisegundos
         this.canInteract = true;
     }
 

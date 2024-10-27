@@ -1,11 +1,15 @@
 import LifeComponent from './LifeComponent.js';
+import MovementComponent from './MovementComponent.js';
 
 import { getRandomInt, delay } from '../utils.js';
 import Humanoid from './Humanoid.js';
 
-export default class Army {
+export default class Army extends Phaser.GameObjects.Container{
     constructor(scene, xPos, config) {
+        super(scene, xPos, 100);
         this.scene = scene;
+        this.scene.add.existing(this);
+
         this.soldiers = []; // Contiene los soldados del army
 
         this.ArmyHealth = config.ArmyHealth;
@@ -13,17 +17,30 @@ export default class Army {
         this.ArmySpeed = config.ArmySpeed;
         this.team = config.ArmyTeam;
         this.ArmyAnimKey = config.ArmyAnimKey;
-        this.x = 100;
+        this.x = xPos; this.y = 100;
 
         //Delays
-        this.moveDelay = 1000; // Retraso en milisegundos
+        this.moveDelay = 1000; // Cooldown en milisegundos
         this.canMove = true;
 
         this.lifeComponent = new LifeComponent(this.ArmyHealth, this);
+        this.movementComponent = new MovementComponent(this, this.ArmySpeed);
+
+        // Crear la imagen de fondo, texto y barra
+        this.background = this.scene.add.image(0, 0, this.ArmyAnimKey + 'Image').setOrigin(0.5, 0.5);
+        this.background.setDisplaySize(100, 100);
+        this.armyText = this.scene.add.text(0, -30, '1', {
+            fontSize: '32px',
+            color: '#fff'
+        }).setOrigin(0.5, 0.5);
+        this.lifeRectagle = this.scene.add.rectangle(0, 0, 100, 30, 0x00f000);
+
+        // Agrupar la barra de vida, la imagen y el texto en el contenedor
+        this.add([this.background, this.armyText, this.lifeRectagle]);
 
         // Definir los limites del area vertical para los soldados
-        const minY = 40;
-        const maxY = window.game.config.height - 40;
+        const minY = 200;
+        const maxY = window.game.config.height - 20;
 
         // Calcular el espacio total disponible
         const totalHeight = maxY - minY;
@@ -45,10 +62,9 @@ export default class Army {
 
             let soldier = new Humanoid(scene, x, y, this.ArmySpeed, this.ArmyAnimKey);
             soldier.setDepth(y);
-            soldier.setScale(0.25);
+            soldier.setScale(0.2);
             this.soldiers.push(soldier);
         }
-
     }
 
     // Ejecutar una accion con un retraso aleatorio
@@ -61,13 +77,13 @@ export default class Army {
     moveArmy(movementX) {
         if (this.canMove) {
             this.canMove = false;
+            let targetX = this.x + movementX;
             // Actualizo posicion general de la army
-            this.x += movementX
-            console.log(this.x);
+            this.movementComponent.moveTo(targetX, this.y);
             // Actualizo la posicion de los soldados
             this.soldiers.forEach(soldier => {
                 this.executeWithRandomDelay(() => {
-                    soldier.moveTo(this.x, soldier.y);
+                    soldier.moveTo(targetX, soldier.y);
                 });
             });
             setTimeout(() => {
@@ -96,9 +112,6 @@ export default class Army {
     }
 
     preUpdate(t, dt) {
-        this.soldiers.forEach(soldier => {
-            soldier.preUpdate(t, dt);
-            soldier.setDepth(soldier.y);
-        });
+        this.movementComponent.movement();
     }
 }

@@ -1,7 +1,7 @@
 // MovementComponent.js
 export default class MovementComponent {
-    constructor(sprite, speed) {
-        this.sprite = sprite;
+    constructor(gameObject, speed) {
+        this.gameObject = gameObject;
         this.speed = speed;
         this.targetPosition = null;
     }
@@ -16,8 +16,8 @@ export default class MovementComponent {
         if (!this.targetPosition) return;  // Si no hay targetPosition, no hacemos nada
 
         // Calcular las diferencias en X e Y
-        const distanceX = this.targetPosition.x - this.sprite.x;
-        const distanceY = this.targetPosition.y - this.sprite.y;
+        const distanceX = this.targetPosition.x - this.gameObject.x;
+        const distanceY = this.targetPosition.y - this.gameObject.y;
 
         // Calcular la distancia total al objetivo
         const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
@@ -34,7 +34,7 @@ export default class MovementComponent {
         }
 
         // Actualizar la posición del sprite basado en la velocidad y el tiempo del bucle
-        this.sprite.x += directionX * this.speed * this.sprite.scene.game.loop.delta / 1000;
-        this.sprite.y += directionY * this.speed * this.sprite.scene.game.loop.delta / 1000;
+        this.gameObject.x += directionX * this.speed * this.gameObject.scene.game.loop.delta / 1000;
+        this.gameObject.y += directionY * this.speed * this.gameObject.scene.game.loop.delta / 1000;
     }
 }

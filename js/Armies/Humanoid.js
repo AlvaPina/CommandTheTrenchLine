@@ -30,7 +30,7 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
     // Metodo de movimiento hacia la target position
     movement() {
         this.movementComponent.movement();
-        if (!this.movementComponent.targetPosition) {  // Si el objetivo se alcanzó
+        if (!this.movementComponent.targetPosition) {  // Si el objetivo se alcanzo
             if (this.lastDirection === 'left') {
                 this.setFlipX(false);
                 this.lastDirection = 'right';
@@ -39,7 +39,7 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
             this.currentAnim = this.animKey + 'Idle';
             return;
         } else {
-            // Control de orientación
+            // Control de orientacion
             const distanceX = this.movementComponent.targetPosition.x - this.x;
             const directionX = distanceX / Math.abs(distanceX);
 
