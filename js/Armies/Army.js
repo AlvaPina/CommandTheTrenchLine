@@ -19,6 +19,8 @@ export default class Army extends Phaser.GameObjects.Container{
         this.ArmyAnimKey = config.ArmyAnimKey;
         this.x = xPos; this.y = 100;
 
+        this.targetX = xPos; 
+
         //Delays
         this.moveDelay = 1000; // Cooldown en milisegundos
         this.canMove = true;
@@ -77,13 +79,13 @@ export default class Army extends Phaser.GameObjects.Container{
     moveArmy(movementX) {
         if (this.canMove) {
             this.canMove = false;
-            let targetX = this.x + movementX;
+            this.targetX += movementX;
             // Actualizo posicion general de la army
-            this.movementComponent.moveTo(targetX, this.y);
+            this.movementComponent.moveTo(this.targetX, this.y);
             // Actualizo la posicion de los soldados
             this.soldiers.forEach(soldier => {
                 this.executeWithRandomDelay(() => {
-                    soldier.moveTo(targetX, soldier.y);
+                    soldier.moveTo(this.targetX, soldier.y);
                 });
             });
             setTimeout(() => {
