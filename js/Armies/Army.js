@@ -12,10 +12,10 @@ export default class Army extends Phaser.GameObjects.Container{
 
         this.soldiers = []; // Contiene los soldados del army
 
-        this.ArmyHealth = config.ArmyHealth;
+        this.SoldierHealth = config.SoldierHealth;
         this.numberOfSoldiers = config.NumberOfSoldiers;
         this.ArmySpeed = config.ArmySpeed;
-        this.team = config.ArmyTeam;
+        this.Team = config.ArmyTeam;
         this.ArmyAnimKey = config.ArmyAnimKey;
         this.x = xPos; this.y = 100;
 
@@ -25,7 +25,11 @@ export default class Army extends Phaser.GameObjects.Container{
         this.moveDelay = 1000; // Cooldown en milisegundos
         this.canMove = true;
 
-        this.lifeComponent = new LifeComponent(this.ArmyHealth, this);
+        //Vida
+        let ArmyHealth = this.SoldierHealth * this.numberOfSoldiers;
+        this.lifeComponent = new LifeComponent(ArmyHealth, this);
+
+        //Movimiento
         this.movementComponent = new MovementComponent(this, this.ArmySpeed);
 
         // Crear la imagen de fondo, texto y barra
@@ -62,7 +66,7 @@ export default class Army extends Phaser.GameObjects.Container{
 
             y += getRandomInt(1, maxVariation);
 
-            let soldier = new Humanoid(scene, x, y, this.ArmySpeed, this.ArmyAnimKey);
+            let soldier = new Humanoid(scene, x, y, this.ArmySpeed, this.ArmyAnimKey, this.Team);
             soldier.setDepth(y);
             soldier.setScale(0.2);
             this.soldiers.push(soldier);
@@ -71,7 +75,7 @@ export default class Army extends Phaser.GameObjects.Container{
 
     // Ejecutar una accion con un retraso aleatorio
     executeWithRandomDelay(action) {
-        const randomDelay = getRandomInt(0, 1000);
+        const randomDelay = getRandomInt(0, 800);
         setTimeout(action, randomDelay);
     }
 

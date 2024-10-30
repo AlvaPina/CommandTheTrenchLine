@@ -3,8 +3,12 @@ import Army from "../Army.js";
 export default class InfanteryArmy extends Army {
 
     constructor(scene, x, team) {
+        if (typeof team !== 'boolean') {
+            throw new TypeError("El parametro 'team' no es un booleano");
+        }
+
         const config = {
-            ArmyHealth: 200,
+            SoldierHealth: 100,
             NumberOfSoldiers: 20,
             ArmySpeed: 50,
             ArmyTeam: team,

@@ -6,12 +6,12 @@ export default class MovementComponent {
         this.targetPosition = null;
     }
 
-    // Definir el método `moveTo` que establece una posición objetivo
+    // Establece una posicion objetivo
     moveTo(targetX, targetY) {
         this.targetPosition = { x: targetX, y: targetY };
     }
 
-    // Definir el método `movement` que realiza el movimiento hacia el objetivo
+    // Realiza el movimiento hacia el objetivo
     movement() {
         if (!this.targetPosition) return;  // Si no hay targetPosition, no hacemos nada
 
@@ -22,7 +22,7 @@ export default class MovementComponent {
         // Calcular la distancia total al objetivo
         const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
 
-        // Calcular la dirección normalizada hacia el objetivo
+        // Calcular la direccion normalizada hacia el objetivo
         const directionX = distanceX / distance;
         const directionY = distanceY / distance;
 
@@ -33,7 +33,7 @@ export default class MovementComponent {
             return;
         }
 
-        // Actualizar la posición del sprite basado en la velocidad y el tiempo del bucle
+        // Actualizar la posicion del sprite basado en la velocidad y el tiempo del bucle
         this.gameObject.x += directionX * this.speed * this.gameObject.scene.game.loop.delta / 1000;
         this.gameObject.y += directionY * this.speed * this.gameObject.scene.game.loop.delta / 1000;
     }

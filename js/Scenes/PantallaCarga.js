@@ -6,7 +6,8 @@ export class LoadScene extends Phaser.Scene
 
     preload() {
         //IMAGES
-       this.load.image("gameplayBackground", "Assets/Images/GameplayBackground.png");
+       this.load.image("gameplayBackground", "Assets/Images/Background/GameplayBackground.png");
+       this.load.image("trenchImage", "Assets/Images/Structures/Trench.png");
 
        //SPRITESHEETS
        this.load.spritesheet('infanterySoldierSheetRun', 'Assets/Images/SpriteSheets/Run.png', { frameWidth: 256, frameHeight: 256 });
