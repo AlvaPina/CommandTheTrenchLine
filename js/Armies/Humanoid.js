@@ -15,8 +15,10 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         if (this.team) this.lastDirection = 'left';
         else this.lastDirection = 'right';
 
-        this.displayOriginRight = 0;
-        this.displayOriginLeft = this.width;
+        // Calcula un desplazamiento de origen de 20 pixeles que es donde tenemos la cabeza del soldado
+        // y donde queremos que rote
+        this.originRight = 1 - 20 / this.width;
+        this.originLeft = 20 / this.width;
 
         this.movementComponent = new MovementComponent(this, speed);
     }
@@ -32,12 +34,12 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         if (!this.movementComponent.targetPosition) {  // Si el objetivo se alcanzo
             if (this.lastDirection === 'left' && this.team) {
                 this.setFlipX(false);
-                this.setDisplayOrigin(this.displayOriginRight, this.displayOriginY);
+                this.setOrigin(this.originRight, 0.5);
                 this.lastDirection = 'right';
             }
             else if (this.lastDirection === 'right' && !this.team) {
                 this.setFlipX(true);
-                this.setDisplayOrigin(this.displayOriginLeft, this.displayOriginY);
+                this.setOrigin(this.originLeft, 0.5);
                 this.lastDirection = 'left';
             }
             this.currentAnim = this.animKey + 'Idle';
@@ -49,11 +51,11 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
 
             if (directionX > 0 && this.lastDirection !== 'right') {
                 this.setFlipX(false);
-                this.setDisplayOrigin(this.displayOriginRight, this.displayOriginY);
+                this.setOrigin(this.originRight, 0.5);
                 this.lastDirection = 'right';
             } else if (directionX < 0 && this.lastDirection !== 'left') {
                 this.setFlipX(true);
-                this.setDisplayOrigin(this.displayOriginLeft, this.displayOriginY);
+                this.setOrigin(this.originLeft, 0.5);
                 this.lastDirection = 'left';
             }
         }
