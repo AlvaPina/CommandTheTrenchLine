@@ -12,21 +12,13 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         this.currentAnim = this.animKey + 'Idle';
         this.previousAnim = this.animKey + 'Idle';
 
+        if (this.team) this.lastDirection = 'left';
+        else this.lastDirection = 'right';
+
         this.displayOriginRight = 0;
         this.displayOriginLeft = this.width;
 
         this.movementComponent = new MovementComponent(this, speed);
-
-        if (this.team){
-            this.lastDirection = 'left';
-            this.setDisplayOrigin(this.displayOriginRight, this.displayOriginY);
-        } 
-        else{
-            this.lastDirection = 'right';
-            this.setDisplayOrigin(this.displayOriginRight, this.displayOriginY);
-        } 
-
-
     }
 
     moveTo(targetX, targetY) {
