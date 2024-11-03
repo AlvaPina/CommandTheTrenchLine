@@ -23,9 +23,11 @@ export class Gameplay extends Phaser.Scene{
         // Crear un Army de Infanteria y otro enemigo y moverlos
         this.army = new InfanteryArmy(this, 100, true);
         this.army.moveArmy(400);
+        this.playerArmies.push(this.army);
 
         this.enemyArmy = new InfanteryArmy(this, 600, false);
         this.enemyArmy.moveArmy(-400);
+        this.enemyArmies.push(this.enemyArmy);
 
 
         //Crear trincheras
@@ -82,5 +84,10 @@ export class Gameplay extends Phaser.Scene{
                 this.canInteract = true;
             }, this.inputDelay);
         }
+    }
+
+    getArmies(team){
+        if(team) return this.enemyArmies;
+        else return this.playerArmies;
     }
 }

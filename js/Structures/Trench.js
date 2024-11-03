@@ -6,9 +6,8 @@ export default class Trench extends Phaser.GameObjects.Sprite {
 
         this.scene.physics.add.existing(this, true); // "true" lo hace estatico
 
-        // Ajustar el tamaño y el área del collider si es necesario
-        this.setSize(this.width, this.height); // Configura el área del collider al tamaño de la imagen
-        this.setOrigin(0.5, 0.5); // Establece el origen al centro (opcional)
+        this.setSize(this.width, this.height);
+        this.setOrigin(0.5, 0.5);
     }
 
     preUpdate(time, delta) {

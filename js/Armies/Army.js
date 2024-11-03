@@ -4,11 +4,13 @@ import MovementComponent from './MovementComponent.js';
 import { getRandomInt, delay } from '../utils.js';
 import Humanoid from './Humanoid.js';
 
-export default class Army extends Phaser.GameObjects.Container{
+export default class Army extends Phaser.GameObjects.Container {
     constructor(scene, xPos, config) {
         super(scene, xPos, 100);
         this.scene = scene;
         this.scene.add.existing(this);
+
+        this.state = 'idle';
 
         this.soldiers = []; // Contiene los soldados del army
 
@@ -19,7 +21,7 @@ export default class Army extends Phaser.GameObjects.Container{
         this.ArmyAnimKey = config.ArmyAnimKey;
         this.x = xPos; this.y = 100;
 
-        this.targetX = xPos; 
+        this.targetX = xPos;
 
         //Delays
         this.moveDelay = 1000; // Cooldown en milisegundos
@@ -73,6 +75,10 @@ export default class Army extends Phaser.GameObjects.Container{
         }
     }
 
+    setState(newState) {
+        this.state = newState;
+    }
+
     // Ejecutar una accion con un retraso aleatorio
     executeWithRandomDelay(action) {
         const randomDelay = getRandomInt(0, 800);
@@ -82,6 +88,7 @@ export default class Army extends Phaser.GameObjects.Container{
     // Metodo para mover todo el ejercito hacia una posicion objetivo en el eje X
     moveArmy(movementX) {
         if (this.canMove) {
+            this.setState('moving');
             this.canMove = false;
             this.targetX += movementX;
             // Actualizo posicion general de la army
@@ -100,10 +107,21 @@ export default class Army extends Phaser.GameObjects.Container{
 
     // Metodo que se usara cuando avisten a un enemigo al que disparar
     ArmyAttack() {
+        this.setState('attacking');
         this.soldiers.forEach(soldier => {
             this.executeWithRandomDelay(() => {
                 soldier.attack();
             });
+        });
+    }
+
+    // Metodo para ver la distancia de las armies enemigas
+    CheckObjective() {
+        this.scene.getArmies(this.Team).forEach((army) => {
+            if (Math.abs(army.x - this.x) <= 200) {
+                console.log("A TIRO!");
+                this.ArmyAttack();
+            }
         });
     }
 
@@ -118,6 +136,18 @@ export default class Army extends Phaser.GameObjects.Container{
     }
 
     preUpdate(t, dt) {
-        this.movementComponent.movement();
+        this.CheckObjective();
+        switch(this.state) {
+            case 'idle':
+                break;
+
+            case 'moving':
+                this.movementComponent.movement();
+                break;
+
+            case 'attacking':
+                
+                break;
+        }
     }
 }
