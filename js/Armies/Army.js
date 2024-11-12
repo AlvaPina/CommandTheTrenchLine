@@ -10,7 +10,8 @@ export default class Army extends Phaser.GameObjects.Container {
         this.scene = scene;
         this.scene.add.existing(this);
 
-        this.state = 'idle';
+        this.state = 'Idle';
+        this.orientation = 'right';
 
         this.soldiers = []; // Contiene los soldados del army
 
@@ -55,8 +56,6 @@ export default class Army extends Phaser.GameObjects.Container {
 
         // Calcular el espaciado uniforme entre soldados
         const minSpacing = totalHeight / this.numberOfSoldiers;
-        console.log(window.game.config.height);
-        console.log(minSpacing);
 
         // Variacion maxima en la posicion Y segun el numero de soldados
         const maxVariation = Math.max(1, minSpacing / 2);
@@ -68,7 +67,7 @@ export default class Army extends Phaser.GameObjects.Container {
 
             y += getRandomInt(1, maxVariation);
 
-            let soldier = new Humanoid(scene, x, y, this.ArmySpeed, this.ArmyAnimKey, this.Team);
+            let soldier = new Humanoid(scene, x, y, this);
             soldier.setDepth(y);
             soldier.setScale(0.2);
             this.soldiers.push(soldier);
@@ -88,41 +87,49 @@ export default class Army extends Phaser.GameObjects.Container {
     // Metodo para mover todo el ejercito hacia una posicion objetivo en el eje X
     moveArmy(movementX) {
         if (this.canMove) {
-            this.setState('moving');
+            this.setState('Moving');
             this.canMove = false;
             this.targetX += movementX;
             // Actualizo posicion general de la army
             this.movementComponent.moveTo(this.targetX, this.y);
             // Actualizo la posicion de los soldados
-            this.soldiers.forEach(soldier => {
-                this.executeWithRandomDelay(() => {
-                    soldier.moveTo(this.targetX, soldier.y);
-                });
-            });
+            this.ArmyMoveTo(this.targetX);
             setTimeout(() => {
                 this.canMove = true;
             }, this.moveDelay);
         }
     }
 
-    // Metodo que se usara cuando avisten a un enemigo al que disparar
-    ArmyAttack() {
-        this.setState('attacking');
+    ArmyOrder(newOrder){
         this.soldiers.forEach(soldier => {
             this.executeWithRandomDelay(() => {
-                soldier.attack();
+                soldier.setOrder(newOrder)
+            });
+        });
+    }
+
+    ArmyMoveTo(targetX) {
+        this.soldiers.forEach(soldier => {
+            this.executeWithRandomDelay(() => {
+                soldier.moveTo(targetX, soldier.y);
             });
         });
     }
 
     // Metodo para ver la distancia de las armies enemigas
     CheckObjective() {
+        let objetivo = false;
         this.scene.getArmies(this.Team).forEach((army) => {
             if (Math.abs(army.x - this.x) <= 200) {
-                console.log("A TIRO!");
-                this.ArmyAttack();
+                if (this.movementComponent.getDirectionX() > 0 && army.x - this.x > 0) {
+                    objetivo = true;
+                }
+                else if (this.movementComponent.getDirectionX() < 0 && army.x - this.x < 0){
+                    objetivo = true;
+                }
             }
         });
+        return objetivo;
     }
 
     // Reagrupa los soldados para rellenar posiciones de soldados muertos, se usara cuando lleguen a la trinchera
@@ -135,18 +142,41 @@ export default class Army extends Phaser.GameObjects.Container {
         this.lifeComponent.addHealth(amount);
     }
 
+    getConfig() {
+        return {
+            speed: this.ArmySpeed,
+            animKey: this.ArmyAnimKey,
+            team: this.Team,
+        };
+    }
+
+    getArmyState() {
+        return this.state;
+    }
+
     preUpdate(t, dt) {
-        this.CheckObjective();
-        switch(this.state) {
-            case 'idle':
+        if(this.CheckObjective()){
+            this.setState('InCombat');
+            this.ArmyOrder('Attacking');
+        }
+        else if (this.movementComponent.getTargetPosition() != null){
+            this.setState('Moving');
+            this.ArmyOrder('Moving');
+        }
+
+        switch (this.state) {
+            case 'InCombat': // Solo puede recibir la orden de retirarse y de moverse para atras
                 break;
 
-            case 'moving':
+            case 'Moving': // Puede recibir todo tipo de ordenes
                 this.movementComponent.movement();
                 break;
 
-            case 'attacking':
-                
+            case 'Idle': // Puede recibir todo tipo de ordenes
+                break;
+
+            case 'Fleeing': // No puede recibir ordenes
+                // mirar si ha llegado a la base, si ha llegado pasa a estado 'notInCombat' y por tanto ya se puede mover
                 break;
         }
     }

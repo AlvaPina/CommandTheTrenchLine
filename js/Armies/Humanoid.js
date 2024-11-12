@@ -1,16 +1,20 @@
 import MovementComponent from './MovementComponent.js';
 
 export default class Humanoid extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, speed, animKey, team) {
+    constructor(scene, x, y, army) {
         super(scene, x, y);
         this.scene = scene;
         this.scene.add.existing(this);
 
-        this.speed = speed;
-        this.animKey = animKey;
-        this.team = team;
-        this.currentAnim = this.animKey + 'Idle';
-        this.previousAnim = this.animKey + 'Idle';
+        this.army = army;
+
+        const config = this.army.getConfig();
+        this.speed = config.speed;
+        this.animKey = config.animKey;
+        this.team = config.team;
+
+        this.state = 'Moving';
+        this.previousState = 'Idle';
 
         if (this.team) this.lastDirection = 'left';
         else this.lastDirection = 'right';
@@ -20,16 +24,26 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         this.originRight = 1 - 20 / this.width;
         this.originLeft = 20 / this.width;
 
-        this.movementComponent = new MovementComponent(this, speed);
+        this.movementComponent = new MovementComponent(this, this.speed);
+    }
+
+    #setState(newState){
+        this.previousState = this.state;
+        this.state = newState;
+    }
+
+    setOrder(newState){ // añadir un delay y una cola de ordenes, este es el unico metodo que puede usar army, el resto deberian ser privados
+        this.setState(newState); //recuerdo, hacer esto con la cola de ordenes
     }
 
     moveTo(targetX, targetY) {
+        console.log("MOVETO");
         this.movementComponent.moveTo(targetX, targetY);
-        this.currentAnim = this.animKey + 'Run';
+        this.setOrder('Moving');
     }
 
     // Metodo de movimiento hacia la target position
-    movement() {
+    #movement() {
         this.movementComponent.movement();
         if (!this.movementComponent.targetPosition) {  // Si el objetivo se alcanzo
             if (this.lastDirection === 'left' && this.team) {
@@ -42,12 +56,10 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
                 this.setOrigin(this.originLeft, 0.5);
                 this.lastDirection = 'left';
             }
-            this.currentAnim = this.animKey + 'Idle';
+            this.setState('Idle');
             return;
         } else {
-            // Control de orientacion
-            const distanceX = this.movementComponent.targetPosition.x - this.x;
-            const directionX = distanceX / Math.abs(distanceX);
+            const directionX = this.movementComponent.getDirectionX();
 
             if (directionX > 0 && this.lastDirection !== 'right') {
                 this.setFlipX(false);
@@ -62,23 +74,44 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
     }
 
     // Es solo un rasgo visual a excepcion de la generacion de granadas.
-    attack() {
-        this.currentAnim = this.animKey + 'Shoot';
+    #attack() {
+        // Debo hacer que se turnen entre el idle con tiempo random y el shoot.
+
     }
 
-    manageAnims() {
-        // Hacemos play solo cuando currentAnim se ha actualizado
-        if (this.currentAnim !== this.previousAnim) {
-            this.play(this.currentAnim);
-            this.previousAnim = this.currentAnim;
+    #manageAnims() {
+        // Hacemos play solo cuando el estado se ha actualizado
+        if (this.state !== this.previousState) {
+            this.previousState = this.state;
+            this.play(this.animKey + this.state);
         }
     }
 
     preUpdate(time, delta) {
         super.preUpdate(time, delta);
-        if (this.currentAnim == this.animKey + 'Run') {
-            this.movement();
+        switch (this.state) {
+            case 'Idle':
+                //if (this.movementComponent.getTargetPosition != null) this.setState('Moving');
+                break;
+
+            case 'Moving':
+                this.#movement();
+                break;
+
+            case 'ClimbingUp':
+
+                break;
+            case 'ClimbingDown':
+
+                break;
+
+            case 'Attacking':
+                this.#attack();
+                break;
+            case 'Fleeing':
+
+                break;
         }
-        this.manageAnims();
+        this.#manageAnims();
     }
 }

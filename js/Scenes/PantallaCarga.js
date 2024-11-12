@@ -10,10 +10,10 @@ export class LoadScene extends Phaser.Scene
        this.load.image("trenchImage", "Assets/Images/Structures/Trench.png");
 
        //SPRITESHEETS
-       this.load.spritesheet('infanterySoldierSheetRun', 'Assets/Images/SpriteSheets/Run.png', { frameWidth: 256, frameHeight: 256 });
+       this.load.spritesheet('infanterySoldierSheetMoving', 'Assets/Images/SpriteSheets/Run.png', { frameWidth: 256, frameHeight: 256 });
        this.load.spritesheet('infanterySoldierSheetIdle', 'Assets/Images/SpriteSheets/Idle.png', { frameWidth: 256, frameHeight: 256 });
-       this.load.spritesheet('infanterySoldierSheetShoot', 'Assets/Images/SpriteSheets/Shoot.png', { frameWidth: 256, frameHeight: 256 });
-       this.load.spritesheet('infanterySoldierSheetShootCrouch', 'Assets/Images/SpriteSheets/ShootCrouch.png', { frameWidth: 256, frameHeight: 256 });
+       this.load.spritesheet('infanterySoldierAttacking', 'Assets/Images/SpriteSheets/Shoot.png', { frameWidth: 256, frameHeight: 256 });
+       this.load.spritesheet('infanterySoldierAttackingCrouch', 'Assets/Images/SpriteSheets/ShootCrouch.png', { frameWidth: 256, frameHeight: 256 });
        this.load.spritesheet('infanterySoldierSheetDeadCrouch', 'Assets/Images/SpriteSheets/DeadCrouch.png', { frameWidth: 256, frameHeight: 256 });
        this.load.spritesheet('infanterySoldierSheetDead', 'Assets/Images/SpriteSheets/Dead.png', { frameWidth: 256, frameHeight: 256 });
 
@@ -46,8 +46,8 @@ export class LoadScene extends Phaser.Scene
     create() {
         //ANIMS
         this.anims.create({
-            key: 'infanterySoldierRun',
-            frames: this.anims.generateFrameNumbers('infanterySoldierSheetRun', { start: 0, end: 5 }),
+            key: 'infanterySoldierMoving',
+            frames: this.anims.generateFrameNumbers('infanterySoldierSheetMoving', { start: 0, end: 5 }),
             frameRate: 13,
             repeat: -1
         });
@@ -60,36 +60,36 @@ export class LoadScene extends Phaser.Scene
         });
 
         this.anims.create({
-            key: 'infanterySoldierShoot',
-            frames: this.anims.generateFrameNumbers('infanterySoldierSheetShoot', { start: 0, end: 5 }),
+            key: 'infanterySoldierAttacking',
+            frames: this.anims.generateFrameNumbers('infanterySoldierAttacking', { start: 0, end: 5 }),
             frameRate: 13,
             repeat: -1
         });
 
         this.anims.create({
-            key: 'infanterySoldierShootCrouch',
-            frames: this.anims.generateFrameNumbers('infanterySoldierSheetShootCrouch', { start: 0, end: 5 }),
+            key: 'infanterySoldierAttackingCrouch',
+            frames: this.anims.generateFrameNumbers('infanterySoldierAttackingCrouch', { start: 0, end: 5 }),
             frameRate: 13,
             repeat: -1
         });
 
         this.anims.create({
             key: 'infanterySoldierReload',
-            frames: this.anims.generateFrameNumbers('infanterySoldierSheetRun', { start: 0, end: 9 }),
+            frames: this.anims.generateFrameNumbers('infanterySoldierSheetMoving', { start: 0, end: 9 }),
             frameRate: 13,
             repeat: -1
         });
 
         this.anims.create({
             key: 'infanterySoldierReloadCrouch',
-            frames: this.anims.generateFrameNumbers('infanterySoldierSheetRun', { start: 0, end: 9 }),
+            frames: this.anims.generateFrameNumbers('infanterySoldierSheetMoving', { start: 0, end: 9 }),
             frameRate: 13,
             repeat: -1
         });
 
         this.anims.create({
             key: 'infanterySoldierIdleCrouch',
-            frames: this.anims.generateFrameNumbers('infanterySoldierSheetRun', { start: 0, end: 9 }),
+            frames: this.anims.generateFrameNumbers('infanterySoldierSheetMoving', { start: 0, end: 9 }),
             frameRate: 13,
             repeat: -1
         });
