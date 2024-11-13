@@ -44,35 +44,32 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         this.movementComponent.moveTo(targetX, targetY);
         this.setOrder('Moving');
     }
+    // direction puede ser "TeamBase" o "EnemyBase"
+    #soldierOrientation(direction){ 
+        if(direction == "EnemyBase" && this.team || direction == "TeamBase" && !this.team){
+            this.#soldierOrientationAux(1);
+        }
+        else if(direction == "TeamBase" && this.team || direction == "EnemyBase" && !this.team){
+            this.#soldierOrientationAux(-1);
+        }
+    }
+    // direction puede ser "1" o "-1" y no tiene en cuenta el team
+    #soldierOrientationAux(direction){ 
+        if(direction == 1){
+            this.setFlipX(false);
+            this.setOrigin(this.originRight, 0.5);
+        }
+        else if(direction == -1){
+            this.setFlipX(true);
+            this.setOrigin(this.originLeft, 0.5);
+        }
+    }
 
     // Metodo de movimiento hacia la target position
     #movement() {
         this.movementComponent.movement();
         if (!this.movementComponent.targetPosition) {  // Si el objetivo se alcanzo
-            if (this.lastDirection === 'left' && this.team) {
-                this.setFlipX(false);
-                this.setOrigin(this.originRight, 0.5);
-                this.lastDirection = 'right';
-            }
-            else if (this.lastDirection === 'right' && !this.team) {
-                this.setFlipX(true);
-                this.setOrigin(this.originLeft, 0.5);
-                this.lastDirection = 'left';
-            }
             this.setState('Idle');
-            return;
-        } else {
-            const directionX = this.movementComponent.getDirectionX();
-
-            if (directionX > 0 && this.lastDirection !== 'right') {
-                this.setFlipX(false);
-                this.setOrigin(this.originRight, 0.5);
-                this.lastDirection = 'right';
-            } else if (directionX < 0 && this.lastDirection !== 'left') {
-                this.setFlipX(true);
-                this.setOrigin(this.originLeft, 0.5);
-                this.lastDirection = 'left';
-            }
         }
     }
 
@@ -86,11 +83,19 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
 
     }
 
-    #manageAnims() {
+    #updateState() {
         // Hacemos play solo cuando el estado se ha actualizado
         if (this.state !== this.previousState) {
             this.previousState = this.state;
             this.play(this.animKey + this.state);
+
+            if (this.state == 'Idle' || this.state == 'Attacking') {
+                this.#soldierOrientation("EnemyBase");
+            }
+            else if (this.state == 'Moving'){
+                //Orientarlo hacia la direccion de movimiento que me la da el MovementComponent
+                this.#soldierOrientationAux(this.movementComponent.getDirectionX());
+            }
         }
     }
 
@@ -98,26 +103,20 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         super.preUpdate(time, delta);
         switch (this.state) {
             case 'Idle':
-            break;
-
+                break;
             case 'Moving':
                 this.#movement();
                 break;
-
-            case 'ClimbingUp':
-
-                break;
-            case 'ClimbingDown':
-
-                break;
-
             case 'Attacking':
                 this.#attack();
                 break;
-            case 'Fleeing':
-
+            case 'dying':
+                break;
+            case 'ClimbingUp':
+                break;
+            case 'ClimbingDown':
                 break;
         }
-        this.#manageAnims();
+        this.#updateState();
     }
 }
