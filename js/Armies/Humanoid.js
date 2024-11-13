@@ -42,17 +42,10 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
 
     moveTo(targetX, targetY) {
         this.movementComponent.moveTo(targetX, targetY);
+        this.#movingOrientation()
         this.setOrder('Moving');
     }
-    // direction puede ser "TeamBase" o "EnemyBase"
-    #soldierOrientation(direction){ 
-        if(direction == "EnemyBase" && this.team || direction == "TeamBase" && !this.team){
-            this.#soldierOrientationAux(1);
-        }
-        else if(direction == "TeamBase" && this.team || direction == "EnemyBase" && !this.team){
-            this.#soldierOrientationAux(-1);
-        }
-    }
+    
     // direction puede ser "1" o "-1" y no tiene en cuenta el team
     #soldierOrientationAux(direction){ 
         if(direction == 1){
@@ -82,21 +75,25 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         // Debo hacer que se turnen entre el idle con tiempo random y el shoot.
 
     }
-
-    #updateState() {
+    // Actualiza lo necesario al entrar a un estado por primera vez
+    #onEnterState() {
         // Hacemos play solo cuando el estado se ha actualizado
         if (this.state !== this.previousState) {
             this.previousState = this.state;
             this.play(this.animKey + this.state);
 
             if (this.state == 'Idle' || this.state == 'Attacking') {
-                this.#soldierOrientation("EnemyBase");
+                this.#soldierOrientationAux(this.movementComponent.soldierOrientation("EnemyBase", this.team));
             }
             else if (this.state == 'Moving'){
-                //Orientarlo hacia la direccion de movimiento que me la da el MovementComponent
-                this.#soldierOrientationAux(this.movementComponent.getDirectionX());
+                this.#movingOrientation()
             }
         }
+    }
+    //Orientarlo hacia la direccion de movimiento que me la da el MovementComponent
+    #movingOrientation(){
+        console.log(this.movementComponent.getDirectionX());
+        this.#soldierOrientationAux(this.movementComponent.getDirectionX());
     }
 
     preUpdate(time, delta) {
@@ -117,6 +114,6 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
             case 'ClimbingDown':
                 break;
         }
-        this.#updateState();
+        this.#onEnterState();
     }
 }

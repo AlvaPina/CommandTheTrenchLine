@@ -45,6 +45,16 @@ export default class MovementComponent {
         this.directionY = distanceY / this.distance;
     }
 
+    // Devuelve la direccion en base a donde quieres que mire el army de un equipo concreto, direction puede ser "TeamBase" o "EnemyBase"
+    soldierOrientation(direction, team){ 
+        if(direction == "EnemyBase" && team || direction == "TeamBase" && !team){
+            return 1;
+        }
+        else if(direction == "TeamBase" && team || direction == "EnemyBase" && !team){
+            return -1;
+        }
+    }
+
     getDirectionX(){
         return this.directionX;
     }

@@ -14,7 +14,7 @@ export default class LifeComponent {
         }
     }
 
-    // Chequear si algún soldado debe "morir" cuando la vida baja
+    // Chequear si algún soldado debe "morir" cuando la vida baja, direction puede ser "TeamBase" o "EnemyBase"
     checkSoldierLosses() {
         const soldiersToKill = Math.floor((1 - (this.health / 100)) * this.army.soldiers.length);
 

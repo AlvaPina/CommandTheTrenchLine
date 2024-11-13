@@ -153,11 +153,25 @@ export default class Army extends Phaser.GameObjects.Container {
     getArmyState() {
         return this.state;
     }
+    // Actualiza lo necesario al entrar a un estado por primera vez
+    onEnterState() {
+        // Hacemos play solo cuando el estado se ha actualizado
+        if (this.state !== this.previousState) {
+            this.previousState = this.state;
 
-    preUpdate(t, dt) {
+            if (this.state == 'Idle' || this.state == 'Attacking') {
+                const direction = this.team ? 1 : -1;
+                this.movementComponent.setDirection(direction);
+            }
+            else if (this.state == 'Moving'){
+                //Orientarlo hacia la direccion de movimiento que me la da el MovementComponent
+                //this.#soldierOrientationAux(this.movementComponent.getDirectionX());
+            }
+        }
+    }
+    updateState(){
         if (this.canChange) {
             this.canChange = false;
-
             if (this.CheckObjective()) {
                 this.setState('InCombat');
                 this.ArmyOrder('Attacking');
@@ -166,11 +180,6 @@ export default class Army extends Phaser.GameObjects.Container {
                 this.setState('Moving');
                 this.ArmyOrder('Moving');
             }
-            else if (this.movementComponent.getTargetPosition() == null) {
-                this.setState('Idle');
-                const direction = this.team ? 1 : -1;
-                this.movementComponent.setDirection(direction);
-            }
             else {
                 this.setState('Idle');
             }
@@ -178,7 +187,11 @@ export default class Army extends Phaser.GameObjects.Container {
                 this.canChange = true;
             }, 1000);
         }
-
+    }
+    preUpdate(t, dt) {
+        this.updateState()
+        this.onEnterState();
+        
         switch (this.state) {
             case 'InCombat': // Solo puede recibir la orden de retirarse y de moverse para atras
                 break;
