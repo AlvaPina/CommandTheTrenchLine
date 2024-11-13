@@ -11,7 +11,6 @@ export default class Army extends Phaser.GameObjects.Container {
         this.scene.add.existing(this);
 
         this.state = 'Idle';
-        this.orientation = 'right';
 
         this.soldiers = []; // Contiene los soldados del army
 
@@ -27,6 +26,7 @@ export default class Army extends Phaser.GameObjects.Container {
         //Delays
         this.moveDelay = 1000; // Cooldown en milisegundos
         this.canMove = true;
+        this.canChange = true;
 
         //Vida
         let ArmyHealth = this.SoldierHealth * this.numberOfSoldiers;
@@ -100,7 +100,7 @@ export default class Army extends Phaser.GameObjects.Container {
         }
     }
 
-    ArmyOrder(newOrder){
+    ArmyOrder(newOrder) {
         this.soldiers.forEach(soldier => {
             this.executeWithRandomDelay(() => {
                 soldier.setOrder(newOrder)
@@ -124,7 +124,7 @@ export default class Army extends Phaser.GameObjects.Container {
                 if (this.movementComponent.getDirectionX() > 0 && army.x - this.x > 0) {
                     objetivo = true;
                 }
-                else if (this.movementComponent.getDirectionX() < 0 && army.x - this.x < 0){
+                else if (this.movementComponent.getDirectionX() < 0 && army.x - this.x < 0) {
                     objetivo = true;
                 }
             }
@@ -155,13 +155,28 @@ export default class Army extends Phaser.GameObjects.Container {
     }
 
     preUpdate(t, dt) {
-        if(this.CheckObjective()){
-            this.setState('InCombat');
-            this.ArmyOrder('Attacking');
-        }
-        else if (this.movementComponent.getTargetPosition() != null){
-            this.setState('Moving');
-            this.ArmyOrder('Moving');
+        if (this.canChange) {
+            this.canChange = false;
+
+            if (this.CheckObjective()) {
+                this.setState('InCombat');
+                this.ArmyOrder('Attacking');
+            }
+            else if (this.movementComponent.getTargetPosition() != null) {
+                this.setState('Moving');
+                this.ArmyOrder('Moving');
+            }
+            else if (this.movementComponent.getTargetPosition() == null) {
+                this.setState('Idle');
+                const direction = this.team ? 1 : -1;
+                this.movementComponent.setDirection(direction);
+            }
+            else {
+                this.setState('Idle');
+            }
+            setTimeout(() => {
+                this.canChange = true;
+            }, 1000);
         }
 
         switch (this.state) {

@@ -49,6 +49,10 @@ export default class MovementComponent {
         return this.directionX;
     }
 
+    setDirection(newDir){
+        this.directionX = newDir;
+    }
+
     getTargetPosition(){
         return this.targetPosition;
     }

@@ -25,19 +25,22 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         this.originLeft = 20 / this.width;
 
         this.movementComponent = new MovementComponent(this, this.speed);
+
+        //Sounds
+        this.gunShootSound = this.scene.sound.add('gunRifleShoot');
+        this.gunShootSound.setVolume(0.1);
     }
 
-    #setState(newState){
+    #setState(newState) {
         this.previousState = this.state;
         this.state = newState;
     }
 
-    setOrder(newState){ // añadir un delay y una cola de ordenes, este es el unico metodo que puede usar army, el resto deberian ser privados
+    setOrder(newState) { // añadir un delay y una cola de ordenes, este es el unico metodo que puede usar army, el resto deberian ser privados
         this.setState(newState); //recuerdo, hacer esto con la cola de ordenes
     }
 
     moveTo(targetX, targetY) {
-        console.log("MOVETO");
         this.movementComponent.moveTo(targetX, targetY);
         this.setOrder('Moving');
     }
@@ -75,6 +78,10 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
 
     // Es solo un rasgo visual a excepcion de la generacion de granadas.
     #attack() {
+        if (!this.gunShootSound.isPlaying) {
+            this.gunShootSound.play();
+        }
+
         // Debo hacer que se turnen entre el idle con tiempo random y el shoot.
 
     }
@@ -91,8 +98,7 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         super.preUpdate(time, delta);
         switch (this.state) {
             case 'Idle':
-                //if (this.movementComponent.getTargetPosition != null) this.setState('Moving');
-                break;
+            break;
 
             case 'Moving':
                 this.#movement();

@@ -19,6 +19,7 @@ export class LoadScene extends Phaser.Scene
 
        //AUDIOS
        this.load.audio('backgroundMusic', 'Assets/Audio/SendThemAllToTheTrench.mp3');
+       this.load.audio('gunRifleShoot', 'Assets/Audio/Effects/GunRifleShoot.mp3');
 
        //VIDEOS
        this.load.video({
