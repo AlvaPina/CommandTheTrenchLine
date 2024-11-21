@@ -24,6 +24,7 @@ export default class MovementComponent {
         if (this.distance < 1) {
             this.targetPosition = null;
             console.log('Destino alcanzado');
+            // Decir a la army que se pare (evento de parate)
             return;
         }
 

@@ -37,6 +37,7 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
     }
 
     setOrder(newState) { // añadir un delay y una cola de ordenes, este es el unico metodo que puede usar army, el resto deberian ser privados
+        //console.log("NEW STATE:" + newState);
         this.setState(newState); //recuerdo, hacer esto con la cola de ordenes
     }
 
@@ -77,7 +78,6 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
     }
     // Actualiza lo necesario al entrar a un estado por primera vez
     #onEnterState() {
-        // Hacemos play solo cuando el estado se ha actualizado
         if (this.state !== this.previousState) {
             this.previousState = this.state;
             this.play(this.animKey + this.state);
@@ -92,7 +92,7 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
     }
     //Orientarlo hacia la direccion de movimiento que me la da el MovementComponent
     #movingOrientation(){
-        console.log(this.movementComponent.getDirectionX());
+        //console.log(this.movementComponent.getDirectionX());
         this.#soldierOrientationAux(this.movementComponent.getDirectionX());
     }
 

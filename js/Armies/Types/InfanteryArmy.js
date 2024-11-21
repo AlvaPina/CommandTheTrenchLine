@@ -9,7 +9,7 @@ export default class InfanteryArmy extends Army {
 
         const config = {
             SoldierHealth: 100,
-            NumberOfSoldiers: 20,
+            NumberOfSoldiers: 1,
             ArmySpeed: 50,
             ArmyTeam: team,
             ArmyAnimKey: 'infanterySoldier'

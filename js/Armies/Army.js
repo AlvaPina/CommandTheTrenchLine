@@ -155,7 +155,6 @@ export default class Army extends Phaser.GameObjects.Container {
     }
     // Actualiza lo necesario al entrar a un estado por primera vez
     onEnterState() {
-        // Hacemos play solo cuando el estado se ha actualizado
         if (this.state !== this.previousState) {
             this.previousState = this.state;
 
@@ -164,8 +163,7 @@ export default class Army extends Phaser.GameObjects.Container {
                 this.movementComponent.setDirection(direction);
             }
             else if (this.state == 'Moving'){
-                //Orientarlo hacia la direccion de movimiento que me la da el MovementComponent
-                //this.#soldierOrientationAux(this.movementComponent.getDirectionX());
+                
             }
         }
     }
@@ -173,19 +171,19 @@ export default class Army extends Phaser.GameObjects.Container {
         if (this.canChange) {
             this.canChange = false;
             if (this.CheckObjective()) {
+                console.log("CheckObjective");
                 this.setState('InCombat');
                 this.ArmyOrder('Attacking');
             }
-            else if (this.movementComponent.getTargetPosition() != null) {
+            else if (this.movementComponent.getTargetPosition() != null) { // Comprobar si TargetPosition esta en direccion a la base y entonces ahi si, retroceder
+                console.log("Moving");
                 this.setState('Moving');
                 this.ArmyOrder('Moving');
             }
             else {
                 this.setState('Idle');
             }
-            setTimeout(() => {
-                this.canChange = true;
-            }, 1000);
+            this.canChange = true;
         }
     }
     preUpdate(t, dt) {
@@ -204,7 +202,7 @@ export default class Army extends Phaser.GameObjects.Container {
                 break;
 
             case 'Fleeing': // No puede recibir ordenes
-                // mirar si ha llegado a la base, si ha llegado pasa a estado 'notInCombat' y por tanto ya se puede mover
+                // mirar si ha llegado a la base, si ha llegado pasa a estado 'Idle' y por tanto ya se puede mover
                 break;
         }
     }
