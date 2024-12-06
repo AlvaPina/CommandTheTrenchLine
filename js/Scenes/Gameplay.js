@@ -18,7 +18,9 @@ export class Gameplay extends Phaser.Scene{
         const gameHeight = this.game.config.height;
 
         //Background Image
-        let background = this.add.image(gameWidth / 2, gameHeight / 2, 'gameplayBackground').setOrigin(0.5, 0.5);
+        let sky = this.add.image(gameWidth / 2, gameHeight / 2, 'sky').setOrigin(0.5, 0.5);
+        let ground = this.add.image(gameWidth / 2, gameHeight / 2, 'ground').setOrigin(0.5, 0.5);
+        let groundDecoration = this.add.image(gameWidth / 2, gameHeight / 2, 'groundDecoration').setOrigin(0.5, 0.5);
 
         // Crear un Army de Infanteria y otro enemigo y moverlos
         this.army = new InfanteryArmy(this, 100, true);
@@ -32,8 +34,8 @@ export class Gameplay extends Phaser.Scene{
 
         //Crear trincheras
         for (let i = 0; i < 2; i++) {
-            let startX = 110;
-            let xPosition = startX + i * 450;
+            let startX = 55;
+            let xPosition = startX + i * 600;
             let trench = new Trench(this, xPosition, 360);
             this.trenches.push(trench);
         }

@@ -48,8 +48,8 @@ export default class Army extends Phaser.GameObjects.Container {
         this.add([this.background, this.armyText, this.lifeRectagle]);
 
         // Definir los limites del area vertical para los soldados
-        const minY = 200;
-        const maxY = window.game.config.height - 20;
+        const minY = 250;
+        const maxY = window.game.config.height - 40;
 
         // Calcular el espacio total disponible
         const totalHeight = maxY - minY;
