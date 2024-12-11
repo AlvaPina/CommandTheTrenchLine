@@ -1,10 +1,10 @@
 export default class LifeComponent {
     constructor(initialHealth, army) {
-        this.health = initialHealth;  // Vida total del ejército
-        this.army = army;             // Referencia al ejército (lista de humanoides)
+        this.health = initialHealth;  // Vida total del ejercito
+        this.army = army;             // Referencia al ejercito (lista de humanoides)
     }
 
-    // Reducir la vida del ejército
+    // Reducir la vida del ejercito
     addHealth(amount) {
         this.health += amount;
 
@@ -14,18 +14,18 @@ export default class LifeComponent {
         }
     }
 
-    // Chequear si algún soldado debe "morir" cuando la vida baja, direction puede ser "TeamBase" o "EnemyBase"
+    // Chequear si algun soldado debe "morir" cuando la vida baja, direction puede ser "TeamBase" o "EnemyBase"
     checkSoldierLosses() {
         const soldiersToKill = Math.floor((1 - (this.health / 100)) * this.army.soldiers.length);
 
         // Eliminar soldados si la salud ha bajado lo suficiente
         while (this.army.soldiers.length > soldiersToKill && this.army.soldiers.length > 0) {
-            const soldier = this.army.soldiers.pop(); // Eliminar el último soldado de la lista
-            soldier.destroy(); // Destruir el objeto gráfico
+            const soldier = this.army.soldiers.pop(); // Eliminar el ultimo soldado de la lista
+            soldier.destroy(); // Destruir el objeto grafico
         }
     }
 
-    // Verificar si el ejército ha sido destruido
+    // Verificar si el ejercito ha sido destruido
     isDead() {
         return this.health <= 0;
     }

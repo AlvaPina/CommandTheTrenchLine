@@ -171,12 +171,12 @@ export default class Army extends Phaser.GameObjects.Container {
         if (this.canChange) {
             this.canChange = false;
             if (this.CheckObjective()) {
-                console.log("CheckObjective");
+                //console.log("CheckObjective");
                 this.setState('InCombat');
                 this.ArmyOrder('Attacking');
             }
             else if (this.movementComponent.getTargetPosition() != null) { // Comprobar si TargetPosition esta en direccion a la base y entonces ahi si, retroceder
-                console.log("Moving");
+                //console.log("Moving");
                 this.setState('Moving');
                 this.ArmyOrder('Moving');
             }
@@ -187,6 +187,7 @@ export default class Army extends Phaser.GameObjects.Container {
         }
     }
     preUpdate(t, dt) {
+        console.log(this.state);
         this.updateState()
         this.onEnterState();
         

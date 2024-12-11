@@ -4,7 +4,7 @@ export default class Trench extends Phaser.GameObjects.Sprite {
         this.scene = scene;
         this.scene.add.existing(this);
 
-        this.trench2 = this.scene.add.sprite(this.x, this.y + 150, 'trench2').setDepth(10000);
+        this.trench2 = this.scene.add.sprite(this.x, this.y + 165, 'trench2').setDepth(10000);
 
         this.scene.physics.add.existing(this, true); // "true" lo hace estatico
 
