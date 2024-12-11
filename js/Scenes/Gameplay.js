@@ -19,9 +19,9 @@ export class Gameplay extends Phaser.Scene {
         const gameHeight = this.game.config.height;
 
         // Crear capas de fondo para parallax
-        this.sky = this.add.tileSprite(0, 0, gameWidth, gameHeight, 'sky').setOrigin(0, 0);
-        this.ground = this.add.tileSprite(0, 0, gameWidth, gameHeight, 'ground').setOrigin(0, 0);
-        this.groundDecoration = this.add.tileSprite(0, 0, gameWidth, gameHeight, 'groundDecoration').setOrigin(0, 0);
+        this.sky = this.add.tileSprite(0, 0, gameWidth * 1.2, gameHeight, 'sky').setOrigin(0, 0);
+        this.ground = this.add.tileSprite(0, 0, gameWidth * 1.2, gameHeight, 'ground').setOrigin(0, 0);
+        this.groundDecoration = this.add.tileSprite(0, 0, gameWidth * 1.2, gameHeight, 'groundDecoration').setOrigin(0, 0);
 
         // Crear un Army de Infanteria y otro enemigo y moverlos
         this.army = new InfanteryArmy(this, 100, true);
@@ -57,60 +57,52 @@ export class Gameplay extends Phaser.Scene {
     update() {
         // Ajustar las posiciones de las capas de fondo para crear el efecto parallax infinito
         const cameraScrollX = this.cameras.main.scrollX;
+    
+        const offset = -20;
 
         // Las capas del parallax siguen a la camara
-        this.sky.x = cameraScrollX;
-        this.ground.x = cameraScrollX;
-        this.groundDecoration.x = cameraScrollX;
-
+        this.sky.x = cameraScrollX + offset;
+        this.ground.x = cameraScrollX + offset;
+        this.groundDecoration.x = cameraScrollX + offset;
+    
         // Movimiento del parallax
-        this.sky.tilePositionX = cameraScrollX * 0.2;
-        this.ground.tilePositionX = cameraScrollX * 1;
-        this.groundDecoration.tilePositionX = cameraScrollX * 1;
-
+        this.sky.tilePositionX = (cameraScrollX + offset) * 0.2;
+        this.ground.tilePositionX = (cameraScrollX + offset) * 1;
+        this.groundDecoration.tilePositionX = (cameraScrollX + offset) * 1;
+    
         // Obtener la posicion del cursor
         const pointer = this.input.activePointer;
         const screenWidth = this.game.config.width;
-
-        // Mover la camara hacia la izquierda si el cursor está en el extremo izquierdo
-        if (pointer.x <= screenWidth * 0.1 && pointer.x !== 0) {
+    
+        // Movimiento de la camara con el raton
+        if (pointer.x <= screenWidth * 0.1) {
             this.cameras.main.scrollX = Math.max(0, this.cameras.main.scrollX - this.cameraSpeed);
-        }
-        // Mover la camara hacia la derecha si el cursor está en el extremo derecho
-        else if (pointer.x >= screenWidth * 0.9 && pointer.x !== 0) {
+        } else if (pointer.x >= screenWidth * 0.9) {
             this.cameras.main.scrollX = Math.min(this.game.config.width * 3 - screenWidth, this.cameras.main.scrollX + this.cameraSpeed);
         }
-
         // Input para mover ejercitos
         if (this.cursors.right.isDown && this.canInteract) {
             this.canInteract = false;
             this.army.moveArmy(400); 
-
             setTimeout(() => {
                 this.canInteract = true;
             }, this.inputDelay);
-
         } else if (this.cursors.left.isDown && this.canInteract) {
             this.canInteract = false;
             this.army.moveArmy(-400);
-
             setTimeout(() => {
                 this.canInteract = true;
             }, this.inputDelay);
         }
-
         if (this.keys.enemyLeft.isDown && this.canInteract) {
             this.canInteract = false;
             this.enemyArmy.moveArmy(-400);
-
             setTimeout(() => {
                 this.canInteract = true;
             }, this.inputDelay);
-
         } else if (this.keys.enemyRight.isDown && this.canInteract) {
             this.canInteract = false;
             this.enemyArmy.moveArmy(400);
-
             setTimeout(() => {
                 this.canInteract = true;
             }, this.inputDelay);
