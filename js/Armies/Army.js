@@ -14,6 +14,7 @@ export default class Army extends Phaser.GameObjects.Container {
 
         this.soldiers = []; // Contiene los soldados del army
 
+        this.armyNumber = config.ArmyNumber;
         this.SoldierHealth = config.SoldierHealth;
         this.numberOfSoldiers = config.NumberOfSoldiers;
         this.ArmySpeed = config.ArmySpeed;
@@ -38,7 +39,7 @@ export default class Army extends Phaser.GameObjects.Container {
         // Crear la imagen de fondo, texto y barra
         this.background = this.scene.add.image(0, 0, this.ArmyAnimKey + 'Image').setOrigin(0.5, 0.5);
         this.background.setDisplaySize(100, 100);
-        this.armyText = this.scene.add.text(0, -30, '1', {
+        this.armyText = this.scene.add.text(0, -30, this.armyNumber, {
             fontSize: '32px',
             color: '#fff'
         }).setOrigin(0.5, 0.5);

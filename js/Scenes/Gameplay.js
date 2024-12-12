@@ -1,5 +1,7 @@
 import Trench from '../Structures/Trench.js';
 import InfanteryArmy from '../Armies/Types/InfanteryArmy.js';
+import Player from '../Players/Player.js';
+import AI from '../Players/AI.js';
 
 export class Gameplay extends Phaser.Scene {
     constructor() {
@@ -23,14 +25,20 @@ export class Gameplay extends Phaser.Scene {
         this.ground = this.add.tileSprite(0, 0, gameWidth * 1.2, gameHeight, 'ground').setOrigin(0, 0);
         this.groundDecoration = this.add.tileSprite(0, 0, gameWidth * 1.2, gameHeight, 'groundDecoration').setOrigin(0, 0);
 
-        // Crear un Army de Infanteria y otro enemigo y moverlos
-        this.army = new InfanteryArmy(this, 100, true);
-        this.army.moveArmy(400);
-        this.playerArmies.push(this.army);
+        // Crear 9 Army de Infanteria de player y enemigo y moverlos
+        for (let i = 0; i < 9; i++) {
+            let playerArmy = new InfanteryArmy(this, 100 + i * 50, i + 1, true);
+            playerArmy.moveArmy(400);
+            this.playerArmies.push(playerArmy);
 
-        this.enemyArmy = new InfanteryArmy(this, 600, false);
-        this.enemyArmy.moveArmy(-400);
-        this.enemyArmies.push(this.enemyArmy);
+            let enemyArmy = new InfanteryArmy(this, 600 + i * 50, i + 1, false);
+            enemyArmy.moveArmy(-400);
+            this.enemyArmies.push(enemyArmy);
+        }
+
+        // Player y AI
+        this.player = new Player(this, this.playerArmies);
+        this.ai = new AI(this, this.enemyArmies);
 
         // Crear trincheras
         for (let i = 0; i < 2; i++) {
@@ -80,33 +88,10 @@ export class Gameplay extends Phaser.Scene {
         } else if (pointer.x >= screenWidth * 0.9) {
             this.cameras.main.scrollX = Math.min(this.game.config.width * 3 - screenWidth, this.cameras.main.scrollX + this.cameraSpeed);
         }
-        // Input para mover ejercitos
-        if (this.cursors.right.isDown && this.canInteract) {
-            this.canInteract = false;
-            this.army.moveArmy(400); 
-            setTimeout(() => {
-                this.canInteract = true;
-            }, this.inputDelay);
-        } else if (this.cursors.left.isDown && this.canInteract) {
-            this.canInteract = false;
-            this.army.moveArmy(-400);
-            setTimeout(() => {
-                this.canInteract = true;
-            }, this.inputDelay);
-        }
-        if (this.keys.enemyLeft.isDown && this.canInteract) {
-            this.canInteract = false;
-            this.enemyArmy.moveArmy(-400);
-            setTimeout(() => {
-                this.canInteract = true;
-            }, this.inputDelay);
-        } else if (this.keys.enemyRight.isDown && this.canInteract) {
-            this.canInteract = false;
-            this.enemyArmy.moveArmy(400);
-            setTimeout(() => {
-                this.canInteract = true;
-            }, this.inputDelay);
-        }
+
+        // Actualizar jugador y IA
+        this.player.update();
+        this.ai.update();
     }
 
     getArmies(team) {
