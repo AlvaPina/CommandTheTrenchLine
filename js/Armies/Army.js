@@ -37,13 +37,20 @@ export default class Army extends Phaser.GameObjects.Container {
         this.movementComponent = new MovementComponent(this, this.ArmySpeed);
 
         // Crear la imagen de fondo, texto y barra
-        this.background = this.scene.add.image(0, 0, this.ArmyAnimKey + 'Image').setOrigin(0.5, 0.5);
-        this.background.setDisplaySize(100, 100);
-        this.armyText = this.scene.add.text(0, -30, this.armyNumber, {
+        console.log(this.ArmyAnimKey + 'Image');
+        if(config.ArmyTeam){
+            this.background = this.scene.add.image(0, 0, this.ArmyAnimKey + 'Green').setOrigin(0.5, 0.5);
+            this.lifeRectagle = this.scene.add.image(0, 0, 'barGreen').setOrigin(0.5, 0.5).setDisplaySize(80, 50);
+        }
+        else {
+            this.background = this.scene.add.image(0, 0, this.ArmyAnimKey + 'Grey').setOrigin(0.5, 0.5);
+            this.lifeRectagle = this.scene.add.image(0, 0, 'barGrey').setOrigin(0.5, 0.5).setDisplaySize(80, 50);
+        }
+        this.background.setDisplaySize(100, 50);
+        this.armyText = this.scene.add.text(20, -5, this.armyNumber, {
             fontSize: '32px',
             color: '#fff'
         }).setOrigin(0.5, 0.5);
-        this.lifeRectagle = this.scene.add.rectangle(0, 0, 100, 30, 0x00f000);
 
         // Agrupar la barra de vida, la imagen y el texto en el contenedor
         this.add([this.background, this.armyText, this.lifeRectagle]);

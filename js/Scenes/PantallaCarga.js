@@ -13,14 +13,25 @@ export class LoadScene extends Phaser.Scene
        this.load.image("trench", "Assets/Images/Map/Props/Trench.png");
        this.load.image("trench2", "Assets/Images/Map/Props/Trench2.png");
        this.load.image("fence", "Assets/Images/Map/Props/Fence.png");
+       this.load.image("clouds", "Assets/Images/Map/Props/nube.png");
+       this.load.image("trees", "Assets/Images/Map/Props/arboles.png");
+
+       this.load.image("infanterySoldierGreen", "Assets/Images/Gui/InfanteryIconGreen.png");
+       this.load.image("medicSoldierGreen", "Assets/Images/Gui/MedicIconGreen.png");
+       this.load.image("infanterySoldierGrey", "Assets/Images/Gui/InfanteryIconGrey.png");
+       this.load.image("medicSoldierGrey", "Assets/Images/Gui/MedicIconGreen.png");
+
+       this.load.image("barGreen", "Assets/Images/Gui/GreenBarra.png");
+       this.load.image("barGrey", "Assets/Images/Gui/GreyBarra.png");
+
 
        //SPRITESHEETS
-       this.load.spritesheet('infanterySoldierSheetMoving', 'Assets/Images/SpriteSheets/Run.png', { frameWidth: 256, frameHeight: 256 });
-       this.load.spritesheet('infanterySoldierSheetIdle', 'Assets/Images/SpriteSheets/Idle.png', { frameWidth: 256, frameHeight: 256 });
-       this.load.spritesheet('infanterySoldierAttacking', 'Assets/Images/SpriteSheets/Shoot.png', { frameWidth: 256, frameHeight: 256 });
-       this.load.spritesheet('infanterySoldierAttackingCrouch', 'Assets/Images/SpriteSheets/ShootCrouch.png', { frameWidth: 256, frameHeight: 256 });
-       this.load.spritesheet('infanterySoldierSheetDeadCrouch', 'Assets/Images/SpriteSheets/DeadCrouch.png', { frameWidth: 256, frameHeight: 256 });
-       this.load.spritesheet('infanterySoldierSheetDead', 'Assets/Images/SpriteSheets/Dead.png', { frameWidth: 256, frameHeight: 256 });
+       this.load.spritesheet('infanterySoldierSheetMoving', 'Assets/Images/SpriteSheets/Green/Run.png', { frameWidth: 256, frameHeight: 256 });
+       this.load.spritesheet('infanterySoldierSheetIdle', 'Assets/Images/SpriteSheets/Green/Idle.png', { frameWidth: 256, frameHeight: 256 });
+       this.load.spritesheet('infanterySoldierAttacking', 'Assets/Images/SpriteSheets/Green/Shoot.png', { frameWidth: 256, frameHeight: 256 });
+       this.load.spritesheet('infanterySoldierAttackingCrouch', 'Assets/Images/SpriteSheets/Green/ShootCrouch.png', { frameWidth: 256, frameHeight: 256 });
+       this.load.spritesheet('infanterySoldierSheetDeadCrouch', 'Assets/Images/SpriteSheets/Green/DeadCrouch.png', { frameWidth: 256, frameHeight: 256 });
+       this.load.spritesheet('infanterySoldierSheetDead', 'Assets/Images/SpriteSheets/Green/Dead.png', { frameWidth: 256, frameHeight: 256 });
 
        //AUDIOS
        this.load.audio('backgroundMusic', 'Assets/Audio/SendThemAllToTheTrench.mp3');
