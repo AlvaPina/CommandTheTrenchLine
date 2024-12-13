@@ -6,7 +6,7 @@ export default class LifeComponent {
 
     // Reducir la vida del ejercito
     addHealth(amount) {
-        this.health += amount;
+        this.health = Math.max(0, this.health + amount);
 
         // Si la vida baja por debajo de un umbral, eliminar soldados del ejército
         if(amount < 0){
@@ -16,14 +16,19 @@ export default class LifeComponent {
 
     // Chequear si algun soldado debe "morir" cuando la vida baja, direction puede ser "TeamBase" o "EnemyBase"
     checkSoldierLosses() {
-        const soldiersToKill = Math.floor((1 - (this.health / 100)) * this.army.soldiers.length);
+        //console.log("length: " +this.army.soldiers.length);
 
-        // Eliminar soldados si la salud ha bajado lo suficiente
-        while (this.army.soldiers.length > soldiersToKill && this.army.soldiers.length > 0) {
+        const healthPerSoldier = this.army.SoldierHealth;
+        const currentSoldiers = this.army.soldiers.length;
+        const expectedSoldiers = Math.floor(this.army.lifeComponent.health / healthPerSoldier);
+
+        if (currentSoldiers > expectedSoldiers) {
             const soldier = this.army.soldiers.pop(); // Eliminar el ultimo soldado de la lista
-            soldier.destroy(); // Destruir el objeto grafico
+            soldier.die();
+            if(this.isDead()) this.army.armyDestroy();
         }
     }
+
 
     // Verificar si el ejercito ha sido destruido
     isDead() {

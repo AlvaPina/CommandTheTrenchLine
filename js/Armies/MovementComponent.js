@@ -23,7 +23,7 @@ export default class MovementComponent {
         // Si estamos lo suficientemente cerca del objetivo, detener el movimiento
         if (this.distance < 1) {
             this.targetPosition = null;
-            console.log('Destino alcanzado');
+            //console.log('Destino alcanzado');
             // Decir a la army que se pare (evento de parate)
             return;
         }
@@ -66,5 +66,12 @@ export default class MovementComponent {
 
     getTargetPosition(){
         return this.targetPosition;
+    }
+
+    stopMovement() {
+        this.targetPosition = null;
+        this.directionX = 0;
+        this.directionY = 0;
+        console.log('Movimiento detenido');
     }
 }

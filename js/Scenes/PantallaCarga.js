@@ -26,12 +26,19 @@ export class LoadScene extends Phaser.Scene
 
 
        //SPRITESHEETS
-       this.load.spritesheet('infanterySoldierSheetMoving', 'Assets/Images/SpriteSheets/Green/Run.png', { frameWidth: 256, frameHeight: 256 });
-       this.load.spritesheet('infanterySoldierSheetIdle', 'Assets/Images/SpriteSheets/Green/Idle.png', { frameWidth: 256, frameHeight: 256 });
-       this.load.spritesheet('infanterySoldierAttacking', 'Assets/Images/SpriteSheets/Green/Shoot.png', { frameWidth: 256, frameHeight: 256 });
-       this.load.spritesheet('infanterySoldierAttackingCrouch', 'Assets/Images/SpriteSheets/Green/ShootCrouch.png', { frameWidth: 256, frameHeight: 256 });
-       this.load.spritesheet('infanterySoldierSheetDeadCrouch', 'Assets/Images/SpriteSheets/Green/DeadCrouch.png', { frameWidth: 256, frameHeight: 256 });
-       this.load.spritesheet('infanterySoldierSheetDead', 'Assets/Images/SpriteSheets/Green/Dead.png', { frameWidth: 256, frameHeight: 256 });
+       this.load.spritesheet('infanterySoldierGreenSheetMoving', 'Assets/Images/SpriteSheets/Green/Run.png', { frameWidth: 256, frameHeight: 256 });
+       this.load.spritesheet('infanterySoldierGreenSheetIdle', 'Assets/Images/SpriteSheets/Green/Idle.png', { frameWidth: 256, frameHeight: 256 });
+       this.load.spritesheet('infanterySoldierGreenAttacking', 'Assets/Images/SpriteSheets/Green/Shoot.png', { frameWidth: 256, frameHeight: 256 });
+       this.load.spritesheet('infanterySoldierGreenAttackingCrouch', 'Assets/Images/SpriteSheets/Green/ShootCrouch.png', { frameWidth: 256, frameHeight: 256 });
+       this.load.spritesheet('infanterySoldierGreenSheetDyingCrouch', 'Assets/Images/SpriteSheets/Green/DeadCrouch.png', { frameWidth: 256, frameHeight: 256 });
+       this.load.spritesheet('infanterySoldierGreenSheetDying', 'Assets/Images/SpriteSheets/Green/Dead.png', { frameWidth: 256, frameHeight: 256 });
+
+       this.load.spritesheet('infanterySoldierGreySheetMoving', 'Assets/Images/SpriteSheets/Grey/Run.png', { frameWidth: 256, frameHeight: 256 });
+       this.load.spritesheet('infanterySoldierGreySheetIdle', 'Assets/Images/SpriteSheets/Grey/Idle.png', { frameWidth: 256, frameHeight: 256 });
+       this.load.spritesheet('infanterySoldierGreyAttacking', 'Assets/Images/SpriteSheets/Grey/Shoot.png', { frameWidth: 256, frameHeight: 256 });
+       this.load.spritesheet('infanterySoldierGreyAttackingCrouch', 'Assets/Images/SpriteSheets/Grey/ShootCrouch.png', { frameWidth: 256, frameHeight: 256 });
+       this.load.spritesheet('infanterySoldierGreySheetDyingCrouch', 'Assets/Images/SpriteSheets/Grey/DeadCrouch.png', { frameWidth: 256, frameHeight: 256 });
+       this.load.spritesheet('infanterySoldierGreySheetDying', 'Assets/Images/SpriteSheets/Grey/Dead.png', { frameWidth: 256, frameHeight: 256 });
 
        //AUDIOS
        this.load.audio('backgroundMusic', 'Assets/Audio/SendThemAllToTheTrench.mp3');
@@ -61,70 +68,104 @@ export class LoadScene extends Phaser.Scene
         })
     }
     create() {
-        //ANIMS
+        //ANIMS GREEN
         this.anims.create({
-            key: 'infanterySoldierMoving',
-            frames: this.anims.generateFrameNumbers('infanterySoldierSheetMoving', { start: 0, end: 5 }),
+            key: 'infanterySoldierGreenMoving',
+            frames: this.anims.generateFrameNumbers('infanterySoldierGreenSheetMoving', { start: 0, end: 5 }),
             frameRate: 13,
             repeat: -1
         });
 
         this.anims.create({
-            key: 'infanterySoldierIdle',
-            frames: this.anims.generateFrameNumbers('infanterySoldierSheetIdle', { start: 0, end: 9 }),
+            key: 'infanterySoldierGreenIdle',
+            frames: this.anims.generateFrameNumbers('infanterySoldierGreenSheetIdle', { start: 0, end: 9 }),
             frameRate: 8,
             repeat: -1
         });
 
         this.anims.create({
-            key: 'infanterySoldierAttacking',
-            frames: this.anims.generateFrameNumbers('infanterySoldierAttacking', { start: 0, end: 5 }),
+            key: 'infanterySoldierGreenAttacking',
+            frames: this.anims.generateFrameNumbers('infanterySoldierGreenAttacking', { start: 0, end: 5 }),
             frameRate: 13,
             repeat: -1
         });
 
         this.anims.create({
-            key: 'infanterySoldierAttackingCrouch',
-            frames: this.anims.generateFrameNumbers('infanterySoldierAttackingCrouch', { start: 0, end: 5 }),
+            key: 'infanterySoldierGreenAttackingCrouch',
+            frames: this.anims.generateFrameNumbers('infanterySoldierGreenAttackingCrouch', { start: 0, end: 5 }),
             frameRate: 13,
             repeat: -1
         });
 
         this.anims.create({
-            key: 'infanterySoldierReload',
-            frames: this.anims.generateFrameNumbers('infanterySoldierSheetMoving', { start: 0, end: 9 }),
+            key: 'infanterySoldierGreenIdleCrouch',
+            frames: this.anims.generateFrameNumbers('infanterySoldierGreenSheetMoving', { start: 0, end: 9 }),
             frameRate: 13,
             repeat: -1
         });
 
         this.anims.create({
-            key: 'infanterySoldierReloadCrouch',
-            frames: this.anims.generateFrameNumbers('infanterySoldierSheetMoving', { start: 0, end: 9 }),
-            frameRate: 13,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'infanterySoldierIdleCrouch',
-            frames: this.anims.generateFrameNumbers('infanterySoldierSheetMoving', { start: 0, end: 9 }),
-            frameRate: 13,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'infanterySoldierDead',
-            frames: this.anims.generateFrameNumbers('infanterySoldierSheetDead', { start: 0, end: 19 }),
-            frameRate: 6,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'infanterySoldierDeadCrouch',
-            frames: this.anims.generateFrameNumbers('infanterySoldierSheetDeadCrouch', { start: 0, end: 9 }),
+            key: 'infanterySoldierGreenDying',
+            frames: this.anims.generateFrameNumbers('infanterySoldierGreenSheetDying', { start: 0, end: 19 }),
             frameRate: 6,
             repeat: 0
         });
 
+        this.anims.create({
+            key: 'infanterySoldierGreenDyingCrouch',
+            frames: this.anims.generateFrameNumbers('infanterySoldierGreenSheetDyingCrouch', { start: 0, end: 9 }),
+            frameRate: 6,
+            repeat: 0
+        });
 
+        //ANIMS GREY
+        this.anims.create({
+            key: 'infanterySoldierGreyMoving',
+            frames: this.anims.generateFrameNumbers('infanterySoldierGreySheetMoving', { start: 0, end: 5 }),
+            frameRate: 13,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'infanterySoldierGreyIdle',
+            frames: this.anims.generateFrameNumbers('infanterySoldierGreySheetIdle', { start: 0, end: 9 }),
+            frameRate: 8,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'infanterySoldierGreyAttacking',
+            frames: this.anims.generateFrameNumbers('infanterySoldierGreyAttacking', { start: 0, end: 5 }),
+            frameRate: 13,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'infanterySoldierGreyAttackingCrouch',
+            frames: this.anims.generateFrameNumbers('infanterySoldierGreyAttackingCrouch', { start: 0, end: 5 }),
+            frameRate: 13,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'infanterySoldierGreyIdleCrouch',
+            frames: this.anims.generateFrameNumbers('infanterySoldierGreySheetMoving', { start: 0, end: 9 }),
+            frameRate: 13,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'infanterySoldierGreyDying',
+            frames: this.anims.generateFrameNumbers('infanterySoldierGreySheetDying', { start: 0, end: 19 }),
+            frameRate: 6,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'infanterySoldierGreyDyingCrouch',
+            frames: this.anims.generateFrameNumbers('infanterySoldierGreySheetDyingCrouch', { start: 0, end: 9 }),
+            frameRate: 6,
+            repeat: 0
+        });
     }
 }

@@ -37,8 +37,7 @@ export default class Army extends Phaser.GameObjects.Container {
         this.movementComponent = new MovementComponent(this, this.ArmySpeed);
 
         // Crear la imagen de fondo, texto y barra
-        console.log(this.ArmyAnimKey + 'Image');
-        if(config.ArmyTeam){
+        if (config.ArmyTeam) {
             this.background = this.scene.add.image(0, 0, this.ArmyAnimKey + 'Green').setOrigin(0.5, 0.5);
             this.lifeRectagle = this.scene.add.image(0, 0, 'barGreen').setOrigin(0.5, 0.5).setDisplaySize(80, 50);
         }
@@ -131,9 +130,11 @@ export default class Army extends Phaser.GameObjects.Container {
             if (Math.abs(army.x - this.x) <= 200) {
                 if (this.movementComponent.getDirectionX() > 0 && army.x - this.x > 0) {
                     objetivo = true;
+                    army.addHealth(-1);
                 }
                 else if (this.movementComponent.getDirectionX() < 0 && army.x - this.x < 0) {
                     objetivo = true;
+                    army.addHealth(-1);
                 }
             }
         });
@@ -145,9 +146,16 @@ export default class Army extends Phaser.GameObjects.Container {
 
     }
 
-    // Modificar vida del ejercito, puede restar quitar vida tambien
+    // Modificar vida del ejercito
     addHealth(amount) {
         this.lifeComponent.addHealth(amount);
+        this.updateHealthBar();
+    }
+
+    // Actualiza la escala de la barra de vida en el eje Y
+    updateHealthBar() {
+        const healthRatio = this.lifeComponent.health / this.lifeComponent.maxHealth;
+        this.lifeRectagle.setScale(1, healthRatio);
     }
 
     getConfig() {
@@ -156,6 +164,11 @@ export default class Army extends Phaser.GameObjects.Container {
             animKey: this.ArmyAnimKey,
             team: this.Team,
         };
+    }
+
+    armyDestroy() {
+        console.log("DestroyArmyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+        this.destroy();
     }
 
     getArmyState() {
@@ -170,12 +183,12 @@ export default class Army extends Phaser.GameObjects.Container {
                 const direction = this.team ? 1 : -1;
                 this.movementComponent.setDirection(direction);
             }
-            else if (this.state == 'Moving'){
-                
+            else if (this.state == 'Moving') {
+
             }
         }
     }
-    updateState(){
+    updateState() {
         if (this.canChange) {
             this.canChange = false;
             if (this.CheckObjective()) {
@@ -195,10 +208,11 @@ export default class Army extends Phaser.GameObjects.Container {
         }
     }
     preUpdate(t, dt) {
-        console.log(this.state);
+        //console.log(this.state);
+        //console.log(this.soldiers.length);
         this.updateState()
         this.onEnterState();
-        
+
         switch (this.state) {
             case 'InCombat': // Solo puede recibir la orden de retirarse y de moverse para atras
                 break;

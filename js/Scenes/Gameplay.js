@@ -33,7 +33,7 @@ export class Gameplay extends Phaser.Scene {
             playerArmy.moveArmy(400);
             this.playerArmies.push(playerArmy);
 
-            let enemyArmy = new InfanteryArmy(this, 600 + i * 50, i + 1, false);
+            let enemyArmy = new InfanteryArmy(this, 1000 + i * 50, i + 1, false);
             enemyArmy.moveArmy(-400);
             this.enemyArmies.push(enemyArmy);
         }

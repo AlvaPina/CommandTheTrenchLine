@@ -10,9 +10,9 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
 
         const config = this.army.getConfig();
         this.speed = config.speed;
-        this.animKey = config.animKey;
         this.team = config.team;
-
+        if(config.team) this.animKey = config.animKey + 'Green';
+        else this.animKey = config.animKey + 'Grey';
         this.state = 'Moving';
         this.previousState = 'Idle';
 
@@ -45,6 +45,12 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         this.movementComponent.moveTo(targetX, targetY);
         this.#movingOrientation()
         this.setOrder('Moving');
+    }
+
+    die() {
+        this.setState('Dying');
+        this.play(this.animKey + this.state);
+        // eliminarlos después de un tiempo...
     }
     
     // direction puede ser "1" o "-1" y no tiene en cuenta el team
@@ -107,7 +113,7 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
             case 'Attacking':
                 this.#attack();
                 break;
-            case 'dying':
+            case 'Dying':
                 break;
             case 'ClimbingUp':
                 break;
