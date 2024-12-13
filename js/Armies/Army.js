@@ -40,11 +40,11 @@ export default class Army extends Phaser.GameObjects.Container {
         // Crear la imagen de fondo, texto y barra
         if (config.ArmyTeam) {
             this.background = this.scene.add.image(0, 0, this.ArmyAnimKey + 'Green').setOrigin(0.5, 0.5);
-            this.lifeRectagle = this.scene.add.image(0, 0, 'barGreen').setOrigin(0.5, 0.5).setDisplaySize(80, 50);
+            this.lifeRectagle = this.scene.add.image(0, 0, 'barGreen').setOrigin(0.5, 0.5).setDisplaySize(100, 50);
         }
         else {
             this.background = this.scene.add.image(0, 0, this.ArmyAnimKey + 'Grey').setOrigin(0.5, 0.5);
-            this.lifeRectagle = this.scene.add.image(0, 0, 'barGrey').setOrigin(0.5, 0.5).setDisplaySize(80, 50);
+            this.lifeRectagle = this.scene.add.image(0, 0, 'barGrey').setOrigin(0.5, 0.5).setDisplaySize(100, 50);
         }
         this.background.setDisplaySize(100, 50);
         this.armyText = this.scene.add.text(20, -5, this.armyNumber, {
@@ -151,9 +151,12 @@ export default class Army extends Phaser.GameObjects.Container {
 
     // Actualiza la escala de la barra de vida en el eje Y
     updateHealthBar() {
-        const healthRatio = this.lifeComponent.health / this.lifeComponent.maxHealth;
-        this.lifeRectagle.setScale(1, healthRatio);
+        const healthRatio = this.lifeComponent.getRatio();
+        console.log("healthRatio", healthRatio);
+        
+        this.lifeRectagle.setDisplaySize(80 * healthRatio, 50);
     }
+    
 
     getConfig() {
         return {

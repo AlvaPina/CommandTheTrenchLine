@@ -1,5 +1,6 @@
 export default class LifeComponent {
     constructor(initialHealth, army) {
+        this.initialHealth = initialHealth;
         this.health = initialHealth;  // Vida total del ejercito
         this.army = army;             // Referencia al ejercito (lista de humanoides)
     }
@@ -35,5 +36,11 @@ export default class LifeComponent {
     // Verificar si el ejercito ha sido destruido
     isDead() {
         return this.health <= 0;
+    }
+
+    // devuelve el ratio para representar la barra de vida
+    getRatio(){
+        const healthRatio = this.health / this.initialHealth;
+        return healthRatio;
     }
 }
