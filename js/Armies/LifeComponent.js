@@ -6,9 +6,11 @@ export default class LifeComponent {
 
     // Reducir la vida del ejercito
     addHealth(amount) {
-        this.health = Math.max(0, this.health + amount);
-
-        // Si la vida baja por debajo de un umbral, eliminar soldados del ejército
+        this.health += amount;
+        if (this.health < 0) {
+            this.health = 0;
+        }
+        // Si la vida baja, mirar si hay que eliminar soldados del ejercito
         if(amount < 0){
             this.checkSoldierLosses();
         }
@@ -22,9 +24,9 @@ export default class LifeComponent {
         const currentSoldiers = this.army.soldiers.length;
         const expectedSoldiers = Math.floor(this.army.lifeComponent.health / healthPerSoldier);
 
-        if (currentSoldiers > expectedSoldiers) {
+        if (currentSoldiers + 1 > expectedSoldiers) {
             const soldier = this.army.soldiers.pop(); // Eliminar el ultimo soldado de la lista
-            soldier.die();
+            if(soldier) soldier.die();
             if(this.isDead()) this.army.armyDestroy();
         }
     }

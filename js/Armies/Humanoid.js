@@ -38,10 +38,12 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
 
     setOrder(newState) { // añadir un delay y una cola de ordenes, este es el unico metodo que puede usar army, el resto deberian ser privados
         //console.log("NEW STATE:" + newState);
+        if(this.state == 'Dying') return;
         this.setState(newState); //recuerdo, hacer esto con la cola de ordenes
     }
 
     moveTo(targetX, targetY) {
+        if(this.state == 'Dying') return;
         this.movementComponent.moveTo(targetX, targetY);
         this.#movingOrientation()
         this.setOrder('Moving');
@@ -106,12 +108,15 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         super.preUpdate(time, delta);
         switch (this.state) {
             case 'Idle':
+                this.#onEnterState();
                 break;
             case 'Moving':
                 this.#movement();
+                this.#onEnterState();
                 break;
             case 'Attacking':
                 this.#attack();
+                this.#onEnterState();
                 break;
             case 'Dying':
                 break;
@@ -120,6 +125,5 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
             case 'ClimbingDown':
                 break;
         }
-        this.#onEnterState();
     }
 }

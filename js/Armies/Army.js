@@ -32,6 +32,7 @@ export default class Army extends Phaser.GameObjects.Container {
         //Vida
         let ArmyHealth = this.SoldierHealth * this.numberOfSoldiers;
         this.lifeComponent = new LifeComponent(ArmyHealth, this);
+        this.isDestroyed = false;
 
         //Movimiento
         this.movementComponent = new MovementComponent(this, this.ArmySpeed);
@@ -127,12 +128,8 @@ export default class Army extends Phaser.GameObjects.Container {
     CheckObjective() {
         let objetivo = false;
         this.scene.getArmies(this.Team).forEach((army) => {
-            if (Math.abs(army.x - this.x) <= 200) {
-                if (this.movementComponent.getDirectionX() > 0 && army.x - this.x > 0) {
-                    objetivo = true;
-                    army.addHealth(-1);
-                }
-                else if (this.movementComponent.getDirectionX() < 0 && army.x - this.x < 0) {
+            if (Math.abs(army.x - this.x) <= 200 && !army.isDestroyed) {
+                if (this.movementComponent.getDirectionX() > 0 && army.x - this.x > 0 || this.movementComponent.getDirectionX() < 0 && army.x - this.x < 0) {
                     objetivo = true;
                     army.addHealth(-1);
                 }
@@ -167,7 +164,8 @@ export default class Army extends Phaser.GameObjects.Container {
     }
 
     armyDestroy() {
-        console.log("DestroyArmyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+        console.log("DestroyArmy") + this.Team;
+        this.isDestroyed = true;
         this.destroy();
     }
 
@@ -208,6 +206,7 @@ export default class Army extends Phaser.GameObjects.Container {
         }
     }
     preUpdate(t, dt) {
+        if(this.isDestroyed) return;
         //console.log(this.state);
         //console.log(this.soldiers.length);
         this.updateState()

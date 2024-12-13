@@ -1,7 +1,6 @@
 export default class Player {
-    constructor(scene, armies) {
+    constructor(scene) {
         this.scene = scene;
-        this.armies = armies;
         this.cursors = this.scene.input.keyboard.createCursorKeys();
 
         this.numberKeys = this.scene.input.keyboard.addKeys({
@@ -28,21 +27,25 @@ export default class Player {
         this.scene.input.keyboard.on('keydown', (event) => {
             if (event.keyCode >= Phaser.Input.Keyboard.KeyCodes.ONE && event.keyCode <= Phaser.Input.Keyboard.KeyCodes.NINE) {
                 this.selectedNumber = parseInt(event.key);
-                console.log(`Numero de ejercito seleccionado: ${this.selectedNumber}`);
             }
         });
     }
 
     update() {
         if (this.canInteract) {
-            if (this.cursors.right.isDown) {
-                this.canInteract = false;
-                this.armies[this.selectedNumber - 1].moveArmy(400);
-                setTimeout(() => this.canInteract = true, this.inputDelay);
-            } else if (this.cursors.left.isDown) {
-                this.canInteract = false;
-                this.armies[this.selectedNumber - 1].moveArmy(-400);
-                setTimeout(() => this.canInteract = true, this.inputDelay);
+            this.armies = this.scene.getArmies(false);
+            const selectedArmy = this.armies[this.selectedNumber - 1];
+    
+            if (selectedArmy) { //Comprobamos si existe un ejercito en esa posicion
+                if (this.cursors.right.isDown) {
+                    this.canInteract = false;
+                    this.armies[this.selectedNumber - 1].moveArmy(400);
+                    setTimeout(() => this.canInteract = true, this.inputDelay);
+                } else if (this.cursors.left.isDown) {
+                    this.canInteract = false;
+                    this.armies[this.selectedNumber - 1].moveArmy(-400);
+                    setTimeout(() => this.canInteract = true, this.inputDelay);
+                }
             }
         }
     }

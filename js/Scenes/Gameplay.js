@@ -13,6 +13,9 @@ export class Gameplay extends Phaser.Scene {
     }
 
     create() {
+        //Config
+        this.numberOfArmies = 2;
+
         this.playerArmies = [];
         this.enemyArmies = [];
         this.trenches = [];
@@ -28,19 +31,19 @@ export class Gameplay extends Phaser.Scene {
         this.groundDecoration = this.add.tileSprite(0, 0, gameWidth * 1.2, gameHeight, 'groundDecoration').setOrigin(0, 0);
 
         // Crear 9 Army de Infanteria de player y enemigo y moverlos
-        for (let i = 0; i < 9; i++) {
+        for (let i = 0; i < this.numberOfArmies; i++) {
             let playerArmy = new InfanteryArmy(this, 100 + i * 50, i + 1, true);
             playerArmy.moveArmy(400);
             this.playerArmies.push(playerArmy);
 
-            let enemyArmy = new InfanteryArmy(this, 1000 + i * 50, i + 1, false);
+            let enemyArmy = new InfanteryArmy(this, 500 + i * 50, i + 1, false);
             enemyArmy.moveArmy(-400);
             this.enemyArmies.push(enemyArmy);
         }
 
         // Player y AI
-        this.player = new Player(this, this.playerArmies);
-        this.ai = new AI(this, this.enemyArmies);
+        this.player = new Player(this);
+        this.ai = new AI(this);
 
         // Crear trincheras
         for (let i = 0; i < 2; i++) {
