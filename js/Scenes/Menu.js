@@ -9,7 +9,7 @@ export class MenuInicial extends Phaser.Scene{
     create() {
 
     // Musica
-    const backgroundMusic = this.sound.add('backgroundMusic');
+    const backgroundMusic = this.sound.add('menuBackgroundMusic');
     backgroundMusic.play({ loop: true });
     }
 }

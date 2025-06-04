@@ -12,19 +12,19 @@ export class VideoScene extends Phaser.Scene {
         const centerX = this.cameras.main.centerX;
         const centerY = this.cameras.main.centerY;
 
-        // Crear el texto usando la fuente personalizada
-        let playText = this.add.text(centerX, centerY - 100, 'Play', {
+        // Crear el boton de "Play"
+        let playButton = this.add.text(centerX, centerY - 10, 'Play', {
             fontFamily: 'MyFont',
             fontSize: '40px',
             color: '#ffffff'
         }).setOrigin(0.5);
 
         // Crear el boton de "Play"
-        let playButton = this.add.image(centerX, centerY, 'playButton').setInteractive();
-        playButton.setScale(0.5);
+        playButton.setInteractive();
+        playButton.setScale(1.5);
 
         // Musica
-        const backgroundMusic = this.sound.add('backgroundMusic');
+        const backgroundMusic = this.sound.add('trailerBackgroundMusic');
 
         // Cuando se haga clic en el boton de "Play"
         playButton.on('pointerdown', () => {
@@ -33,7 +33,6 @@ export class VideoScene extends Phaser.Scene {
 
             // Ocultar el boton de "Play" y el texto
             playButton.setVisible(false);
-            playText.setVisible(false);
 
             // Mostrar y reproducir el video
             let introVideo = this.add.video(centerX, centerY, 'intro');
@@ -41,20 +40,25 @@ export class VideoScene extends Phaser.Scene {
             introVideo.setScale(0.93);
 
             // Crear el boton de "Skip"
-            let skipButton = this.add.image(centerX + 300, centerY + 200, 'skipButton').setInteractive();
-            skipButton.setScale(0.5);
+            let skipButton = this.add.text(centerX + 400, centerY + 200, 'Skip', {
+                fontFamily: 'MyFont',
+                fontSize: '40px',
+                color: '#ffffff'
+            }).setOrigin(0.5);
+            skipButton.setInteractive();
 
             // Saltar a la siguiente escena al hacer clic en "Skip"
             skipButton.on('pointerdown', () => {
                 introVideo.stop();
                 backgroundMusic.stop();
-                this.scene.start('Gameplay');
+                this.scene.start('MenuInicial');
             });
 
             // Si el video termina, siguiente escena
             introVideo.on('complete', () => {
+                introVideo.stop();
                 backgroundMusic.stop();
-                this.scene.start('Gameplay');
+                this.scene.start('MenuInicial');
             });
         });
     }

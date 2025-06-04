@@ -41,7 +41,8 @@ export class LoadScene extends Phaser.Scene
        this.load.spritesheet('infanterySoldierGreySheetDying', 'Assets/Images/SpriteSheets/Grey/Dead.png', { frameWidth: 256, frameHeight: 256 });
 
        //AUDIOS
-       this.load.audio('backgroundMusic', 'Assets/Audio/SendThemAllToTheTrench.mp3');
+       this.load.audio('trailerBackgroundMusic', 'Assets/Audio/SendThemAllToTheTrench.mp3');
+       this.load.audio('menuBackgroundMusic', 'Assets/Audio/EchoesOfTheTrenches.mp3');
        this.load.audio('gunRifleShoot', 'Assets/Audio/Effects/GunRifleShoot.mp3');
 
        //VIDEOS
@@ -64,7 +65,7 @@ export class LoadScene extends Phaser.Scene
        })
 
        this.load.on("complete", ()=>{
-            this.scene.start('Gameplay');
+            this.scene.start('VideoScene');
         })
     }
     create() {
