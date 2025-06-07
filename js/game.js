@@ -1,7 +1,7 @@
 import { MenuInicial } from "./Scenes/Menu.js";
 import { LoadScene } from "./Scenes/PantallaCarga.js";
 import { VideoScene } from "./Scenes/VideoScene.js";
-import { MapScene } from "./Scenes/MapScene.js";
+import { SelectTroopsScene } from "./Scenes/SelectTroopsScene.js";
 import { Gameplay } from "./Scenes/Gameplay.js";
 import { TestScene } from "./Scenes/TestScene.js";
 
@@ -10,7 +10,7 @@ const config = {
     parent: 'game-placeholder',
     width: 960,
     height: 540,
-    scene: [LoadScene, VideoScene, MenuInicial, MapScene, Gameplay , TestScene],
+    scene: [LoadScene, VideoScene, MenuInicial, SelectTroopsScene, Gameplay , TestScene],
     physics: {
         default: 'arcade',
         arcade: {

@@ -52,6 +52,12 @@ export class LoadScene extends Phaser.Scene
         asBlob: false, // mirar si poner un video como un blob arregla los problemas de compatibilidad con firefox
         noAudio: true
         });
+        this.load.video({
+        key: 'VideoMenu',
+        url: ['Assets/Videos/VideoMenu.mp4'],
+        asBlob: false, // mirar si poner un video como un blob arregla los problemas de compatibilidad con firefox
+        noAudio: true
+        });
 
        let loadingBar = this.add.graphics({
         fillStyle:{

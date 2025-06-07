@@ -18,8 +18,6 @@ export class VideoScene extends Phaser.Scene {
             fontSize: '40px',
             color: '#ffffff'
         }).setOrigin(0.5);
-
-        // Crear el boton de "Play"
         playButton.setInteractive();
         playButton.setScale(1.5);
 
