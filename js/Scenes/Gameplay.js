@@ -6,6 +6,12 @@ import AI from '../Players/AI.js';
 export class Gameplay extends Phaser.Scene {
     constructor() {
         super({ key: 'Gameplay' });
+        this.equippedTroops = [];
+    }
+
+    init(data) {
+        // Cargamos la data previa
+        this.equippedTroops = data.equippedTroops || ["InfanterySoldierButton"];
     }
 
     preload() {
@@ -13,9 +19,6 @@ export class Gameplay extends Phaser.Scene {
     }
 
     create() {
-        //Config
-        this.numberOfArmies = 2;
-
         this.playerArmies = [];
         this.enemyArmies = [];
         this.trenches = [];
@@ -30,12 +33,16 @@ export class Gameplay extends Phaser.Scene {
         this.ground = this.add.tileSprite(0, 0, gameWidth * 1.2, gameHeight, 'ground').setOrigin(0, 0);
         this.groundDecoration = this.add.tileSprite(0, 0, gameWidth * 1.2, gameHeight, 'groundDecoration').setOrigin(0, 0);
 
-        // Crear 9 Army de Infanteria de player y enemigo y moverlos
-        for (let i = 0; i < this.numberOfArmies; i++) {
+        // Crear Army de player y moverlos
+        for (let i = 0; i < this.equippedTroops.length; i++) {
             let playerArmy = new InfanteryArmy(this, 100 + i * 50, i + 1, true);
             playerArmy.moveArmy(400);
             this.playerArmies.push(playerArmy);
+        }
 
+        this.numberOfEnemyArmies = 2;
+        // Crear Army de enemigo y moverlos
+        for (let i = 0; i < this.numberOfEnemyArmies; i++) {
             let enemyArmy = new InfanteryArmy(this, 500 + i * 50, i + 1, false);
             enemyArmy.moveArmy(-400);
             this.enemyArmies.push(enemyArmy);
@@ -70,7 +77,7 @@ export class Gameplay extends Phaser.Scene {
     update() {
         // Ajustar las posiciones de las capas de fondo para crear el efecto parallax infinito
         const cameraScrollX = this.cameras.main.scrollX;
-    
+
         const offset = -20;
 
         // Las capas del parallax siguen a la camara
@@ -79,7 +86,7 @@ export class Gameplay extends Phaser.Scene {
         this.groundDecoration.x = cameraScrollX + offset;
         this.clouds.x = cameraScrollX + offset;
         this.trees.x = cameraScrollX + offset;
-    
+
         // Movimiento del parallax
         this.sky.tilePositionX = (cameraScrollX + offset) * 0.3;
         this.ground.tilePositionX = (cameraScrollX + offset) * 1;
@@ -90,7 +97,7 @@ export class Gameplay extends Phaser.Scene {
         // Obtener la posicion del cursor
         const pointer = this.input.activePointer;
         const screenWidth = this.game.config.width;
-    
+
         // Movimiento de la camara con el raton
         if (pointer.x <= screenWidth * 0.1) {
             this.cameras.main.scrollX = Math.max(0, this.cameras.main.scrollX - this.cameraSpeed);
