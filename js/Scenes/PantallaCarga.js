@@ -15,6 +15,9 @@ export class LoadScene extends Phaser.Scene {
         this.load.image("clouds", "Assets/Images/Map/Props/nube.png");
         this.load.image("trees", "Assets/Images/Map/Props/arboles.png");
 
+        this.load.image("BaseGreen", "Assets/Images/Map/Props/BaseGreen.png");
+        this.load.image("BaseGrey", "Assets/Images/Map/Props/BaseGrey.png");
+
         this.load.image("infanterySoldierGreen", "Assets/Images/Gui/InfanteryIconGreen.png");
         this.load.image("medicSoldierGreen", "Assets/Images/Gui/MedicIconGreen.png");
         this.load.image("infanterySoldierGrey", "Assets/Images/Gui/InfanteryIconGrey.png");
@@ -48,6 +51,8 @@ export class LoadScene extends Phaser.Scene {
         this.load.audio('trailerBackgroundMusic', 'Assets/Audio/SendThemAllToTheTrench.mp3');
         this.load.audio('menuBackgroundMusic', 'Assets/Audio/EchoesOfTheTrenches.mp3');
         this.load.audio('gunRifleShoot', 'Assets/Audio/Effects/GunRifleShoot.mp3');
+        this.load.audio('finalSoundWin', 'Assets/Audio/Effects/FinalSoundWin.wav');
+        this.load.audio('finalSoundGameOver', 'Assets/Audio/Effects/FinalSoundGameOver.wav');
 
         //VIDEOS
         this.load.video({

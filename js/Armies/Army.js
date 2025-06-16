@@ -18,7 +18,7 @@ export default class Army extends Phaser.GameObjects.Container {
         this.SoldierHealth = config.SoldierHealth;
         this.numberOfSoldiers = config.NumberOfSoldiers;
         this.ArmySpeed = config.ArmySpeed;
-        this.Team = config.ArmyTeam;
+        this.Team = config.ArmyTeam; // true es army de jugador
         this.ArmyAnimKey = config.ArmyAnimKey;
         this.x = xPos; this.y = 100;
 
@@ -169,6 +169,10 @@ export default class Army extends Phaser.GameObjects.Container {
     armyDestroy() {
         console.log("DestroyArmy") + this.Team;
         this.isDestroyed = true;
+        if (this.Team) console.log("Retornando NPC Army")
+        else console.log("Retornando playerArmy")
+        this.scene.getArmies(!this.Team).pop(this.armyNumber)
+        this.scene.checkGameOver()
         this.destroy();
     }
 

@@ -1,4 +1,5 @@
 import Trench from '../Structures/Trench.js';
+import TeamBase from '../Structures/TeamBase.js';
 import InfanteryArmy from '../Armies/Types/InfanteryArmy.js';
 import Player from '../Players/Player.js';
 import AI from '../Players/AI.js';
@@ -22,6 +23,7 @@ export class Gameplay extends Phaser.Scene {
         this.playerArmies = [];
         this.enemyArmies = [];
         this.trenches = [];
+        this.teamBases = [];
 
         const gameWidth = this.game.config.width;
         const gameHeight = this.game.config.height;
@@ -35,15 +37,15 @@ export class Gameplay extends Phaser.Scene {
 
         // Crear Army de player y moverlos
         for (let i = 0; i < this.equippedTroops.length; i++) {
-            let playerArmy = new InfanteryArmy(this, 100 + i * 50, i + 1, true);
-            playerArmy.moveArmy(400);
+            let playerArmy = new InfanteryArmy(this, 300 + i * 25, i + 1, true);
+            playerArmy.moveArmy(150);
             this.playerArmies.push(playerArmy);
         }
 
-        this.numberOfEnemyArmies = 2;
+        this.numberOfEnemyArmies = 3;
         // Crear Army de enemigo y moverlos
         for (let i = 0; i < this.numberOfEnemyArmies; i++) {
-            let enemyArmy = new InfanteryArmy(this, 500 + i * 50, i + 1, false);
+            let enemyArmy = new InfanteryArmy(this, 700 + i * 500, i + 1, false);
             enemyArmy.moveArmy(-400);
             this.enemyArmies.push(enemyArmy);
         }
@@ -53,12 +55,18 @@ export class Gameplay extends Phaser.Scene {
         this.ai = new AI(this);
 
         // Crear trincheras
-        for (let i = 0; i < 2; i++) {
-            let startX = 55;
-            let xPosition = startX + i * 600;
+        for (let i = 0; i < 4; i++) {
+            let startX = 500;
+            let xPosition = startX + i * 630;
             let trench = new Trench(this, xPosition, 360);
             this.trenches.push(trench);
         }
+
+        // Crear las dos bases
+        let PlayerBase = new TeamBase(this, 100, 360, true);
+        this.teamBases.push(PlayerBase);
+        let EnemyBase = new TeamBase(this, 2800, 360, false);
+        this.teamBases.push(EnemyBase);
 
         // Configurar camara
         this.cameraSpeed = 7; // Velocidad de movimiento de la camara
@@ -109,9 +117,16 @@ export class Gameplay extends Phaser.Scene {
         this.player.update();
         this.ai.update();
     }
-
+    
     getArmies(team) {
         if (team) return this.enemyArmies;
         else return this.playerArmies;
+    }
+
+    checkGameOver(){
+        let gameOver = "no"
+        if (this.enemyArmies.length <= 0) gameOver = "win"
+        if (this.playerArmies.length <= 0) gameOver = "lose"
+        if (gameOver != "no") this.scene.start('GameOver', { result: gameOver });
     }
 }

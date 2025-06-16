@@ -28,7 +28,7 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
 
         //Sounds
         this.gunShootSound = this.scene.sound.add('gunRifleShoot');
-        this.gunShootSound.setVolume(0.1);
+        this.gunShootSound.setVolume(0.03);
     }
 
     #setState(newState) {
