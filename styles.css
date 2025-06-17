@@ -152,7 +152,7 @@ section p {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 70%; /* Constrains the instruction width */
+    width: 90%; /* Constrains the instruction width */
     margin: 20px auto; /* Center the instruction with auto margin */
     max-width: 1200px; /* Optional: Limit the width to prevent it from getting too large on wide screens */
 }
@@ -162,7 +162,7 @@ section p {
 }
 
 .instruction-image {
-    width: 35%; /* Reduce the size of the images to 35% of the instruction container */
+    width: 50%; /* Reduce the size of the images to 35% of the instruction container */
     height: auto; /* Maintain aspect ratio */
     border: 5px solid #000;
 }
