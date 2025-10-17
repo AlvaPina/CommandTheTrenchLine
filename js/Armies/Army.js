@@ -86,7 +86,7 @@ export default class Army extends Phaser.GameObjects.Container {
         this.state = newState;
     }
 
-    // Ejecutar una accion con un retraso aleatorio
+    // Ejecutar una accion con un retraso aleatorio <--------- ESTO LO MOVEMOS A HUMANOID PARA EVITAR PROBLEMAS
     executeWithRandomDelay(action) {
         const randomDelay = getRandomInt(0, 800);
         setTimeout(action, randomDelay);
@@ -110,17 +110,13 @@ export default class Army extends Phaser.GameObjects.Container {
 
     ArmyOrder(newOrder) {
         this.soldiers.forEach(soldier => {
-            this.executeWithRandomDelay(() => {
-                soldier.setOrder(newOrder)
-            });
+            soldier.setOrder(newOrder)
         });
     }
 
     ArmyMoveTo(targetX) {
         this.soldiers.forEach(soldier => {
-            this.executeWithRandomDelay(() => {
-                soldier.moveTo(targetX, soldier.y);
-            });
+            soldier.moveTo(targetX, soldier.y);
         });
     }
 
@@ -151,9 +147,7 @@ export default class Army extends Phaser.GameObjects.Container {
 
     // Actualiza la escala de la barra de vida en el eje Y
     updateHealthBar() {
-        const healthRatio = this.lifeComponent.getRatio();
-        console.log("healthRatio", healthRatio);
-        
+        const healthRatio = this.lifeComponent.getRatio();        
         this.lifeRectagle.setDisplaySize(80 * healthRatio, 50);
     }
     
@@ -185,7 +179,7 @@ export default class Army extends Phaser.GameObjects.Container {
             this.previousState = this.state;
 
             if (this.state == 'Idle' || this.state == 'Attacking') {
-                const direction = this.team ? 1 : -1;
+                const direction = this.team ? -1 : 1;
                 this.movementComponent.setDirection(direction);
             }
             else if (this.state == 'Moving') {
@@ -197,7 +191,6 @@ export default class Army extends Phaser.GameObjects.Container {
         if (this.canChange) {
             this.canChange = false;
             if (this.CheckObjective()) {
-                //console.log("CheckObjective");
                 this.setState('InCombat');
                 this.ArmyOrder('Attacking');
             }
@@ -218,6 +211,9 @@ export default class Army extends Phaser.GameObjects.Container {
         //console.log(this.soldiers.length);
         this.updateState()
         this.onEnterState();
+        
+        //if(this.Team) console.log(this.movementComponent.getDirectionX());
+
 
         switch (this.state) {
             case 'InCombat': // Solo puede recibir la orden de retirarse y de moverse para atras
