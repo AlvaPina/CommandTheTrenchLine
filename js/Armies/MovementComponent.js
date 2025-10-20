@@ -23,8 +23,6 @@ export default class MovementComponent {
         // Si estamos lo suficientemente cerca del objetivo, detener el movimiento
         if (this.distance < 1) {
             this.targetPosition = null;
-            //console.log('Destino alcanzado');
-            // Decir a la army que se pare (evento de parate)
             return;
         }
 
@@ -34,12 +32,20 @@ export default class MovementComponent {
     }
 
     updateDistanceAndDirection(){
+
         // Calcular las diferencias en X e Y
         const distanceX = this.targetPosition.x - this.gameObject.x;
         const distanceY = this.targetPosition.y - this.gameObject.y;
 
         // Calcular la distancia total al objetivo
         this.distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+        // Comprobar que la distancia no sea 0 para evitar dividir por 0
+        if (this.distance === 0) {
+        this.directionX = 0;
+        this.directionY = 0;
+        return;
+        }
 
         // Calcular la direccion normalizada hacia el objetivo
         this.directionX = distanceX / this.distance;

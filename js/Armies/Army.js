@@ -86,12 +86,6 @@ export default class Army extends Phaser.GameObjects.Container {
         this.state = newState;
     }
 
-    // Ejecutar una accion con un retraso aleatorio <--------- ESTO LO MOVEMOS A HUMANOID PARA EVITAR PROBLEMAS
-    executeWithRandomDelay(action) {
-        const randomDelay = getRandomInt(0, 800);
-        setTimeout(action, randomDelay);
-    }
-
     // Metodo para mover todo el ejercito hacia una posicion objetivo en el eje X
     moveArmy(movementX) {
         if (this.canMove) {
