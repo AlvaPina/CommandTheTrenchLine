@@ -9,6 +9,7 @@ export default class AI {
         if (this.canInteract) {
             this.armies = this.scene.getArmies(true);
             const randomArmy = Phaser.Math.Between(0, this.armies.length - 1);
+            if(!randomArmy) return; // Por si no quedan army
             const randomDirection = Phaser.Math.Between(0, 1);
             const moveDistance = 400;
 

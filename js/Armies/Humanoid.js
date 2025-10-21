@@ -36,23 +36,55 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         this.state = newState;
     }
 
-    setOrder(newState) { // añadir un delay y una cola de ordenes, este es el unico metodo que puede usar army, el resto deberian ser privados
+    setOrder(newState,params) { // añadir un delay y una cola de ordenes, este es el unico metodo que puede usar army, el resto deberian ser privados
+        // ponerle prioridades a las acciones
         //console.log("NEW STATE:" + newState);
         if(this.state == 'Dying') return;
-        this.setState(newState); //recuerdo, hacer esto con la cola de ordenes
+
+        this.lastorder = newState;
+
+        // Retraso aleatorio entre 0 y 800 ms
+        const randomDelay = Phaser.Math.Between(0, 800);
+        
+        // Ejecuta la orden después del retraso
+        this.scene.time.delayedCall(randomDelay, () => {
+            if(this.state == 'Dying') return;
+
+            // Si no se dio otra orden diferente no ejecutaremos esta orden porque ya no tiene sentido...
+            if(this.lastorder != newState) return;
+
+            if(params){
+                switch (newState) {
+                case 'Idle':
+                
+                    break;
+                case 'Moving':
+                    this.movementComponent.moveTo(params[0], params[1]);
+                    this.#movingOrientation()
+                    break;
+                case 'Attacking':
+                    break;
+                case 'Dying':
+                    break;
+                case 'ClimbingUp':
+                    break;
+                case 'ClimbingDown':
+                    break;
+                }
+            }
+            this.#setState(newState);
+
+        });
     }
 
     moveTo(targetX, targetY) {
         if(this.state == 'Dying') return;
-        this.movementComponent.moveTo(targetX, targetY);
-        this.#movingOrientation()
-        this.setOrder('Moving');
+        this.setOrder('Moving', [targetX, targetY]);
     }
 
     die() {
-        this.setState('Dying');
+        this.#setState('Dying');
         this.play(this.animKey + this.state);
-        // eliminarlos después de un tiempo...
     }
     
     // direction puede ser "1" o "-1" y no tiene en cuenta el team
@@ -80,11 +112,8 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         if (!this.gunShootSound.isPlaying) {
             this.gunShootSound.play();
         }
-
-        // Debo hacer que se turnen entre el idle con tiempo random y el shoot.
-
     }
-    // Actualiza lo necesario al entrar a un estado por primera vez
+    // Actualiza lo necesario al entrar a un estado por primera vez ----- Esto se puede poner después del setOrder
     #onEnterState() {
         if (this.state !== this.previousState) {
             this.previousState = this.state;
@@ -100,23 +129,21 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
     }
     //Orientarlo hacia la direccion de movimiento que me la da el MovementComponent
     #movingOrientation(){
-        //console.log(this.movementComponent.getDirectionX());
+        if(this.team) console.log(this.movementComponent.getDirectionX());
         this.#soldierOrientationAux(this.movementComponent.getDirectionX());
     }
 
     preUpdate(time, delta) {
         super.preUpdate(time, delta);
+
         switch (this.state) {
             case 'Idle':
-                this.#onEnterState();
                 break;
             case 'Moving':
                 this.#movement();
-                this.#onEnterState();
                 break;
             case 'Attacking':
                 this.#attack();
-                this.#onEnterState();
                 break;
             case 'Dying':
                 break;
@@ -125,5 +152,8 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
             case 'ClimbingDown':
                 break;
         }
+
+        this.#onEnterState();
+
     }
 }
