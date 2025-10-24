@@ -14,7 +14,6 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         if(config.team) this.animKey = config.animKey + 'Green';
         else this.animKey = config.animKey + 'Grey';
         this.state = 'Moving';
-        this.previousState = 'Idle';
 
         if (this.team) this.lastDirection = 'left';
         else this.lastDirection = 'right';
@@ -32,8 +31,10 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
     }
 
     #setState(newState) {
-        this.previousState = this.state;
+        if (this.state == newState) return;
+        if(newState == 'Moving' && !this.movementComponent.targetPosition) return;
         this.state = newState;
+        this.#onEnterState();
     }
 
     setOrder(newState,params) { // añadir un delay y una cola de ordenes, este es el unico metodo que puede usar army, el resto deberian ser privados
@@ -44,7 +45,7 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         this.lastorder = newState;
 
         // Retraso aleatorio entre 0 y 800 ms
-        const randomDelay = Phaser.Math.Between(0, 800);
+        const randomDelay = Phaser.Math.Between(100, 800);
         
         // Ejecuta la orden después del retraso
         this.scene.time.delayedCall(randomDelay, () => {
@@ -73,6 +74,7 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
                 }
             }
             this.#setState(newState);
+            //if(this.team) console.log("Cambio Estado: " + newState);
 
         });
     }
@@ -103,7 +105,7 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
     #movement() {
         this.movementComponent.movement();
         if (!this.movementComponent.targetPosition) {  // Si el objetivo se alcanzo
-            this.setState('Idle');
+            this.#setState('Idle');
         }
     }
 
@@ -113,27 +115,26 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
             this.gunShootSound.play();
         }
     }
-    // Actualiza lo necesario al entrar a un estado por primera vez ----- Esto se puede poner después del setOrder
+    // Actualiza lo necesario al entrar a un estado por primera vez
     #onEnterState() {
-        if (this.state !== this.previousState) {
-            this.previousState = this.state;
-            this.play(this.animKey + this.state);
+        if(this.team) console.log("Anim: " + this.animKey + this.state)
+        this.play(this.animKey + this.state);
 
-            if (this.state == 'Idle' || this.state == 'Attacking') {
-                this.#soldierOrientationAux(this.movementComponent.soldierOrientation("EnemyBase", this.team));
-            }
-            else if (this.state == 'Moving'){
-                this.#movingOrientation()
-            }
+        if (this.state == 'Idle' || this.state == 'Attacking') {
+            this.#soldierOrientationAux(this.movementComponent.soldierOrientation("EnemyBase", this.team));
+        }
+        else if (this.state == 'Moving'){
+            this.#movingOrientation()
         }
     }
     //Orientarlo hacia la direccion de movimiento que me la da el MovementComponent
     #movingOrientation(){
-        if(this.team) console.log(this.movementComponent.getDirectionX());
+        //if(this.team) console.log(this.movementComponent.getDirectionX());
         this.#soldierOrientationAux(this.movementComponent.getDirectionX());
     }
 
     preUpdate(time, delta) {
+        if(this.team) console.log("Estado Actual: " + this.state);
         super.preUpdate(time, delta);
 
         switch (this.state) {
@@ -152,8 +153,5 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
             case 'ClimbingDown':
                 break;
         }
-
-        this.#onEnterState();
-
     }
 }

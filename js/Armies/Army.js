@@ -83,6 +83,7 @@ export default class Army extends Phaser.GameObjects.Container {
     }
 
     setState(newState) {
+        //if(this.Team) console.log(newState);
         this.state = newState;
     }
 
