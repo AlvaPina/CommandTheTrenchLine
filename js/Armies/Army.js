@@ -142,10 +142,10 @@ export default class Army extends Phaser.GameObjects.Container {
 
     // Actualiza la escala de la barra de vida en el eje Y
     updateHealthBar() {
-        const healthRatio = this.lifeComponent.getRatio();        
+        const healthRatio = this.lifeComponent.getRatio();
         this.lifeRectagle.setDisplaySize(80 * healthRatio, 50);
     }
-    
+
 
     getConfig() {
         return {
@@ -165,6 +165,45 @@ export default class Army extends Phaser.GameObjects.Container {
         this.destroy();
     }
 
+    _getNearestEnemyX() {
+        const enemies = this.scene.getArmies(this.Team).filter(a => !a.isDestroyed);
+        if (enemies.length === 0) return null;
+
+        let nearest = enemies[0];
+        let bestDist = Math.abs(enemies[0].x - this.x);
+
+        for (let i = 1; i < enemies.length; i++) {
+            const d = Math.abs(enemies[i].x - this.x);
+            if (d < bestDist) { bestDist = d; nearest = enemies[i]; }
+        }
+        return nearest.x;
+    }
+
+    _refreshFacingToNearestEnemy() {
+        let direction = this.movementComponent.getDirectionX(); // conserva si estamos moviendo
+
+        const nearestEnemyX = this._getNearestEnemyX();
+        if (nearestEnemyX != null) {
+            const toEnemy = Math.sign(nearestEnemyX - this.x);
+            if (toEnemy !== 0) direction = toEnemy;
+        }
+
+        // Por defecto si falla
+        if (direction == null || direction === 0) {
+            direction = this.Team ? 1 : -1;
+        }
+
+        this.movementComponent.setDirection(direction);
+    }
+
+    _updateOrientation(t) {
+        // mantener facing hacia el enemigo más cercano cuando no estoy moviéndome
+        if ((this.state === 'Idle' || this.state === 'InCombat') && t >= this._nextFacingAt) {
+            this._refreshFacingToNearestEnemy();
+            this._nextFacingAt = t + this.facingRefreshCooldownMs;
+        }
+    }
+
     getArmyState() {
         return this.state;
     }
@@ -173,40 +212,29 @@ export default class Army extends Phaser.GameObjects.Container {
         if (this.state !== this.previousState) {
             this.previousState = this.state;
 
-            if (this.state == 'Idle' || this.state == 'Attacking') {
-                const direction = this.team ? -1 : 1;
-                this.movementComponent.setDirection(direction);
+            if (this.state === 'InCombat') {
+                // Ordena atacar una única vez (cada soldado ya aplica su propio delay)
+                this.ArmyOrder('Attacking');
             }
-            else if (this.state == 'Moving') {
 
+            if (this.state === 'Idle' || this.state === 'InCombat') {
+                this._refreshFacingToNearestEnemy();
+                this._nextFacingAt = 0; // refresco rápido la primera vez
             }
         }
     }
     updateState() {
-        if (this.canChange) {
-            this.canChange = false;
-            if (this.CheckObjective()) {
-                this.setState('InCombat');
-                this.ArmyOrder('Attacking');
-            }
-            else if (this.movementComponent.getTargetPosition() != null) { // Comprobar si TargetPosition esta en direccion a la base y entonces ahi si, retroceder
-                //console.log("Moving");
-                this.setState('Moving');
-                this.ArmyOrder('Moving');
-            }
-            else {
-                this.setState('Idle');
-            }
-            this.canChange = true;
+        if (this.CheckObjective()) {
+            this.setState('InCombat');
         }
     }
     preUpdate(t, dt) {
-        if(this.isDestroyed) return;
+        if (this.isDestroyed) return;
         //console.log(this.state);
         //console.log(this.soldiers.length);
         this.updateState()
         this.onEnterState();
-        
+        this._updateOrientation(t);
         //if(this.Team) console.log(this.movementComponent.getDirectionX());
 
 
