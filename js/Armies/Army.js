@@ -30,31 +30,37 @@ export default class Army extends Phaser.GameObjects.Container {
         this.canMove = true;
         this.canChange = true;
 
-        //Vida
-        let ArmyHealth = this.SoldierHealth * this.numberOfSoldiers;
-        this.lifeComponent = new LifeComponent(ArmyHealth, this);
-        this.isDestroyed = false;
-
-        //Movimiento
-        this.movementComponent = new MovementComponent(this, this.ArmySpeed);
-
-        // Crear la imagen de fondo, texto y barra
+        // Crear background y texto
         if (config.ArmyTeam) {
             this.background = this.scene.add.image(0, 0, this.ArmyAnimKey + 'Green').setOrigin(0.5, 0.5);
-            this.lifeRectagle = this.scene.add.image(0, 0, 'barGreen').setOrigin(0.5, 0.5).setDisplaySize(100, 50);
-        }
-        else {
+        } else {
             this.background = this.scene.add.image(0, 0, this.ArmyAnimKey + 'Grey').setOrigin(0.5, 0.5);
-            this.lifeRectagle = this.scene.add.image(0, 0, 'barGrey').setOrigin(0.5, 0.5).setDisplaySize(100, 50);
         }
         this.background.setDisplaySize(100, 50);
+
         this.armyText = this.scene.add.text(20, -5, this.armyNumber, {
             fontSize: '32px',
             color: '#fff'
         }).setOrigin(0.5, 0.5);
 
-        // Agrupar la barra de vida, la imagen y el texto en el contenedor
-        this.add([this.background, this.armyText, this.lifeRectagle]);
+        // Agrupar en el contenedor (sin la barra, que ahora la crea LifeComponent)
+        this.add([this.background, this.armyText]);
+
+        //Vida
+        const ArmyHealth = this.SoldierHealth * this.numberOfSoldiers;
+        this.lifeComponent = new LifeComponent(ArmyHealth, this, {
+            team: this.Team,
+            barWidth: 80,   // como tenías
+            barHeight: 50,  // como tenías
+            offsetX: 0,     // centrada en el container (0,0)
+            offsetY: 0,
+            background: this.background, // se la pasamos (por si mañana la quieres usar)
+        });
+
+        this.isDestroyed = false;
+
+        //Movimiento
+        this.movementComponent = new MovementComponent(this, this.ArmySpeed);
 
         // Definir los limites del area vertical para los soldados
         const minY = 250;
@@ -142,7 +148,10 @@ export default class Army extends Phaser.GameObjects.Container {
     // Modificar vida del ejercito
     addHealth(amount) {
         this.lifeComponent.addHealth(amount);
-        this.updateHealthBar();
+        this._syncSoldiersWithHealth();    // bajas según vida
+        if (this.lifeComponent.isDead()) {
+            this.armyDestroy();
+        }
     }
 
     // Actualiza la escala de la barra de vida en el eje Y
@@ -224,6 +233,15 @@ export default class Army extends Phaser.GameObjects.Container {
         if ((this.state === 'Idle' || this.state === 'InCombat') && t >= this._nextFacingAt) {
             this._refreshFacingToNearestEnemy();
             this._nextFacingAt = t + this.facingRefreshCooldownMs;
+        }
+    }
+
+    _syncSoldiersWithHealth() {
+        const healthPerSoldier = this.SoldierHealth;
+        const expected = Math.max(0, Math.floor(this.lifeComponent.health / healthPerSoldier));
+        while (this.soldiers.length > expected) {
+            const s = this.soldiers.pop();
+            if (s) s.die();
         }
     }
 
