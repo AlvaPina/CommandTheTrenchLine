@@ -134,7 +134,7 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
     }
 
     preUpdate(time, delta) {
-        if(this.team) console.log("Estado Actual: " + this.state);
+        //if(this.team) console.log("Estado Actual: " + this.state);
         super.preUpdate(time, delta);
 
         switch (this.state) {

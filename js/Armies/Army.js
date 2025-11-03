@@ -18,6 +18,7 @@ export default class Army extends Phaser.GameObjects.Container {
         this.SoldierHealth = config.SoldierHealth;
         this.numberOfSoldiers = config.NumberOfSoldiers;
         this.ArmySpeed = config.ArmySpeed;
+        this.distanceView = config.DistanceView;
         this.Team = config.ArmyTeam; // true es army de jugador
         this.ArmyAnimKey = config.ArmyAnimKey;
         this.x = xPos; this.y = 100;
@@ -89,18 +90,35 @@ export default class Army extends Phaser.GameObjects.Container {
 
     // Metodo para mover todo el ejercito hacia una posicion objetivo en el eje X
     moveArmy(movementX) {
-        if (this.canMove) {
-            this.setState('Moving');
-            this.canMove = false;
-            this.targetX += movementX;
-            // Actualizo posicion general de la army
-            this.movementComponent.moveTo(this.targetX, this.y);
-            // Actualizo la posicion de los soldados
-            this.ArmyMoveTo(this.targetX);
-            setTimeout(() => {
-                this.canMove = true;
-            }, this.moveDelay);
+        // Delay
+        if (!this.canMove) return;
+        // No permitimos movimientos hacia el enemigo
+        if (this.state === 'InCombat') {
+            const enemy = this._getTargetEnemy(1.0);
+            const enemyX = enemy ? enemy.x : null;
+            if (enemyX != null) {
+                const dx = enemyX - this.x; // distancia signed al enemigo
+                const absDx = Math.abs(dx);
+                const toEnemy = Math.sign(dx); // -1 si está a la izq, +1 si a la dcha
+                const intendedDir = Math.sign(movementX); // dirección deseada
+
+                if (intendedDir !== 0 && toEnemy !== 0) {
+                    // Bloquear sólo si está dentro de rango de visión
+                    if (absDx <= this.distanceView && intendedDir === toEnemy) {
+                        return; // cancelar la orden (no avanzar hacia el enemigo en combate)
+                    }
+                }
+            }
         }
+        // Movemos al Army
+        this.setState('Moving');
+        this.canMove = false;
+        this.targetX += movementX;
+        this.movementComponent.moveTo(this.targetX, this.y); // Actualizo posicion general de la army
+        this.ArmyMoveTo(this.targetX); // Actualizo la posicion de los soldados
+        setTimeout(() => { // Delay
+            this.canMove = true;
+        }, this.moveDelay);
     }
 
     ArmyOrder(newOrder) {
@@ -110,23 +128,10 @@ export default class Army extends Phaser.GameObjects.Container {
     }
 
     ArmyMoveTo(targetX) {
+        if (this.Team) console.log("MoveArmy");
         this.soldiers.forEach(soldier => {
             soldier.moveTo(targetX, soldier.y);
         });
-    }
-
-    // Metodo para ver la distancia de las armies enemigas
-    CheckObjective() {
-        let objetivo = false;
-        this.scene.getArmies(this.Team).forEach((army) => {
-            if (Math.abs(army.x - this.x) <= 200 && !army.isDestroyed) {
-                if (this.movementComponent.getDirectionX() > 0 && army.x - this.x > 0 || this.movementComponent.getDirectionX() < 0 && army.x - this.x < 0) {
-                    objetivo = true;
-                    army.addHealth(-1);
-                }
-            }
-        });
-        return objetivo;
     }
 
     // Reagrupa los soldados para rellenar posiciones de soldados muertos, se usara cuando lleguen a la trinchera
@@ -165,24 +170,42 @@ export default class Army extends Phaser.GameObjects.Container {
         this.destroy();
     }
 
-    _getNearestEnemyX() {
+    // Devuelve el enemigo más cercano en base a distanceView * Factor
+    // Factor que puede potenciar ese distanceView. Por ejemplo rangeFactor = 1.2
+    // Factor = 1 no potencia ni disminuye distanceView.
+    _getTargetEnemy(rangeFactor = 1) {
         const enemies = this.scene.getArmies(this.Team).filter(a => !a.isDestroyed);
         if (enemies.length === 0) return null;
 
-        let nearest = enemies[0];
-        let bestDist = Math.abs(enemies[0].x - this.x);
+        const maxDist = this.distanceView * rangeFactor;
+        const facing = Math.sign(this.movementComponent.getDirectionX() ?? 0) || 0;
 
-        for (let i = 1; i < enemies.length; i++) {
-            const d = Math.abs(enemies[i].x - this.x);
-            if (d < bestDist) { bestDist = d; nearest = enemies[i]; }
+        let best = null; // Mejor enemigo encontrado
+        let bestAbsDx = Infinity; // Su distancia absoluta
+
+        for (let i = 0; i < enemies.length; i++) {
+            const e = enemies[i];
+            const dx = e.x - this.x; // Diferencia en X
+            const absDx = Math.abs(dx); // Valor absoluto
+
+            // Debe estar dentro de rango y delante (mismo signo que el facing)
+            const dirToEnemy = Math.sign(dx);
+            const inFront = (facing === 0) ? true : (dirToEnemy === facing); // si no hay facing, no filtramos por delante
+            if (absDx <= maxDist && dirToEnemy !== 0 && inFront) {
+                if (absDx < bestAbsDx) {
+                    best = e;
+                    bestAbsDx = absDx;
+                }
+            }
         }
-        return nearest.x;
+        return best;
     }
 
     _refreshFacingToNearestEnemy() {
         let direction = this.movementComponent.getDirectionX(); // conserva si estamos moviendo
 
-        const nearestEnemyX = this._getNearestEnemyX();
+        const enemy = this._getTargetEnemy(1.0);
+        const nearestEnemyX = enemy ? enemy.x : null;
         if (nearestEnemyX != null) {
             const toEnemy = Math.sign(nearestEnemyX - this.x);
             if (toEnemy !== 0) direction = toEnemy;
@@ -223,16 +246,41 @@ export default class Army extends Phaser.GameObjects.Container {
             }
         }
     }
+
     updateState() {
-        if (this.CheckObjective()) {
+        // 1) ¿Hay enemigo en rango normal? -> entrar/seguir en combate con ese objetivo
+        const target = this._getTargetEnemy(1.0);
+
+        if (target) {
+            this.currentEnemy = target;
             this.setState('InCombat');
+            return;
         }
+
+        // 2) No hay en rango normal; si ya estábamos en combate, aguantamos con rango extendido
+        if (this.state === 'InCombat') {
+            const enemy = this._getTargetEnemy(1.2);
+            if (enemy) {
+                this.currentEnemy = enemy;
+                // seguimos en InCombat sin cambiar estado
+                return;
+            }
+            // 3) Se acabó el ataque
+            this.currentEnemy = null;
+            this.setState(this.movementComponent.getTargetPosition() ? 'Moving' : 'Idle');
+            this.ArmyOrder(this.movementComponent.getTargetPosition() ? 'Moving' : 'Idle')
+            return;
+        }
+
+        // 4) Estado normal fuera de combate
+        this.currentEnemy = null;
     }
+
     preUpdate(t, dt) {
         if (this.isDestroyed) return;
         //console.log(this.state);
         //console.log(this.soldiers.length);
-        this.updateState()
+        this.updateState();
         this.onEnterState();
         this._updateOrientation(t);
         //if(this.Team) console.log(this.movementComponent.getDirectionX());
@@ -240,6 +288,9 @@ export default class Army extends Phaser.GameObjects.Container {
 
         switch (this.state) {
             case 'InCombat': // Solo puede recibir la orden de retirarse y de moverse para atras
+                if (this.currentEnemy && !this.currentEnemy.isDestroyed) {
+                    this.currentEnemy.addHealth(-1);
+                }
                 break;
 
             case 'Moving': // Puede recibir todo tipo de ordenes
