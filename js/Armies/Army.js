@@ -90,11 +90,11 @@ export default class Army extends Phaser.GameObjects.Container {
     }
 
     setState(newState) {
-        //if(this.Team) console.log(newState);
         this.state = newState;
     }
 
     // Metodo para mover todo el ejercito hacia una posicion objetivo en el eje X
+    // No puede moverse hacia el enemigo cuando esta en combate
     moveArmy(movementX) {
         // Delay
         if (!this.canMove) return;
@@ -127,12 +127,14 @@ export default class Army extends Phaser.GameObjects.Container {
         }, this.moveDelay);
     }
 
+    // Envía una orden a todos los soldados
     ArmyOrder(newOrder) {
         this.soldiers.forEach(soldier => {
             soldier.setOrder(newOrder)
         });
     }
 
+    // Mueve todos los soldados hacia una posición X específica
     ArmyMoveTo(targetX) {
         if (this.Team) console.log("MoveArmy");
         this.soldiers.forEach(soldier => {
@@ -160,7 +162,7 @@ export default class Army extends Phaser.GameObjects.Container {
         this.lifeRectagle.setDisplaySize(80 * healthRatio, 50);
     }
 
-
+    // Devuelve un objeto con la configuración del ejército
     getConfig() {
         return {
             speed: this.ArmySpeed,
@@ -169,6 +171,7 @@ export default class Army extends Phaser.GameObjects.Container {
         };
     }
 
+    // Destruye el ejército completamente cuando muere
     armyDestroy() {
         console.log("DestroyArmy") + this.Team;
         this.isDestroyed = true;
@@ -210,6 +213,7 @@ export default class Army extends Phaser.GameObjects.Container {
         return best;
     }
 
+    // Actualiza la orientación del ejército para que mire al enemigo más cercano
     _refreshFacingToNearestEnemy() {
         let direction = this.movementComponent.getDirectionX(); // conserva si estamos moviendo
 
@@ -228,6 +232,7 @@ export default class Army extends Phaser.GameObjects.Container {
         this.movementComponent.setDirection(direction);
     }
 
+    // Actualiza la orientación con un pequeño delay (cooldown)
     _updateOrientation(t) {
         // mantener facing hacia el enemigo más cercano cuando no estoy moviéndome
         if ((this.state === 'Idle' || this.state === 'InCombat') && t >= this._nextFacingAt) {
@@ -236,18 +241,58 @@ export default class Army extends Phaser.GameObjects.Container {
         }
     }
 
+    // Mantiene los soldados vivos alineados con la vida del Army
     _syncSoldiersWithHealth() {
         const healthPerSoldier = this.SoldierHealth;
-        const expected = Math.max(0, Math.floor(this.lifeComponent.health / healthPerSoldier));
-        while (this.soldiers.length > expected) {
-            const s = this.soldiers.pop();
-            if (s) s.die();
+
+        // Usamos ceil para redondear y que el último soldado NO muera hasta que la vida sea 0
+        const expected = Math.max(0, Math.ceil(this.lifeComponent.health / healthPerSoldier));
+
+        let toRemove = this.soldiers.length - expected;
+
+        while (toRemove > 0 && this.soldiers.length > 0) {
+            this._killOnePorximitySoldier();
+            toRemove--;
         }
     }
 
+    // Mata al soldado mas adelantado con una probabilidad mayor
+    _killOnePorximitySoldier() {
+        if (this.soldiers.length === 0) return;
+
+        // Dirección hacia donde avanza el army ahora
+        let dir = Math.sign(this.movementComponent.getDirectionX() ?? 0);
+        if (dir === 0) dir = this.Team ? 1 : -1;
+
+        // Encuentra el índice del más adelantado en esa dirección
+        let frontIndex = 0;
+        let best = -Infinity;
+        for (let i = 0; i < this.soldiers.length; i++) {
+            const s = this.soldiers[i];
+            const projected = dir * s.x; // mayor projected = más adelantado
+            if (projected > best) {
+                best = projected;
+                frontIndex = i;
+            }
+        }
+
+        // Con alta probabilidad, mata al más adelantado; si no, uno al azar
+        const probability = 0.7; // 70% al de delante, 30% aleatorio
+        let indexToRemove = frontIndex;
+        if (Math.random() > probability) {
+            indexToRemove = Phaser.Math.Between(0, this.soldiers.length - 1);
+        }
+
+        // Seleccionamos el soldado del array de soldiers con splice y lo matamos
+        const [soldier] = this.soldiers.splice(indexToRemove, 1);
+        if (soldier) soldier.die();
+    }
+
+    // Devuelve el estado actual del ejército
     getArmyState() {
         return this.state;
     }
+
     // Actualiza lo necesario al entrar a un estado por primera vez
     onEnterState() {
         if (this.state !== this.previousState) {
@@ -265,6 +310,7 @@ export default class Army extends Phaser.GameObjects.Container {
         }
     }
 
+    // Actualiza el estado del ejército según si hay enemigos cerca o no
     updateState() {
         // 1) ¿Hay enemigo en rango normal? -> entrar/seguir en combate con ese objetivo
         const target = this._getTargetEnemy(1.0);
@@ -294,6 +340,7 @@ export default class Army extends Phaser.GameObjects.Container {
         this.currentEnemy = null;
     }
 
+    // Actualiza la IA y movimiento del ejército en cada frame
     preUpdate(t, dt) {
         if (this.isDestroyed) return;
         //console.log(this.state);
