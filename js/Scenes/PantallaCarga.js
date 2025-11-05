@@ -59,6 +59,8 @@ export class LoadScene extends Phaser.Scene {
         this.load.audio('gunRifleShoot4', 'Assets/Audio/Effects/Shoots/Shoot4.MP3');
         this.load.audio('gunRifleShoot5', 'Assets/Audio/Effects/Shoots/Shoot5.MP3');
 
+        this.load.audio('silbatoGuerra', 'Assets/Audio/Effects/SilbatoGuerra.MP3');
+
         //VIDEOS
         this.load.video({
             key: 'intro',

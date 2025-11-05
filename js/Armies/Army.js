@@ -94,7 +94,7 @@ export default class Army extends Phaser.GameObjects.Container {
     }
 
     // Metodo para mover todo el ejercito hacia una posicion objetivo en el eje X
-    // No puede moverse hacia el enemigo cuando esta en combate
+    // No puede moverse hacia el enemigo cuando esta en combate, en ese caso retorna false
     moveArmy(movementX) {
         // Delay
         if (!this.canMove) return;
@@ -111,7 +111,7 @@ export default class Army extends Phaser.GameObjects.Container {
                 if (intendedDir !== 0 && toEnemy !== 0) {
                     // Bloquear sólo si está dentro de rango de visión
                     if (absDx <= this.distanceView && intendedDir === toEnemy) {
-                        return; // cancelar la orden (no avanzar hacia el enemigo en combate)
+                        return false; // cancelar la orden (no avanzar hacia el enemigo en combate)
                     }
                 }
             }
@@ -125,6 +125,8 @@ export default class Army extends Phaser.GameObjects.Container {
         setTimeout(() => { // Delay
             this.canMove = true;
         }, this.moveDelay);
+
+        return true;
     }
 
     // Envía una orden a todos los soldados

@@ -35,17 +35,19 @@ export default class Player {
         if (this.canInteract) {
             this.armies = this.scene.getArmies(false);
             const selectedArmy = this.armies[this.selectedNumber - 1];
-    
-            if (selectedArmy) { //Comprobamos si existe un ejercito en esa posicion
-                if (this.cursors.right.isDown) {
-                    this.canInteract = false;
-                    this.armies[this.selectedNumber - 1].moveArmy(400);
-                    setTimeout(() => this.canInteract = true, this.inputDelay);
-                } else if (this.cursors.left.isDown) {
-                    this.canInteract = false;
-                    this.armies[this.selectedNumber - 1].moveArmy(-400);
-                    setTimeout(() => this.canInteract = true, this.inputDelay);
-                }
+            if (!selectedArmy) return;
+            let moved = false;
+
+            if (Phaser.Input.Keyboard.JustDown(this.cursors.right)) {
+                moved = selectedArmy.moveArmy(400);
+            } else if (Phaser.Input.Keyboard.JustDown(this.cursors.left)) {
+                moved = selectedArmy.moveArmy(-400);
+            }
+
+            if (moved) {
+                this.canInteract = false;
+                this.scene.sound.play('silbatoGuerra', { volume: 0.5 });
+                setTimeout(() => this.canInteract = true, this.inputDelay);
             }
         }
     }
