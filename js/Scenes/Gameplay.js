@@ -117,16 +117,19 @@ export class Gameplay extends Phaser.Scene {
         this.player.update();
         this.ai.update();
     }
-    
+
     getArmies(team) {
         if (team) return this.enemyArmies;
         else return this.playerArmies;
     }
 
-    checkGameOver(){
+    checkGameOver() {
         let gameOver = "no"
         if (this.enemyArmies.length <= 0) gameOver = "win"
         if (this.playerArmies.length <= 0) gameOver = "lose"
-        if (gameOver != "no") this.scene.start('GameOver', { result: gameOver });
+        if (gameOver != "no")
+            this.time.delayedCall(2000, () => { // 2 segundos de delay antes de saltar de pantalla
+                this.scene.start('GameOver', { result: gameOver });
+            });
     }
 }

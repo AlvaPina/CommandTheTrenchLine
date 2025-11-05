@@ -1,7 +1,7 @@
 export default class AI {
     constructor(scene) {
         this.scene = scene;
-        this.inputDelay = 100; // Cooldown en milisegundos
+        this.inputDelay = 10000; // Cooldown en milisegundos
         this.canInteract = true;
     }
 

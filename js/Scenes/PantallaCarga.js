@@ -50,9 +50,14 @@ export class LoadScene extends Phaser.Scene {
         //AUDIOS
         this.load.audio('trailerBackgroundMusic', 'Assets/Audio/SendThemAllToTheTrench.mp3');
         this.load.audio('menuBackgroundMusic', 'Assets/Audio/EchoesOfTheTrenches.mp3');
-        this.load.audio('gunRifleShoot', 'Assets/Audio/Effects/GunRifleShoot.mp3');
         this.load.audio('finalSoundWin', 'Assets/Audio/Effects/FinalSoundWin.wav');
         this.load.audio('finalSoundGameOver', 'Assets/Audio/Effects/FinalSoundGameOver.wav');
+
+        this.load.audio('gunRifleShoot1', 'Assets/Audio/Effects/Shoots/Shoot1.MP3');
+        this.load.audio('gunRifleShoot2', 'Assets/Audio/Effects/Shoots/Shoot2.MP3');
+        this.load.audio('gunRifleShoot3', 'Assets/Audio/Effects/Shoots/Shoot3.MP3');
+        this.load.audio('gunRifleShoot4', 'Assets/Audio/Effects/Shoots/Shoot4.MP3');
+        this.load.audio('gunRifleShoot5', 'Assets/Audio/Effects/Shoots/Shoot5.MP3');
 
         //VIDEOS
         this.load.video({
@@ -103,14 +108,14 @@ export class LoadScene extends Phaser.Scene {
             key: 'infanterySoldierGreenAttacking',
             frames: this.anims.generateFrameNumbers('infanterySoldierGreenAttacking', { start: 0, end: 5 }),
             frameRate: 13,
-            repeat: -1
+            repeat: 0
         });
 
         this.anims.create({
             key: 'infanterySoldierGreenAttackingCrouch',
             frames: this.anims.generateFrameNumbers('infanterySoldierGreenAttackingCrouch', { start: 0, end: 5 }),
             frameRate: 13,
-            repeat: -1
+            repeat: 0
         });
 
         this.anims.create({
@@ -153,14 +158,14 @@ export class LoadScene extends Phaser.Scene {
             key: 'infanterySoldierGreyAttacking',
             frames: this.anims.generateFrameNumbers('infanterySoldierGreyAttacking', { start: 0, end: 5 }),
             frameRate: 13,
-            repeat: -1
+            repeat: 0
         });
 
         this.anims.create({
             key: 'infanterySoldierGreyAttackingCrouch',
             frames: this.anims.generateFrameNumbers('infanterySoldierGreyAttackingCrouch', { start: 0, end: 5 }),
             frameRate: 13,
-            repeat: -1
+            repeat: 0
         });
 
         this.anims.create({
