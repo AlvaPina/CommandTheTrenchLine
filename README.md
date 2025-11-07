@@ -1,5 +1,8 @@
 # Command The Trench Line
 
+> **Nota**: Este proyecto es un **trabajo universitario**.  
+> Versión del documento: 1.0
+
 Bienvenido a **Command The Trench Line**, un juego de estrategia táctica de trincheras. Este proyecto es un trabajo universitario.
 
 ## Documentación
@@ -48,13 +51,6 @@ Este proyecto forma parte de un trabajo universitario de la UCM.
 - 🧠 Mejora de la IA.  
 - 🪖 Nuevas tropas y balance de combate.  
 - 🧩 Mejora completa de la interfaz de usuario (GUI).
-
----
-
-## 📖 GDD
-
-- 📄 **Game Design Document (GDD):**  
-  [Ver en Google Docs](https://docs.google.com/document/d/1dfmlh_B2gY8Bidv1JY2kcPE-pw0b2B_AI9-840cx3kk/edit?usp=sharing)
 
 ---
 

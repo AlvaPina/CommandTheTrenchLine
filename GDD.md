@@ -12,14 +12,17 @@
 - [4. Gameplay](#4-gameplay)
   - [4.1 Control y Movimiento](#41-control-y-movimiento)
   - [4.2 Daño y Combate](#42-daño-y-combate)
-  - [4.3 Armies y Humanoids](#43-armies-y-humanoids)
-  - [4.4 Estructuras y Checkpoints](#44-estructuras-y-checkpoints)
+  - [4.3 Componentes](#43-Componentes)
+  - [4.4 Armies](#44-Armies)
+  - [4.5 Humanoids](#45-Humanoids)
+  - [4.6 Checkpoints](#46-Checkpoints)
+  - [4.7 Estructuras Especiales](#47-estructuras-especiales)
 - [5. Clases de Tropas](#5-clases-de-tropas)
 - [6. Sonido y Cámara](#6-sonido-y-cámara)
 - [7. Arte y Estilo Visual](#7-arte-y-estilo-visual)
 - [8. IA](#8-ia)
 - [9. Hitos del Año](#9-hitos-del-año)
-- [10. Estado Actual / Bocetos](#10-estado-actual--bocetos)
+- [10. Bocetos y Estado Actual](#10-bocetos-y-estado-actual)
 - [11. Enlaces y Capturas](#11-enlaces-y-capturas)
 
 ---
@@ -207,7 +210,7 @@ Su propósito es servir como puntos de referencia o “nodos” por los que los 
     Las bases actúan sin límite de capacidad (`-1`) para evitar que los ejércitos puedan salirse del área jugable.
 
 ### 4.7 Estructuras Especiales
-- **Trincheras**:  La clase trinchera usará el componente checkpoint. Gracias a esto, los pelones los cuales se mueven de checkpoint en checkpoint, se moverán de trinchera en trinchera. La trinchera puede acceder a las army estacionadas del checkpoint. Gracias a esto, la trinchera puede registrar ese army para poder aplicar un bonus de **protección a daños del 30%**. Se les pondrá un icono a los armies que estén dentro del detection zone. La trinchera tiene capacidad **máx. 3** armies (eso es una propiedad de checkpoint)
+- **Trincheras**:  La clase trinchera usará el componente checkpoint. Gracias a esto, los pelones los cuales se mueven de checkpoint en checkpoint, se moverán de trinchera en trinchera. La trinchera puede acceder a las army estacionadas del checkpoint. Gracias a esto, la trinchera puede registrar ese army para poder aplicar un bonus de **protección a daños del 30%**. Se les pondrá un icono de un escudo a los armies que estén estacionados. La trinchera tiene capacidad **máx. 3** armies (eso es una propiedad de checkpoint)
 - **Bases**: Cada equipo tendrá una base que proteger. Estas bases tendrán componente de vida. Una vez destruida, su equipo perderá la partida.
 
 ---
@@ -217,11 +220,11 @@ Su propósito es servir como puntos de referencia o “nodos” por los que los 
 
 | Tipo              | Daño             | Vida x Soldado | Velocidad | Alcance | # Tropas | Notas |
 |-------------------|------------------|----------------|----------:|--------:|---------:|------|
-| **Infantería**    | 10               | 100            | 15        | 300     | 15       | Base |
-| **Asalto**        | 15               | 120            | 20        | 200     | 12       | Ideal asaltar |
+| **Infantería**    | 10               | 100            | 15        | 300     | 15       | Tropa Base |
+| **Asalto**        | 15               | 120            | 20        | 200     | 12       | Ideal para asaltar |
 | **Tanque Pesado** | 300 (área)       | 1000           | 8         | 350       | 2        | Prioriza tanques |
 | **Tanque Ligero** | 20               | 800             | 12        | 190       | 2        | Se usa para liderar la carga y absorber el daño |
-| **Francotirador** | 15             | 80              | 13         | 400       | 4        | Anti-artillería |
+| **Francotirador** | 15             | 80              | 13         | 400       | 4        | Unidad con mucho alcance |
 | **Apoyo/Médicos** | —                | —              | —         | —       | —        | No se va a implementar por falta sprites y tiempo |
 | **Granaderos**    | — (área)      | —              | —         | —       | —       |  No se va a implementar por falta sprites y tiempo |
 
@@ -287,8 +290,16 @@ Su propósito es servir como puntos de referencia o “nodos” por los que los 
 - Animación/estado de entrar a la trinchera y escalar la trinchera para salir.  
 
 ---
+## 9. Narrativa
+El juego se ambienta en una guerra ficticia inspirada en los conflictos de trincheras de principios del siglo XX.
+No hay héroes ni grandes estrategias, solo órdenes, barro y supervivencia. Cada avance cuesta vidas, y cada retirada, territorio.
+El jugador asume el papel de un comandante que intenta mantener la línea mientras todo a su alrededor se desmorona.
 
-## 10. Enlaces y Capturas
+## 10. Bocetos y Estado actual:
+
+
+
+## 11. Enlaces y Capturas
 - **Web pública (GitHub Pages):** [link](https://alvapina.github.io/CommandTheTrenchLine/) 
 - **Repositorio:** [link](https://github.com/AlvaPina/CommandTheTrenchLine)  
 
