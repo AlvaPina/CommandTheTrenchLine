@@ -2,6 +2,9 @@
 
 Bienvenido a **Command The Trench Line**, un juego de estrategia táctica de trincheras. Este proyecto es un trabajo universitario.
 
+## Documentación
+- 👉 [Game Design Document (GDD)](GDD.md)
+- 👉 [Assets / Dirección Artística](Assets.md)
 ---
 
 ## 📝 Descripción General
