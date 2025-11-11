@@ -38,7 +38,7 @@ header h1 {
 
 nav ul {
     list-style: none;
-    background-color: #000;
+    background-color: #1b1000;
     padding: 10px 0;
     border-radius: 5px;
 }
@@ -63,8 +63,7 @@ nav ul li a:hover {
     margin: 0 auto;
     width: 960px;
     height: 540px;
-    border: 10px solid #000;
-    background-color: #000;
+    background-color: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -73,7 +72,7 @@ nav ul li a:hover {
 .game-placeholder {
     width: 960px;
     height: 540px;
-    background-color: #444;
+    background-color: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -115,11 +114,45 @@ section::before {
     border: 3px solid #fff; /* Opcional: Agregar un borde blanco */
 }
 
-/* Background for How To Play section */
-#how-to-play::before {
-    background-size: cover;
-    background-position: center;
-    opacity: 0.5; /* Adjust the opacity */
+/* ===============================
+   FONDO NEGRO POR SECCIÓN
+   =============================== */
+
+/* Aplica un fondo negro translúcido a toda la sección */
+#game-description,
+#how-to-play {
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 16px;
+  padding: 40px 30px;
+  margin: 60px auto;
+  width: min(1200px, 95%);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+/* Mejora el título dentro del bloque */
+#game-description h2,
+#how-to-play h2 {
+  color: #fff;
+  font-size: 2.2rem;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  margin-bottom: 28px;
+  position: relative;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#game-description h2::after,
+#how-to-play h2::after {
+  content: "";
+  display: block;
+  height: 2px;
+  width: 60%;
+  margin: 8px auto 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
 }
 
 /* Transition for when section is in view */
@@ -127,16 +160,19 @@ section:hover::before {
     opacity: 0.7; /* Opacity when hovered */
 }
 
-/* Section Styling */
+/* Títulos de sección más “pro”, con subrayado tenue */
 section h2 {
-    font-size: 2em;
-    margin-bottom: 15px;
+  font-size: 2rem;
+  letter-spacing: .3px;
+  margin: 28px auto 18px;
+  position: relative;
+  width: fit-content;
 }
 
 section p {
     font-size: 1.2em;
     line-height: 1.6;
-    width: 70%;
+    width: auto;
     margin: 0 auto;
 }
 
@@ -149,29 +185,43 @@ section p {
 }
 
 .instruction {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 90%; /* Constrains the instruction width */
-    margin: 20px auto; /* Center the instruction with auto margin */
-    max-width: 1200px; /* Optional: Limit the width to prevent it from getting too large on wide screens */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 90%;
+  margin: 25px auto;
+  max-width: 1100px;
+  gap: 20px;
+  /* fondo eliminado (antes tenía negro semitransparente) */
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .instruction.reverse {
-    flex-direction: row-reverse; /* Ensures text is on the left and image on the right */
+  flex-direction: row-reverse;
 }
 
-.instruction-image {
-    width: 50%; /* Reduce the size of the images to 35% of the instruction container */
-    height: auto; /* Maintain aspect ratio */
-    border: 5px solid #000;
-}
-
+/* Texto */
 .instruction-text {
-    width: 55%; /* Text takes up more space than the image */
-    text-align: left;
-    font-size: 1.1em;
-    line-height: 1.4;
+  width: 55%;
+  text-align: left;
+}
+
+
+/* Texto */
+.instruction-text {
+  width: 55%;
+  text-align: left;
+}
+
+.instruction-text p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #f1f1f1;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+  margin: 0;
+  padding: 10px 0;
 }
 
 /* Footer */
@@ -182,4 +232,112 @@ footer {
 
 footer p {
     color: #bdc3c7;
+}
+
+:root {
+  --bg-url: none;
+  --bg-dim: 100vmax;           /* el lado del cuadrado = mayor dimensión del viewport */
+}
+
+/* Quitamos el background visual directo del body (lo usaremos como lienzo oscuro) */
+body#page-body {
+  background-color: #1b1000;
+  background-image: none !important;  /* por si el JS existente lo ponía */
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Capa fija que centra un CUADRADO que escala con el viewport */
+body#page-body::before {
+  content: "";
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: var(--bg-dim);
+  aspect-ratio: 1 / 1;              /* siempre cuadrado */
+  transform: translate(-50%, -50%);
+  background-image: var(--bg-url);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;         /* sin recortar ni deformar */
+  opacity: 0.9;                     /* controla presencia del arte */
+  z-index: -1;                      /* detrás del contenido */
+  pointer-events: none;
+  transition: background-image 300ms ease, opacity 300ms ease;
+  background-size: cover;      /* llena el cuadrado sin deformar (puede recortar) */
+}
+
+/* Oscurecido sutil global para legibilidad del contenido */
+body#page-body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(transparent 30%, rgba(27,16,0,.55) 70%);
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* Accesibilidad: si el usuario prefiere menos animación */
+@media (prefers-reduced-motion: reduce) {
+  body#page-body::before { transition: none; }
+}
+
+/* ===== Ajustes responsive mínimos y no intrusivos ===== */
+
+/* Header y marco del juego conservan tu layout, pero adaptan ancho en pantallas pequeñas */
+header {
+  width: min(760px, 100%);
+  padding: 12px;
+}
+
+.game-frame {
+  width: min(960px, 100%);
+  aspect-ratio: 16 / 9;          /* mantiene 16:9 sin deformarse */
+  height: auto;                  /* deja que la altura la calcule el aspect-ratio */
+  border: 10px solid #1b1000;
+  background: #1b1000;
+}
+
+/* El placeholder interno hereda el tamaño del marco */
+.game-placeholder, #game-placeholder {
+  width: 100%;
+  height: 100%;
+}
+
+/* Texto más legible sobre fondos oscuros */
+section p {
+  text-shadow: 0 1px 2px rgba(27,16,0,.55);
+}
+
+/* Imágenes de instrucciones: borde más suave y responsivo */
+.instruction-image {
+  width: 48%;
+  height: auto;
+  border: 4px solid #1b1000;
+  border-radius: 8px;
+}
+
+/* En móviles, apilar imagen y texto para mejor lectura */
+@media (max-width: 900px) {
+  .instruction,
+  .instruction.reverse {
+    flex-direction: column !important;
+    gap: 12px;
+  }
+  .instruction-image,
+  .instruction-text {
+    width: 100%;
+  }
+  section p {
+    width: 90%;
+  }
+}
+
+.game-frame canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
 }

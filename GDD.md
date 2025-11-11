@@ -266,6 +266,7 @@ Su propósito es servir como puntos de referencia o “nodos” por los que los 
 - Actualmente los soldados de las armies mueren antes de que la army se quede sin vida. Hay que cambiar la implementación del Life Component para que justo cuando muera el último soldado, la vida del army sea igual a 0. ✅  
 - Que muera el soldado que esté más adelantado con probabilidad 70% y 30% es aleatorio y no como lo hacen ahora que lo hacen de abajo a arriba y queda muy mal. ✅  
 - Sonidos, voces graciosas, más sprites necesarios, efectos (balas, explosiones etc). ✅  
+- Escalar y mejorar la web ✅  
 - Los sonidos deben reproducirse en una posición y tener en cuenta la lejanía de la cámara.  
 - Que las armies no se salgan del mapa. Para ello implementaremos la clase checkpoint nombrada anteriormente. Los checkpoints de los dos extremos (que no serán trincheras) no tendrán límite de armies que pueden estacionarse. De esta forma evitaremos que se salgan de la pantalla.  
 - Crear una clase trinchera en la que las armies puedan entrar y protegerse. Tendrá un límite de 3 armies dentro. El resto de armies que vayan llegando no podrán refugiarse si ya hay 3 y por tanto seguirán avanzando.  

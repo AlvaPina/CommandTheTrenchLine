@@ -48,7 +48,7 @@ export class LoadScene extends Phaser.Scene {
         this.load.spritesheet('infanterySoldierGreySheetDying', 'Assets/Images/SpriteSheets/Grey/Dead.png', { frameWidth: 256, frameHeight: 256 });
 
         //AUDIOS
-        this.load.audio('trailerBackgroundMusic', 'Assets/Audio/SendThemAllToTheTrench.mp3');
+        this.load.audio('trailerBackgroundMusic', 'Assets/Audio/MarchOfToys.mp3');
         this.load.audio('menuBackgroundMusic', 'Assets/Audio/EchoesOfTheTrenches.mp3');
         this.load.audio('finalSoundWin', 'Assets/Audio/Effects/FinalSoundWin.wav');
         this.load.audio('finalSoundGameOver', 'Assets/Audio/Effects/FinalSoundGameOver.wav');

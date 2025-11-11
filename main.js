@@ -3,30 +3,25 @@ const body = document.getElementById('page-body');
 
 // Configura diferentes fondos para cada sección
 const sectionImages = {
-    'home': 'url(Assets/Images/WebPage/Fondo1.jpg)',
-    'game-description': 'url(Assets/Images/WebPage/Fondo2.jpg)',
-    'how-to-play': 'url(Assets/Images/WebPage/Fondo3.jpg)',
+    'home': 'url(Assets/Images/WebPage/Fondo1.png)',
+    'game-description': 'url(Assets/Images/WebPage/Fondo2.png)',
+    'how-to-play': 'url(Assets/Images/WebPage/Fondo3.png)',
     'about-us': 'url(Assets/Images/WebPage/BlackBackground.png)'
 };
 
 // Función que cambia el fondo dependiendo de la sección activa
 function changeBackground(sectionId) {
-    if (sectionImages[sectionId]) {
-        body.style.backgroundImage = sectionImages[sectionId]; // Aplicar la imagen de fondo
-        body.style.backgroundColor = 'rgba(0, 0, 0, 0.7)'; // Superposición oscura
-        body.style.backgroundBlendMode = 'darken'; // Mezclar la superposición con la imagen
+  if (sectionImages[sectionId]) {
+      // En vez de escribir el background del body directamente,
+      // actualizamos una variable CSS que usa el ::before cuadrado.
+      document.documentElement.style.setProperty('--bg-url', sectionImages[sectionId]);
 
-        // Cambiar la propiedad background-size para hacer la imagen más pequeña
-        body.style.backgroundSize = '100%';  // Ajusta el tamaño de la imagen al 50% del contenedor
-        body.style.backgroundAttachment = 'fixed';
-        // Puedes cambiar '50%' por los valores que necesites, como '400px' para un tamaño fijo
-        // body.style.backgroundSize = '400px';  // Especificar tamaño fijo si es necesario
-
-        body.style.backgroundRepeat = 'no-repeat'; // Evita que la imagen se repita
-        body.style.backgroundPosition = 'center';  // Centrar la imagen en el fondo
-        body.style.transition = 'background-image 0.5s ease'; // Aplicar transición a la imagen de fondo
-    }
+      // Opcional: ligero fundido al cambiar de sección
+      body.style.transition = 'background-color 0.3s ease';
+      body.style.backgroundColor = '#0a0a0a';
+  }
 }
+
 
 // Función que determina la sección más cercana a la parte superior de la pantalla
 function getClosestSection() {

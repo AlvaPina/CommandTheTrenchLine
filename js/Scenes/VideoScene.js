@@ -35,7 +35,7 @@ export class VideoScene extends Phaser.Scene {
             // Mostrar y reproducir el video
             let introVideo = this.add.video(centerX, centerY, 'intro');
             introVideo.play(true);
-            introVideo.setScale(0.93);
+            introVideo.setScale(0.5);
 
             // Crear el boton de "Skip"
             let skipButton = this.add.text(centerX + 400, centerY + 200, 'Skip', {
@@ -48,14 +48,12 @@ export class VideoScene extends Phaser.Scene {
             // Saltar a la siguiente escena al hacer clic en "Skip"
             skipButton.on('pointerdown', () => {
                 introVideo.stop();
-                backgroundMusic.stop();
                 this.scene.start('MenuInicial');
             });
 
             // Si el video termina, siguiente escena
             introVideo.on('complete', () => {
                 introVideo.stop();
-                backgroundMusic.stop();
                 this.scene.start('MenuInicial');
             });
         });
