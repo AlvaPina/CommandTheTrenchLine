@@ -16,21 +16,21 @@ export class MenuInicial extends Phaser.Scene {
         videoMenu.play(true);
         videoMenu.setScale(0.6);
 
-        // Crear el boton de "New Game"
-        let playButton = this.add.text(centerX, centerY - 25, 'New Game', {
-            fontFamily: 'MyFont',
-            fontSize: '40px',
-            color: '#ffffff'
-        }).setOrigin(0.5);
+        // Crear el botón "New Game"
+        let playButton = this.add.image(centerX, centerY- 45, 'RectangleFrame').setScale(0.35).setOrigin(0.5);
+
+        let text = this.add.bitmapText(centerX, centerY - 50, 'SquadaOne', 'New Game', 50)
+            .setOrigin(0.5)
+            .setTintFill(0xffffff);
+
         playButton.setInteractive();
-        playButton.setScale(1.5);
 
         // Boton de continuar partida que no se implementara funcion por el momento
-        let continueButton = this.add.text(centerX, centerY + 40, 'Continue Game', {
-            fontFamily: 'MyFont',
-            fontSize: '40px',
-            color: '#a5a5a5'
-        }).setOrigin(0.5);
+        let continueButton = this.add.image(centerX, centerY+ 80, 'RectangleFrame').setScale(0.35).setOrigin(0.5);
+
+        let text2 = this.add.bitmapText(centerX, centerY + 72, 'SquadaOne', 'Continue Game', 35)
+            .setOrigin(0.5)
+            .setTintFill(0xa37e48);
 
         // Cuando se haga clic en el boton de "New Game"
         playButton.on('pointerdown', () => {

@@ -291,11 +291,10 @@ header {
 }
 
 .game-frame {
-  width: min(960px, 100%);
-  aspect-ratio: 16 / 9;          /* mantiene 16:9 sin deformarse */
-  height: auto;                  /* deja que la altura la calcule el aspect-ratio */
-  border: 10px solid #1b1000;
-  background: #1b1000;
+  max-width: 83%;               /* pero nunca más de 700px */
+  aspect-ratio: 16 / 9;
+  margin: 0 auto;                 /* centra el div horizontalmente */
+  display: block;
 }
 
 /* El placeholder interno hereda el tamaño del marco */

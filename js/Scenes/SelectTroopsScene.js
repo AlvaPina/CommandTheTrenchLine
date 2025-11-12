@@ -12,10 +12,12 @@ export class SelectTroopsScene extends Phaser.Scene {
         const centerX = this.cameras.main.centerX;
         const centerY = this.cameras.main.centerY;
 
-        this.add.image(centerX, centerY, 'troopSelectionBackground');
+        let offsetX = 195
+
+        this.add.image(centerX, centerY, 'troopSelectionBackground').setScale(0.65);
 
         // Infantery Button
-        let infanteryButton = this.add.image(centerX - 175, centerY + 190, 'InfanterySoldierButton').setScale(0.35);
+        let infanteryButton = this.add.image(centerX - offsetX, centerY + 190, 'InfanterySoldierButton').setScale(0.35);
         infanteryButton.setInteractive();
 
         infanteryButton.on('pointerdown', () => {
@@ -26,19 +28,32 @@ export class SelectTroopsScene extends Phaser.Scene {
         // Soon Troops
         let i = 1;
         while (i < 4) {
-            this.add.image(centerX - 175 + 130*i, centerY + 190, 'Soon').setScale(0.35);
+            this.add.image(centerX - offsetX + 130 * i, centerY + 190, 'SquareFrame').setScale(0.35);
+            this.add.bitmapText(centerX - offsetX + 130 * i, centerY + 185, 'SquadaOne', 'Soon', 40)
+                .setOrigin(0.5)
+                .setTintFill(0xa37e48);
             i++;
         }
 
         //ReadyButton
-        this.readyButton = this.add.image(centerX * 2 - 50, centerY * 2 - 50, 'Ready').setScale(0.35);
+
+        this.readyButton = this.add.image(centerX * 2 - 40, centerY * 2 - 40, 'Ready').setScale(0.35);
         this.readyButton.on('pointerdown', () => {
             this.scene.start('Gameplay', { equippedTroops: this.equipedTroops });
         });
+        this.readyText = this.add.bitmapText(centerX * 2 - 45, centerY * 2 - 65, 'SquadaOne', 'Ready!', 30)
+            .setOrigin(0.5)
+            .setTintFill(0xffffff);
         infanteryButton.setInteractive()
 
         this.gridGroup = this.add.group();
         this.renderGrid();
+
+        // Tittle
+        this.add.image(centerX, centerY - 190, 'RectangleFrame').setScale(0.6, 0.3);
+        this.add.bitmapText(centerX, centerY - 195, 'SquadaOne', 'Troop Selector', 60)
+            .setOrigin(0.5)
+            .setTintFill(0xffffff);
     }
 
     addTroop(type) {
@@ -57,9 +72,12 @@ export class SelectTroopsScene extends Phaser.Scene {
         let index = 0
         this.gridGroup.clear(true, true);
 
+        let gridSpace = 105;
+        let offsetX = 270;
+
         // Initial render
         while (index < 10) {
-            let empty = this.add.image(index % 5 * 100 + 300, Phaser.Math.FloorTo(index / 5) * 100 + 200, 'NoTroop').setScale(0.3);
+            let empty = this.add.image(index % 5 * gridSpace + offsetX, Phaser.Math.FloorTo(index / 5) * gridSpace + 200, 'NoTroop').setScale(0.3);
             this.gridGroup.add(empty);
             index++;
         }
@@ -68,7 +86,7 @@ export class SelectTroopsScene extends Phaser.Scene {
 
         // Render of troops
         this.equipedTroops.forEach(troop => {
-            let infanteryButton = this.add.image(index % 5 * 100 + 300, Phaser.Math.FloorTo(index / 5) * 100 + 200, troop).setScale(0.3);
+            let infanteryButton = this.add.image(index % 5 * gridSpace + offsetX, Phaser.Math.FloorTo(index / 5) * gridSpace + 200, troop).setScale(0.3);
             infanteryButton.setInteractive();
             this.gridGroup.add(infanteryButton);
 
@@ -84,10 +102,12 @@ export class SelectTroopsScene extends Phaser.Scene {
         if (this.equipedTroops.length < 1) {
             this.readyButton.disableInteractive()
             this.readyButton.setTint(0x555555);
+            this.readyText.setTintFill(0x555555);
         }
         else {
             this.readyButton.setInteractive()
             this.readyButton.clearTint();
+            this.readyText.setTintFill(0xffffff);
         }
     }
 }

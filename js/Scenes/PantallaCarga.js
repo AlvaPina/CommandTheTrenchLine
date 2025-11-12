@@ -32,6 +32,9 @@ export class LoadScene extends Phaser.Scene {
         this.load.image("InfanterySoldierButton", "Assets/Images/Gui/TroopSelector/InfanterySoldier.png");
         this.load.image("Ready", "Assets/Images/Gui/TroopSelector/Ready.png");
 
+        this.load.image("RectangleFrame", "Assets/Images/Gui/ButtonFrame.png");
+        this.load.image("SquareFrame", "Assets/Images/Gui/SquareFrame.png");
+
         //SPRITESHEETS
         this.load.spritesheet('infanterySoldierGreenSheetMoving', 'Assets/Images/SpriteSheets/Green/Run.png', { frameWidth: 256, frameHeight: 256 });
         this.load.spritesheet('infanterySoldierGreenSheetIdle', 'Assets/Images/SpriteSheets/Green/Idle.png', { frameWidth: 256, frameHeight: 256 });
@@ -60,6 +63,9 @@ export class LoadScene extends Phaser.Scene {
         this.load.audio('gunRifleShoot5', 'Assets/Audio/Effects/Shoots/Shoot5.MP3');
 
         this.load.audio('silbatoGuerra', 'Assets/Audio/Effects/SilbatoGuerra.MP3');
+
+        //FONTS
+        this.load.bitmapFont('SquadaOne', 'Assets/Fonts/SquadaOne.png', 'Assets/Fonts/SquadaOne.xml');
 
         //VIDEOS
         this.load.video({

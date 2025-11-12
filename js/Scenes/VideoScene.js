@@ -3,55 +3,44 @@ export class VideoScene extends Phaser.Scene {
         super({ key: 'VideoScene' });
     }
 
-    preload() {
-
-    }
-
     create() {
         // Centrar las posiciones en el canvas
         const centerX = this.cameras.main.centerX;
         const centerY = this.cameras.main.centerY;
 
-        // Crear el boton de "Play"
-        let playButton = this.add.text(centerX, centerY - 10, 'Play', {
-            fontFamily: 'MyFont',
-            fontSize: '40px',
-            color: '#ffffff'
-        }).setOrigin(0.5);
+        // Crear el botón "Play"
+        this.ButtonFrame = this.add.image(centerX, centerY, 'RectangleFrame').setScale(0.35).setOrigin(0.5);
+
+        let playButton = this.add.bitmapText(centerX, centerY - 10, 'SquadaOne', 'Play', 40)
+            .setOrigin(0.5)
+            .setTintFill(0xffffff);
+
         playButton.setInteractive();
         playButton.setScale(1.5);
 
-        // Musica
+        // Música
         const backgroundMusic = this.sound.add('trailerBackgroundMusic');
 
-        // Cuando se haga clic en el boton de "Play"
+        // Evento al pulsar "Play"
         playButton.on('pointerdown', () => {
-            // Reproducir música de fondo en bucle
             backgroundMusic.play({ loop: true });
 
-            // Ocultar el boton de "Play" y el texto
-            playButton.setVisible(false);
-
-            // Mostrar y reproducir el video
+            // Video intro
             let introVideo = this.add.video(centerX, centerY, 'intro');
             introVideo.play(true);
             introVideo.setScale(0.5);
 
-            // Crear el boton de "Skip"
-            let skipButton = this.add.text(centerX + 400, centerY + 200, 'Skip', {
-                fontFamily: 'MyFont',
-                fontSize: '40px',
-                color: '#ffffff'
-            }).setOrigin(0.5);
-            skipButton.setInteractive();
+            // Botón "Skip"
+            let skipButton = this.add.bitmapText(centerX + 400, centerY + 200, 'SquadaOne', 'Skip', 40)
+                .setOrigin(0.5)
+                .setTintFill(0xffffff)
+                .setInteractive();
 
-            // Saltar a la siguiente escena al hacer clic en "Skip"
             skipButton.on('pointerdown', () => {
                 introVideo.stop();
                 this.scene.start('MenuInicial');
             });
 
-            // Si el video termina, siguiente escena
             introVideo.on('complete', () => {
                 introVideo.stop();
                 this.scene.start('MenuInicial');
