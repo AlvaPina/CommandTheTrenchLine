@@ -209,6 +209,12 @@ Su propósito es servir como puntos de referencia o “nodos” por los que los 
 
     Las bases actúan sin límite de capacidad (`-1`) para evitar que los ejércitos puedan salirse del área jugable.
 
+- #### Métodos:
+    - `constructor(scene, x, y, object)`: object es el objeto de la escena que va a hacer de checkpoint.
+    - `getnextCheckPoint(dir)`: retorna el siguiente checkpoint al que ir dependiendo de la dirección.
+    - `getArmies()`: retorna las armies que están estacionadas/protegidas en ese checkpoint.
+    - `addArmie()`: añade una armie a la protección de la trinchera. Comprueba que no supere el límite.
+
 ### 4.7 Estructuras Especiales
 - **Trincheras**:  La clase trinchera usará el componente checkpoint. Gracias a esto, los pelones los cuales se mueven de checkpoint en checkpoint, se moverán de trinchera en trinchera. La trinchera puede acceder a las army estacionadas del checkpoint. Gracias a esto, la trinchera puede registrar ese army para poder aplicar un bonus de **protección a daños del 30%**. Se les pondrá un icono de un escudo a los armies que estén estacionados. La trinchera tiene capacidad **máx. 3** armies (eso es una propiedad de checkpoint)
 - **Bases**: Cada equipo tendrá una base que proteger. Estas bases tendrán componente de vida. Una vez destruida, su equipo perderá la partida.
