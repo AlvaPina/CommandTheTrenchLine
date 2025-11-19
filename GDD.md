@@ -31,7 +31,7 @@
 **Título:** *Command The Trench Line*  
 **Descripción breve:** Juego de **estrategia táctica** ambientado en trincheras. Controlas **pelotones (armies)** y tu objetivo es **destruir la base enemiga**. Hay diferentes tipos de tropas y debes gestionar el avance/retirada para coordinar la estrategia de juego.
 **Pilares:**
-- Decisiones rápidas de avance/retirada.
+- Decisiones rápidas de avance, retroceso y retirada.
 - Posicionamiento en trincheras (ventajas defensivas).
 - Composición de tropas (counter de tipos, alcance, velocidad).
 
@@ -71,17 +71,40 @@ Descripción: Esta pantalla sirve para que el jugador haga su primer click y pod
 **Pantalla de Vídeo**  
 Descripción: Vídeo introductorio épico con botón de "Skip" para iniciar. Debo generar un vídeo y música un poco mejores ya que el vídeo actual fue generado prácticamente con la primera IA que generaba vídeos y quedó algo obsoleto después de 1 año.
 
+<p align="left">
+  <img src="Assets/Images/GitHub/Video.png" width="400px">
+</p>
+
 **Pantalla de Menú**  
 Continue: (no se va a implementar)
 New Game: Inicia una nueva partida.  
 Ajustes: (Tampoco la voy a implementar)
 
+<p align="left">
+  <img src="Assets/Images/GitHub/Menu.png" width="400px">
+</p>
+
 **Pantalla de Selección de Tropas**  
-Mecánica de tipo "piedra, papel o tijera" con varios tipos de tropas que presentan ventajas y desventajas específicas entre ellas (se explica más adelante).
+El jugador pordrá elegir hasta 9 ejercitos para ir a la batalla. Mecánica de tipo "piedra, papel o tijera" con varios tipos de tropas que presentan ventajas y desventajas específicas entre ellas (se explica más adelante).
+
+<p align="left">
+  <img src="Assets/Images/GitHub/TroopSelector.png" width="400px">
+</p>
 
 ---
 
 ## 4. Gameplay
+
+<p align="left">
+  <img src="Assets/Images/GitHub/Gameplay.png" width="400px">
+</p>
+
+### Preparación de la partida:
+1) Las armies empiezan cada una detrás de su base.
+2) Mapa de batalla:
+  - Se compone de dos bases de equipo a cada lado del mapa.
+  -  Cada equipo, detrás de su base de equipo contiene una explanada plana y en el extremo del mapa unas tiendas de campaña a modo de hospital.
+  -  El resto del mapa, es decir, entre las dos bases de equipo, se encuentran las trincheras.
 
 ### 4.1 Control y Movimiento
 - **1–9**: seleccionar pelotón.
@@ -94,6 +117,7 @@ Mecánica de tipo "piedra, papel o tijera" con varios tipos de tropas que presen
 - **Tipos de daño:**
   - **Normal**: afectado por distancia y por nº de soldados vivos en el pelotón.
   - **Área**: se elige un humanoide enemigo (pseudo-aleatorio con precisión X) y aplica splash. Para esto se implementará una clase splash a la que se le indica la posición, radio de explosión y daño.
+- **Fórmula de daño:** Daño Total = Daño Base de la unidad * Multiplicador de Distancia * Número de soldados vivos.
 
 ### 4.3 Componentes
 #### LifeComponent: gestiona la vida y barra visual. Metodos para añadir vida
@@ -127,7 +151,7 @@ Mecánica de tipo "piedra, papel o tijera" con varios tipos de tropas que presen
     - `stopMovement()`: detiene el movimiento y pone direcciones a `0`.
 
 ### 4.4 Armies
-- **Descripción**: Será una composición de humanoides que recibirán órdenes. Visualmente es la banderita de la Army.
+- **Descripción**: Cada equipo podrá contar con hasta 9 armies. Será una composición de humanoides que recibirán órdenes. Visualmente es la banderita de la Army.
 - **Componentes**: 
     - Movement Component: para mover la bandera de la Army.
     - Life Component
@@ -217,7 +241,14 @@ Su propósito es servir como puntos de referencia o “nodos” por los que los 
 
 ### 4.7 Estructuras Especiales
 - **Trincheras**:  La clase trinchera usará el componente checkpoint. Gracias a esto, los pelones los cuales se mueven de checkpoint en checkpoint, se moverán de trinchera en trinchera. La trinchera puede acceder a las army estacionadas del checkpoint. Gracias a esto, la trinchera puede registrar ese army para poder aplicar un bonus de **protección a daños del 30%**. Se les pondrá un icono de un escudo a los armies que estén estacionados. La trinchera tiene capacidad **máx. 3** armies (eso es una propiedad de checkpoint)
-- **Bases**: Cada equipo tendrá una base que proteger. Estas bases tendrán componente de vida. Una vez destruida, su equipo perderá la partida.
+- **Bases**: Cada equipo tendrá una base que proteger. Estas bases tendrán componente de vida. Una vez destruida, su equipo perderá la partida. La escena del juego comprueba si el componente de vida llega a 0 para la condición de derrota y por tanto fin de juego.
+- **Tiendas de campaña / Hospital**: Las armies cuando huyen irán hasta esta zona la cual se encuentra en un extremo del mapa y se curarán ahí. Es un intercambio de tiempo por recuperación de vida. La recuperación de vida consiste en un 50% del daño recibido. Por ejemplo, si una armie llega con 30 de vida, quiere decir que el daño recibido (sobre 100) son 60 y por tanto la recuperación de la vida será de 30 lo que hará un total de 60 de vida cuando salga del hospital. Cada punto de vida es 1 segundo.
+
+### Boceto Estructuras y Checkpoints:
+
+<p align="left" style="margin-left:40px;">
+  <img src="Assets/Images/GitHub/BocetoEstructuras.png" width="400px">
+</p>
 
 ---
 
@@ -252,6 +283,7 @@ Su propósito es servir como puntos de referencia o “nodos” por los que los 
   - Tiny Armies - 2D Tiny Army Character Sprite
   - World War II Pixel Weapons Pack
 - **Animación**: Desplazamiento en capas, simulando profundidad. Low frame-rate hecha a mano.
+- **
 
 ---
 
@@ -259,9 +291,10 @@ Su propósito es servir como puntos de referencia o “nodos” por los que los 
 - Al bajar a **50%** y **25%** de vida: **50%** probabilidad de **retroceder**.
 - Tendencia general a **avanzar más que retroceder**. 
 - Adelantar tropas que **counterean** a las del rival; retrasar tropas en **desventaja**.
-- Dos perfiles básicos:
+- La IA registra lo fuerte que se siente en base a la vida de sus ejércitos.
+- Dos perfiles básicos. Cuando la IA se note fuerte optará por el agresivo.
   - **Agresivo**: avanza con mayor frecuencia.  
-  - **Defensivo**: retrocede más a menudo.
+  - **Defensivo**: retrocede más a menudo. Posición más defensiva, menos movimientos.
 - Como checkpoint devuelve las Army, si detecta que hay ya 3 en una trinchera les manda a los 3 a que ataquen.
 
 ---
@@ -284,6 +317,7 @@ Su propósito es servir como puntos de referencia o “nodos” por los que los 
 - Mejorar la GUI.  
 - Daño basado en la distancia, tipo y número de soldados.
 - Daño en area, crear la clase splash para generar explosiones en una posicion concreta.
+- Retirada de las armies al hospital y curación.
 - Es posible que conforme vaya desarrollando los hitos, surja algún otro que necesite.  
 
 **Opcional (cosas que no creo que vaya a hacer):**
@@ -302,12 +336,7 @@ El juego se ambienta en una guerra ficticia inspirada en los conflictos de trinc
 No hay héroes ni grandes estrategias, solo órdenes, barro y supervivencia. Cada avance cuesta vidas, y cada retirada, territorio.
 El jugador asume el papel de un comandante que intenta mantener la línea mientras todo a su alrededor se desmorona.
 
-## 10. Bocetos y Estado actual:
-
-
 
 ## 11. Enlaces y Capturas
 - **Web pública (GitHub Pages):** [link](https://alvapina.github.io/CommandTheTrenchLine/) 
 - **Repositorio:** [link](https://github.com/AlvaPina/CommandTheTrenchLine)  
-
-> **Créditos de assets**: ver [assets.md](./assets.md) (dirección artística y licencias).
