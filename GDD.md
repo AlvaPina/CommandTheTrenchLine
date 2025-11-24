@@ -59,6 +59,9 @@ Juego
    ├─ Carga / Intro / Menú
    └─ Selección de Tropas
 ```
+<p align="left" style="margin-left:40px;">
+  <img src="Assets/Images/GitHub/Esquema.png">
+</p>
 ---
 
 ## 3. Pantallas

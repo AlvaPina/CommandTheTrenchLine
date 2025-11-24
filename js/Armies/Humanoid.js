@@ -1,4 +1,4 @@
-import MovementComponent from './MovementComponent.js';
+import MovementComponent from './Movement/MovementComponent.js';
 
 export default class Humanoid extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, army) {

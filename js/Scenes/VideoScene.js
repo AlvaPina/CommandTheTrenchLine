@@ -30,6 +30,9 @@ export class VideoScene extends Phaser.Scene {
             introVideo.play(true);
             introVideo.setScale(0.5);
 
+            // Ocultar el boton de "Play" y el texto
+            playButton.setVisible(false);
+
             // Botón "Skip"
             let skipButton = this.add.bitmapText(centerX + 400, centerY + 200, 'SquadaOne', 'Skip', 40)
                 .setOrigin(0.5)

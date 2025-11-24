@@ -1,4 +1,3 @@
-// MovementComponent.js
 export default class MovementComponent {
     constructor(gameObject, speed) {
         this.gameObject = gameObject;

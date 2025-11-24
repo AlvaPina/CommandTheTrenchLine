@@ -1,5 +1,5 @@
 import LifeComponent from './LifeComponent.js';
-import MovementComponent from './MovementComponent.js';
+import MovementComponent from './Movement/MovementComponent.js';
 
 import { getRandomInt, delay } from '../utils.js';
 import Humanoid from './Humanoid.js';
