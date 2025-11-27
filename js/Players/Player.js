@@ -39,9 +39,9 @@ export default class Player {
             let moved = false;
 
             if (Phaser.Input.Keyboard.JustDown(this.cursors.right)) {
-                moved = selectedArmy.moveArmy(400);
+                moved = selectedArmy.moveArmyWithArrows('right');
             } else if (Phaser.Input.Keyboard.JustDown(this.cursors.left)) {
-                moved = selectedArmy.moveArmy(-400);
+                moved = selectedArmy.moveArmyWithArrows('left');
             }
 
             if (moved) {

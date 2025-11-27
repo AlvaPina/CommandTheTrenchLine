@@ -23,8 +23,8 @@ export default class Army extends Phaser.GameObjects.Container {
         this.ArmyAnimKey = config.ArmyAnimKey;
         this.x = xPos; this.y = 100;
 
-        this.targetX = xPos;
-
+        this.actualCheckpoint = scene.getRespawnCheckpoint(this.Team);
+        
         //Delays
         this.moveDelay = 1000; // Cooldown en milisegundos
         this.canMove = true;
@@ -106,7 +106,7 @@ export default class Army extends Phaser.GameObjects.Container {
                 const dx = enemyX - this.x; // distancia signed al enemigo
                 const absDx = Math.abs(dx);
                 const toEnemy = Math.sign(dx); // -1 si está a la izq, +1 si a la dcha
-                const intendedDir = Math.sign(movementX); // dirección deseada
+                const intendedDir = Math.sign(movementX - this.x); // dirección deseada
 
                 if (intendedDir !== 0 && toEnemy !== 0) {
                     // Bloquear sólo si está dentro de rango de visión
@@ -119,14 +119,23 @@ export default class Army extends Phaser.GameObjects.Container {
         // Movemos al Army
         this.setState('Moving');
         this.canMove = false;
-        this.targetX += movementX;
-        this.movementComponent.moveTo(this.targetX, this.y); // Actualizo posicion general de la army
-        this.ArmyMoveTo(this.targetX); // Actualizo la posicion de los soldados
+        this.movementComponent.moveTo(movementX, this.y); // Actualizo posicion general de la army
+        this.ArmyMoveTo(movementX); // Actualizo la posicion de los soldados
         setTimeout(() => { // Delay
             this.canMove = true;
         }, this.moveDelay);
 
         return true;
+    }
+
+    moveArmyWithArrows(arrow){ // para mover con la derecha o la izquierda, arrow: 'left' o 'right'
+        // Delay
+        if (!this.canMove) return;
+        let checkman = this.scene.getCheckpointManager();
+        let nextCheckpoint = checkman.getNextCheckpoint(this.actualCheckpoint, arrow);
+        if(nextCheckpoint == null) return;
+        this.actualCheckpoint = nextCheckpoint;
+        this.moveArmy(this.actualCheckpoint.getPosX());
     }
 
     // Envía una orden a todos los soldados

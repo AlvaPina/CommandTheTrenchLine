@@ -6,14 +6,14 @@ export default class CheckpointComponent {
         CheckpointManager.pushBack(this);
     }
 
-    getPosX(){ return this.posX; }
+    getPosX(){ return this.posX; } // acomodarlo para que devuelva la posicion teniendo en cuenta el posicion de orden y capacidad
 
     getContainedArmies(){ // devuelve los armies estacionados
         return this.armies;
     }
 
     checkAddArmy(army){ // comprueba si cabe otra army
-        if(this.armies.length() < this.maxArmyCapacity){
+        if(this.armies.length < this.maxArmyCapacity){
             this.armies.push(army);
         }
     }

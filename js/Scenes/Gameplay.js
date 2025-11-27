@@ -3,6 +3,8 @@ import TeamBase from '../Structures/TeamBase.js';
 import InfanteryArmy from '../Armies/Types/InfanteryArmy.js';
 import Player from '../Players/Player.js';
 import AI from '../Players/AI.js';
+import Checkpoint from '../Armies/Movement/Checkpoint.js';
+import CheckpointManager from '../Armies/Movement/CheckpointManager.js';
 
 export class Gameplay extends Phaser.Scene {
     constructor() {
@@ -35,6 +37,13 @@ export class Gameplay extends Phaser.Scene {
         this.ground = this.add.tileSprite(0, 0, gameWidth * 1.2, gameHeight, 'ground').setOrigin(0, 0);
         this.groundDecoration = this.add.tileSprite(0, 0, gameWidth * 1.2, gameHeight, 'groundDecoration').setOrigin(0, 0);
 
+        // Checkpoint Manager
+        this.checkpointMan = new CheckpointManager();
+
+        // Crear los dos checkpoints de reaparicion
+        this.greenRespawnCheckpoint = new Checkpoint(100, this.checkpointMan);
+        this.greyRespawnCheckpoint = new Checkpoint(1200, this.checkpointMan);
+
         // Crear Army de player y moverlos
         for (let i = 0; i < this.equippedTroops.length; i++) {
             let playerArmy = new InfanteryArmy(this, 300 + i * 25, i + 1, true);
@@ -59,6 +68,7 @@ export class Gameplay extends Phaser.Scene {
             let startX = 500;
             let xPosition = startX + i * 630;
             let trench = new Trench(this, xPosition, 360);
+            new Checkpoint(xPosition, this.checkpointMan, 3);
             this.trenches.push(trench);
         }
 
@@ -131,5 +141,13 @@ export class Gameplay extends Phaser.Scene {
             this.time.delayedCall(2000, () => { // 2 segundos de delay antes de saltar de pantalla
                 this.scene.start('GameOver', { result: gameOver });
             });
+    }
+
+    getRespawnCheckpoint(team){
+        return team ? this.greenRespawnCheckpoint : this.greyRespawnCheckpoint;
+    }
+
+    getCheckpointManager(){
+        return this.checkpointMan;
     }
 }
