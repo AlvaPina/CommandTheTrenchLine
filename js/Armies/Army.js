@@ -101,6 +101,17 @@ export default class Army extends Phaser.GameObjects.Container {
     moveArmy(movementX) {
         // Delay
         if (!this.canMove) return;
+        // Movemos al Army
+        this.setState('Moving');
+        this.canMove = false;
+        this.movementComponent.moveTo(movementX, this.y); // Actualizo posicion general de la army
+        this.ArmyMoveTo(movementX); // Actualizo la posicion de los soldados
+        setTimeout(() => { // Delay
+            this.canMove = true;
+        }, this.moveDelay);
+    }
+
+    moveArmyWithArrows(arrow){ // para mover con la derecha o la izquierda, arrow: 'left' o 'right'
         // No permitimos movimientos hacia el enemigo
         if (this.state === 'InCombat') {
             const enemy = this._getTargetEnemy(1.0);
@@ -119,26 +130,17 @@ export default class Army extends Phaser.GameObjects.Container {
                 }
             }
         }
-        // Movemos al Army
-        this.setState('Moving');
-        this.canMove = false;
-        this.movementComponent.moveTo(movementX, this.y); // Actualizo posicion general de la army
-        this.ArmyMoveTo(movementX); // Actualizo la posicion de los soldados
-        setTimeout(() => { // Delay
-            this.canMove = true;
-        }, this.moveDelay);
-
-        return true;
-    }
-
-    moveArmyWithArrows(arrow){ // para mover con la derecha o la izquierda, arrow: 'left' o 'right'
         // Delay
-        if (!this.canMove) return;
+        if (!this.canMove) return false;
         let checkman = this.scene.getCheckpointManager();
         let nextCheckpoint = checkman.getNextCheckpoint(this.actualCheckpoint, arrow);
-        if(nextCheckpoint == null) return;
-        this.actualCheckpoint = nextCheckpoint;
-        this.moveArmy(this.actualCheckpoint.getPosX());
+        if(nextCheckpoint == null) return false;
+        if(this.actualCheckpoint.checkAddArmy()){
+            this.actualCheckpoint = nextCheckpoint;
+            this.moveArmy(this.actualCheckpoint.getPosX());
+            return true;
+        }
+        return false;
     }
 
     // Envía una orden a todos los soldados
