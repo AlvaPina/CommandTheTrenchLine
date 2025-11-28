@@ -9,14 +9,13 @@ export default class AI {
         if (this.canInteract) {
             const armies = this.scene.getArmies(true).filter(a => !a.isDestroyed);
             if (armies.length === 0) return; // Por si no quedan army
-            const dir = Phaser.Math.Between(0, 2) === 0 ? 1 : -1; // 70% avanzar (1), 30% retroceder (-1)
-            const moveDistance = 400 * dir;
+            const dir = Phaser.Math.Between(0, 2) === 0 ? 'right' : 'left'; // 33% retroceder (right), 66% avanzar (left)
 
             // Intenta algunas veces por si el elegido no puede moverse (bloqueo por combate, cooldown, etc.)
             let moved = false;
             for (let i = 0; i < Math.min(3, armies.length); i++) {
                 const idx = Phaser.Math.Between(0, armies.length - 1);
-                if (armies[idx].moveArmy(moveDistance)) {
+                if (armies[idx].moveArmyWithArrows(dir)) {
                     moved = true;
                     break;
                 }

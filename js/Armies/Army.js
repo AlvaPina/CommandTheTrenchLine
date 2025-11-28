@@ -24,6 +24,7 @@ export default class Army extends Phaser.GameObjects.Container {
         this.x = xPos; this.y = 100;
 
         this.actualCheckpoint = scene.getRespawnCheckpoint(this.Team);
+        this.targetX = xPos;
         
         //Delays
         this.moveDelay = 1000; // Cooldown en milisegundos
@@ -87,6 +88,8 @@ export default class Army extends Phaser.GameObjects.Container {
             soldier.setScale(0.2);
             this.soldiers.push(soldier);
         }
+
+        this.moveArmy(this.actualCheckpoint.getPosX());
     }
 
     setState(newState) {

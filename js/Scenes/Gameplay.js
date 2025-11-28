@@ -47,7 +47,6 @@ export class Gameplay extends Phaser.Scene {
         // Crear Army de player y moverlos
         for (let i = 0; i < this.equippedTroops.length; i++) {
             let playerArmy = new InfanteryArmy(this, 300 + i * 25, i + 1, true);
-            playerArmy.moveArmy(150);
             this.playerArmies.push(playerArmy);
         }
 
@@ -55,7 +54,6 @@ export class Gameplay extends Phaser.Scene {
         // Crear Army de enemigo y moverlos
         for (let i = 0; i < this.numberOfEnemyArmies; i++) {
             let enemyArmy = new InfanteryArmy(this, 800 + i * 500, i + 1, false);
-            enemyArmy.moveArmy(-400);
             this.enemyArmies.push(enemyArmy);
         }
 
