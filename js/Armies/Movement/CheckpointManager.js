@@ -41,4 +41,33 @@ export default class CheckpointManager {
 
         return null; // por si pasan un side raro
     }
+
+    // NUEVO: devuelve el checkpoint inmediatamente a la izq/dcha de una posición X
+    getCheckpointFromPosAndSide(x, side, team) { // side: 'left' o 'right'
+        if (side === 'left') {
+            let candidate = null;
+            for (let i = 0; i < this.orderedCheckpoints.length; i++) {
+                const cp = this.orderedCheckpoints[i];
+                const cpX = cp.getPosX(team);
+                if (cpX < x) {
+                    candidate = cp; // el último menor es el más cercano por la izquierda
+                } else {
+                    break; // como están ordenados, ya no hay más a la izquierda
+                }
+            }
+            return candidate;
+        }
+
+        if (side === 'right') {
+            for (let i = 0; i < this.orderedCheckpoints.length; i++) {
+                const cp = this.orderedCheckpoints[i];
+                const cpX = cp.getPosX(team);
+                if (cpX > x) {
+                    return cp; // primer mayor: el más cercano por la derecha
+                }
+            }
+        }
+
+        return null;
+    }
 }

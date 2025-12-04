@@ -49,6 +49,9 @@ export default class Player {
                 this.scene.sound.play('silbatoGuerra', { volume: 0.5 });
                 setTimeout(() => this.canInteract = true, this.inputDelay);
             }
+            else{
+                // "Ya estamos intentando avanzar señor!"
+            }
         }
     }
 }

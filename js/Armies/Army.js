@@ -23,9 +23,10 @@ export default class Army extends Phaser.GameObjects.Container {
         this.ArmyAnimKey = config.ArmyAnimKey;
         this.x = xPos; this.y = 100;
 
-        this.actualCheckpoint = scene.getRespawnCheckpoint(this.Team);
+        this.actualCheckpoint = null;
+        this.targetCheckpoint = scene.getRespawnCheckpoint(this.Team);
         this.targetX = xPos;
-        
+
         //Delays
         this.moveDelay = 1000; // Cooldown en milisegundos
         this.canMove = true;
@@ -89,7 +90,7 @@ export default class Army extends Phaser.GameObjects.Container {
             this.soldiers.push(soldier);
         }
 
-        this.moveArmy(this.actualCheckpoint.getPosX());
+        this.moveArmy(this.targetCheckpoint.getPosX(this.Team));
     }
 
     setState(newState) {
@@ -111,36 +112,56 @@ export default class Army extends Phaser.GameObjects.Container {
         }, this.moveDelay);
     }
 
-    moveArmyWithArrows(arrow){ // para mover con la derecha o la izquierda, arrow: 'left' o 'right'
-        // No permitimos movimientos hacia el enemigo
+    moveArmyWithArrows(arrow) { // arrow: 'left' o 'right'
+        // 1) No permitimos movimientos hacia el enemigo cuando estamos en combate
         if (this.state === 'InCombat') {
             const enemy = this._getTargetEnemy(1.0);
             const enemyX = enemy ? enemy.x : null;
             if (enemyX != null) {
-                const dx = enemyX - this.x; // distancia signed al enemigo
+                const dx = enemyX - this.x;                 // distancia al enemigo
                 const absDx = Math.abs(dx);
-                const toEnemy = Math.sign(dx); // -1 si está a la izq, +1 si a la dcha
-                const intendedDir = Math.sign(movementX - this.x); // dirección deseada
+                const toEnemy = Math.sign(dx);              // -1 izq, +1 dcha
+                const intendedDir = (arrow === 'right') ? 1 : -1;
 
-                if (intendedDir !== 0 && toEnemy !== 0) {
-                    // Bloquear sólo si está dentro de rango de visión
-                    if (absDx <= this.distanceView && intendedDir === toEnemy) {
-                        return false; // cancelar la orden (no avanzar hacia el enemigo en combate)
-                    }
+                if (absDx <= this.distanceView && intendedDir === toEnemy) {
+                    return false; // no avanzamos hacia el enemigo en combate
                 }
             }
         }
-        // Delay
+
+        // 2) Cooldown
         if (!this.canMove) return false;
-        let checkman = this.scene.getCheckpointManager();
-        let nextCheckpoint = checkman.getNextCheckpoint(this.actualCheckpoint, arrow);
-        if(nextCheckpoint == null) return false;
-        if(this.actualCheckpoint.checkAddArmy()){
-            this.actualCheckpoint = nextCheckpoint;
-            this.moveArmy(this.actualCheckpoint.getPosX());
-            return true;
+
+        // 3) Calcular el siguiente checkpoint a partir de la posicion del ejercito, equipo y arrow input
+        
+        const checkman = this.scene.getCheckpointManager();
+        let nextCheckpoint = null;
+        if(this.actualCheckpoint === null){ // Si no esta en una trinchera
+            nextCheckpoint = checkman.getCheckpointFromPosAndSide(this.x, arrow, this.Team);
         }
-        return false;
+        else{ // Si se encuentra en una trinchera
+            nextCheckpoint = checkman.getNextCheckpoint(this.actualCheckpoint, arrow);
+        }
+
+        
+        if (!nextCheckpoint) return false; // no hay más trincheras en esa dirección
+
+        // 4) Si ya estoy yendo a ese checkpoint → mensaje y no hago nada
+        if (this.targetCheckpoint === nextCheckpoint) {
+            if (arrow === 'right') {
+                console.log("Ya estoy yendo a la derecha");
+            } else {
+                console.log("Ya estoy yendo a la izquierda");
+            }
+            return false;
+        }
+
+        // 5) Actualizar target y lanzar movimiento
+        this.targetCheckpoint = nextCheckpoint;
+        this.moveArmy(this.targetCheckpoint.getPosX(this.Team));
+        this.actualCheckpoint = null;
+
+        return true;
     }
 
     // Envía una orden a todos los soldados
@@ -374,10 +395,32 @@ export default class Army extends Phaser.GameObjects.Container {
                 }
                 break;
 
-            case 'Moving': // Puede recibir todo tipo de ordenes
-                this.movementComponent.movement();
-                break;
+ case 'Moving':
+            // Mover físicamente según MovementComponent
+            this.movementComponent.movement();
 
+            // Comprobar llegada al checkpoint objetivo (si hay)
+            if (this.targetCheckpoint) {
+                const cpX = this.targetCheckpoint.getPosX(this.Team);
+                const smallOffset = 10; // margen para considerar "he llegado"
+
+                if (Math.abs(this.x - cpX) <= smallOffset) {
+                    // Intentamos estacionar en la trinchera (capacidad)
+                    if (this.targetCheckpoint.checkAddArmy(this)) {
+                        // Ahora esta trinchera pasa a ser mi actualCheckpoint
+                        this.actualCheckpoint = this.targetCheckpoint;
+                    }
+
+                    // Ajustamos posición exacta al checkpoint
+                    this.x = cpX;
+                    this.ArmyMoveTo(cpX);
+
+                    // Reseteamos el target y pasamos a Idle
+                    this.targetCheckpoint = null;
+                    this.setState('Idle');
+                }
+            }
+            break;
             case 'Idle': // Puede recibir todo tipo de ordenes
                 break;
 
