@@ -141,6 +141,9 @@ export default class Army extends Phaser.GameObjects.Container {
         }
         else{ // Si se encuentra en una trinchera
             nextCheckpoint = checkman.getNextCheckpoint(this.actualCheckpoint, arrow);
+            //quitar el army de esa trinchera
+            this.actualCheckpoint.removeArmy(this);
+            this.actualCheckpoint = null;
         }
 
         
@@ -159,7 +162,6 @@ export default class Army extends Phaser.GameObjects.Container {
         // 5) Actualizar target y lanzar movimiento
         this.targetCheckpoint = nextCheckpoint;
         this.moveArmy(this.targetCheckpoint.getPosX(this.Team));
-        this.actualCheckpoint = null;
 
         return true;
     }

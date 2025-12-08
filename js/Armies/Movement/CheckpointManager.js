@@ -4,7 +4,8 @@ export default class CheckpointManager {
     }
 
     pushBack(checkpoint) { // insertamos de forma ordenada
-        let MyPosX = checkpoint.getPosX();
+        let MyPosX = checkpoint.posX;
+        console.log(checkpoint.posX)
         let i = 0;
 
         // Si orderedCheckpoints esta vacio metemos el primero
@@ -14,7 +15,7 @@ export default class CheckpointManager {
         }
 
         while (i < this.orderedCheckpoints.length) {
-            if (MyPosX < this.orderedCheckpoints[i].getPosX()) {
+            if (MyPosX < this.orderedCheckpoints[i].posX) {
                 this.orderedCheckpoints.splice(i, 0, checkpoint); // en el indice i, borramos 0 elementos y añadimos checkpoint
                 return;
             } i++;
