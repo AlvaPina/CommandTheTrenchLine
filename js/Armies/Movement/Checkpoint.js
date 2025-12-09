@@ -27,6 +27,11 @@ export default class Checkpoint {
         return -1;
     }
 
+    getSlotPosX(team, index) {
+        const spacingOffsetX = team ? -30 : 30;
+        return this.posX - spacingOffsetX + index * spacingOffsetX;
+    }
+
     getPosX(team) { // devuelve la posicion del hueco mas adeltando para ese equipo
         let spacingOffsetX = team ? -30 : 30; // esto es el espaceado entre los ejercitos dentro de la trinchera
 
@@ -35,7 +40,7 @@ export default class Checkpoint {
             return null;
         }
 
-        return this.posX - spacingOffsetX + index * spacingOffsetX;
+        return this.getSlotPosX(team, index);
     }
 
     getContainedArmies() { // devuelve los armies estacionados
@@ -44,9 +49,9 @@ export default class Checkpoint {
 
     checkAddArmy(army) { // comprueba si cabe otra army
         const index = this.getFirstFreeIndex();
-        if (index === -1) return false; // no habia hueco
+        if (index === -1) return -1; // no habia hueco
         this.armies[index] = army;
-        return true;
+        return index;
     }
 
     removeArmy(army) { // saca al army de la trinchera

@@ -90,7 +90,7 @@ export default class Army extends Phaser.GameObjects.Container {
             this.soldiers.push(soldier);
         }
 
-        this.moveArmy(this.targetCheckpoint.getPosX(this.Team));
+        this.moveArmy(this.targetCheckpoint.posX);
     }
 
     setState(newState) {
@@ -133,20 +133,20 @@ export default class Army extends Phaser.GameObjects.Container {
         if (!this.canMove) return false;
 
         // 3) Calcular el siguiente checkpoint a partir de la posicion del ejercito, equipo y arrow input
-        
+
         const checkman = this.scene.getCheckpointManager();
         let nextCheckpoint = null;
-        if(this.actualCheckpoint === null){ // Si no esta en una trinchera
+        if (this.actualCheckpoint === null) { // Si no esta en una trinchera
             nextCheckpoint = checkman.getCheckpointFromPosAndSide(this.x, arrow, this.Team);
         }
-        else{ // Si se encuentra en una trinchera
+        else { // Si se encuentra en una trinchera
             nextCheckpoint = checkman.getNextCheckpoint(this.actualCheckpoint, arrow);
             //quitar el army de esa trinchera
             this.actualCheckpoint.removeArmy(this);
             this.actualCheckpoint = null;
         }
 
-        
+
         if (!nextCheckpoint) return false; // no hay más trincheras en esa dirección
 
         // 4) Si ya estoy yendo a ese checkpoint → mensaje y no hago nada
@@ -161,7 +161,7 @@ export default class Army extends Phaser.GameObjects.Container {
 
         // 5) Actualizar target y lanzar movimiento
         this.targetCheckpoint = nextCheckpoint;
-        this.moveArmy(this.targetCheckpoint.getPosX(this.Team));
+        this.moveArmy(this.targetCheckpoint.posX);
 
         return true;
     }
@@ -397,32 +397,59 @@ export default class Army extends Phaser.GameObjects.Container {
                 }
                 break;
 
- case 'Moving':
-            // Mover físicamente según MovementComponent
-            this.movementComponent.movement();
+            case 'Moving':
+                // Mover físicamente según MovementComponent
+                this.movementComponent.movement();
 
-            // Comprobar llegada al checkpoint objetivo (si hay)
-            if (this.targetCheckpoint) {
-                const cpX = this.targetCheckpoint.getPosX(this.Team);
-                const smallOffset = 10; // margen para considerar "he llegado"
+                // Comprobar llegada al checkpoint objetivo (si hay)
+                if (this.targetCheckpoint) {
+                    // usamos SIEMPRE el centro de la trinchera para saber si hemos llegado
+                    const cpCenterX = this.targetCheckpoint.posX;
+                    const smallOffset = 10;
 
-                if (Math.abs(this.x - cpX) <= smallOffset) {
-                    // Intentamos estacionar en la trinchera (capacidad)
-                    if (this.targetCheckpoint.checkAddArmy(this)) {
-                        // Ahora esta trinchera pasa a ser mi actualCheckpoint
-                        this.actualCheckpoint = this.targetCheckpoint;
+                    if (Math.abs(this.x - cpCenterX) <= smallOffset) {
+                        const slotIndex = this.targetCheckpoint.checkAddArmy(this);
+
+                        // 1) Intentamos estacionar
+                        if (slotIndex !== -1) {
+                            // Hay hueco, nos quedamos en esta trinchera
+                            this.actualCheckpoint = this.targetCheckpoint;
+
+                            // Ahora sí, pillamos la X del hueco
+                            const slotX = this.targetCheckpoint.getSlotPosX(this.Team, slotIndex);
+                            if (slotX != null) {
+                                this.x = slotX;
+                                this.ArmyMoveTo(slotX);
+                            } else {
+                                // caso raro: se llenó justo en medio del proceso
+                                console.log("CASOOOOOO RAROOOOOOOOOOOOOO");
+                                this.x = cpCenterX;
+                                this.ArmyMoveTo(cpCenterX);
+                            }
+
+                            this.targetCheckpoint = null;
+                            this.setState('Idle');
+                        } else {
+                            // 2) Trinchera llena, vamos a la siguiente en la misma dirección
+                            const dir = Math.sign(this.movementComponent.getDirectionX() || (this.Team ? 1 : -1));
+                            const side = dir >= 0 ? 'right' : 'left';
+
+                            const checkman = this.scene.getCheckpointManager();
+                            const nextCp = checkman.getNextCheckpoint(this.targetCheckpoint, side);
+
+                            if (nextCp) {
+                                this.targetCheckpoint = nextCp;
+                                // IMPORTANTE: aquí usamos el centro de la trinchera como objetivo
+                                this.moveArmy(this.targetCheckpoint.posX);
+                            } else {
+                                // no hay más trincheras en esa dirección
+                                this.targetCheckpoint = null;
+                                this.setState('Idle');
+                            }
+                        }
                     }
-
-                    // Ajustamos posición exacta al checkpoint
-                    this.x = cpX;
-                    this.ArmyMoveTo(cpX);
-
-                    // Reseteamos el target y pasamos a Idle
-                    this.targetCheckpoint = null;
-                    this.setState('Idle');
                 }
-            }
-            break;
+                break;
             case 'Idle': // Puede recibir todo tipo de ordenes
                 break;
 

@@ -42,7 +42,7 @@ export class Gameplay extends Phaser.Scene {
 
         // Crear los dos checkpoints de reaparicion
         this.greenRespawnCheckpoint = new Checkpoint(100, this.checkpointMan);
-        this.greyRespawnCheckpoint = new Checkpoint(1200, this.checkpointMan);
+        this.greyRespawnCheckpoint = new Checkpoint(2800, this.checkpointMan);
 
         // Crear Army de player y moverlos
         for (let i = 0; i < this.equippedTroops.length; i++) {
@@ -50,10 +50,10 @@ export class Gameplay extends Phaser.Scene {
             this.playerArmies.push(playerArmy);
         }
 
-        this.numberOfEnemyArmies = 1;
+        this.numberOfEnemyArmies = 8;
         // Crear Army de enemigo y moverlos
         for (let i = 0; i < this.numberOfEnemyArmies; i++) {
-            let enemyArmy = new InfanteryArmy(this, 800 + i * 500, i + 1, false);
+            let enemyArmy = new InfanteryArmy(this, 2800 + i * 25, i + 1, false);
             this.enemyArmies.push(enemyArmy);
         }
 
