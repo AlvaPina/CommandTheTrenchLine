@@ -9,12 +9,12 @@ export default class InfanteryArmy extends Army {
         const config = {
             ArmyNumber : armyNumber,
             SoldierHealth: 100,
-            NumberOfSoldiers: 15,
-            ArmySpeed: 50,
-            DistanceView : 300,
+            NumberOfSoldiers: 4,
+            ArmySpeed: 45,
+            DistanceView : 400,
             ArmyTeam: team,
             ArmyAnimKey: 'infanterySoldier',
-            ImageKey : 'infanterySoldier'
+            ImageKey : 'sniperSoldier'
         };
         super(scene, x, config);
     }

@@ -20,8 +20,15 @@ export class LoadScene extends Phaser.Scene {
 
         this.load.image("infanterySoldierGreen", "Assets/Images/Gui/InfanteryIconGreen.png");
         this.load.image("medicSoldierGreen", "Assets/Images/Gui/MedicIconGreen.png");
+        this.load.image("sniperSoldierGreen", "Assets/Images/Gui/SniperIconGreen.png");
+        this.load.image("assaultSoldierGreen", "Assets/Images/Gui/AssaultIconGreen.png");
+        this.load.image("tankSoldierGreen", "Assets/Images/Gui/TankIconGreen.png");
+
         this.load.image("infanterySoldierGrey", "Assets/Images/Gui/InfanteryIconGrey.png");
-        this.load.image("medicSoldierGrey", "Assets/Images/Gui/MedicIconGreen.png");
+        this.load.image("medicSoldierGrey", "Assets/Images/Gui/MedicIconGrey.png");
+        this.load.image("infanterySoldierGrey", "Assets/Images/Gui/SniperIconGrey.png");
+        this.load.image("assaultSoldierGrey", "Assets/Images/Gui/AssaultIconGrey.png");
+        this.load.image("tankSoldierGrey", "Assets/Images/Gui/TankIconGrey.png");
 
         this.load.image("barGreen", "Assets/Images/Gui/GreenBarra.png");
         this.load.image("barGrey", "Assets/Images/Gui/GreyBarra.png");
@@ -30,6 +37,8 @@ export class LoadScene extends Phaser.Scene {
         this.load.image("NoTroop", "Assets/Images/Gui/TroopSelector/NoTroop.png");
         this.load.image("Soon", "Assets/Images/Gui/TroopSelector/Soon.png");
         this.load.image("InfanterySoldierButton", "Assets/Images/Gui/TroopSelector/InfanterySoldier.png");
+        this.load.image("SniperSoldierButton", "Assets/Images/Gui/TroopSelector/SniperSoldier.png");
+        this.load.image("AssaultSoldierButton", "Assets/Images/Gui/TroopSelector/AssaultSoldier.png");
         this.load.image("Ready", "Assets/Images/Gui/TroopSelector/Ready.png");
 
         this.load.image("RectangleFrame", "Assets/Images/Gui/ButtonFrame.png");

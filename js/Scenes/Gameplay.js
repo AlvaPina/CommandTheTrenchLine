@@ -1,6 +1,8 @@
 import Trench from '../Structures/Trench.js';
 import TeamBase from '../Structures/TeamBase.js';
 import InfanteryArmy from '../Armies/Types/InfanteryArmy.js';
+import SniperArmy from '../Armies/Types/SniperArmy.js';
+import AssaultArmy from '../Armies/Types/AssaultArmy.js';
 import Player from '../Players/Player.js';
 import AI from '../Players/AI.js';
 import Checkpoint from '../Armies/Movement/Checkpoint.js';
@@ -15,10 +17,26 @@ export class Gameplay extends Phaser.Scene {
     init(data) {
         // Cargamos la data previa
         this.equippedTroops = data.equippedTroops || ["InfanterySoldierButton"];
+        console.log(this.equippedTroops)
     }
 
     preload() {
         console.log("Inicia el Gameplay");
+    }
+
+    spawnArmy(nameType, posX, number, team) {
+        if (nameType === 'InfanterySoldierButton') {
+            let playerArmy = new InfanteryArmy(this, posX, number, team);
+            this.playerArmies.push(playerArmy);
+        }
+        else if(nameType === 'SniperSoldierButton'){
+            let playerArmy = new SniperArmy(this, posX, number, team);
+            this.playerArmies.push(playerArmy);
+        }
+        else if(nameType === 'AssaultSoldierButton'){
+            let playerArmy = new AssaultArmy(this, posX, number, team);
+            this.playerArmies.push(playerArmy);
+        }
     }
 
     create() {
@@ -46,8 +64,7 @@ export class Gameplay extends Phaser.Scene {
 
         // Crear Army de player y moverlos
         for (let i = 0; i < this.equippedTroops.length; i++) {
-            let playerArmy = new InfanteryArmy(this, 300 + i * 25, i + 1, true);
-            this.playerArmies.push(playerArmy);
+            this.spawnArmy(this.equippedTroops[i], 300 + i * 25, i + 1, true)
         }
 
         this.numberOfEnemyArmies = 8;
@@ -141,11 +158,11 @@ export class Gameplay extends Phaser.Scene {
             });
     }
 
-    getRespawnCheckpoint(team){
+    getRespawnCheckpoint(team) {
         return team ? this.greenRespawnCheckpoint : this.greyRespawnCheckpoint;
     }
 
-    getCheckpointManager(){
+    getCheckpointManager() {
         return this.checkpointMan;
     }
 }

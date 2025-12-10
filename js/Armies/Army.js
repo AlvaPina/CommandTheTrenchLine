@@ -34,9 +34,9 @@ export default class Army extends Phaser.GameObjects.Container {
 
         // Crear background y texto
         if (config.ArmyTeam) {
-            this.background = this.scene.add.image(0, 0, this.ArmyAnimKey + 'Green').setOrigin(0.5, 0.5);
+            this.background = this.scene.add.image(0, 0, config.ImageKey + 'Green').setOrigin(0.5, 0.5);
         } else {
-            this.background = this.scene.add.image(0, 0, this.ArmyAnimKey + 'Grey').setOrigin(0.5, 0.5);
+            this.background = this.scene.add.image(0, 0, config.ImageKey + 'Grey').setOrigin(0.5, 0.5);
         }
         this.background.setDisplaySize(100, 50);
 
