@@ -58,6 +58,7 @@ export default class Army extends Phaser.GameObjects.Container {
             offsetY: 0,
             background: this.background, // se la pasamos (por si mañana la quieres usar)
         });
+        this.maxHealth = ArmyHealth;
 
         this.isDestroyed = false;
 
@@ -113,7 +114,10 @@ export default class Army extends Phaser.GameObjects.Container {
     }
 
     moveArmyWithArrows(arrow) { // arrow: 'left' o 'right'
-        // 1) No permitimos movimientos hacia el enemigo cuando estamos en combate
+        // No te mueves si estas retirandote
+        if (this.state === 'Fleeing') return false;
+
+        // No permitimos movimientos hacia el enemigo cuando estamos en combate
         if (this.state === 'InCombat') {
             const enemy = this._getTargetEnemy(1.0);
             const enemyX = enemy ? enemy.x : null;
@@ -129,10 +133,10 @@ export default class Army extends Phaser.GameObjects.Container {
             }
         }
 
-        // 2) Cooldown
+        // Cooldown
         if (!this.canMove) return false;
 
-        // 3) Calcular el siguiente checkpoint a partir de la posicion del ejercito, equipo y arrow input
+        // Calcular el siguiente checkpoint a partir de la posicion del ejercito, equipo y arrow input
 
         const checkman = this.scene.getCheckpointManager();
         let nextCheckpoint = null;
@@ -149,7 +153,7 @@ export default class Army extends Phaser.GameObjects.Container {
 
         if (!nextCheckpoint) return false; // no hay más trincheras en esa dirección
 
-        // 4) Si ya estoy yendo a ese checkpoint → mensaje y no hago nada
+        // Si ya estoy yendo a ese checkpoint → mensaje y no hago nada
         if (this.targetCheckpoint === nextCheckpoint) {
             if (arrow === 'right') {
                 console.log("Ya estoy yendo a la derecha");
@@ -159,7 +163,7 @@ export default class Army extends Phaser.GameObjects.Container {
             return false;
         }
 
-        // 5) Actualizar target y lanzar movimiento
+        // Actualizar target y lanzar movimiento
         this.targetCheckpoint = nextCheckpoint;
         this.moveArmy(this.targetCheckpoint.posX);
 
@@ -188,6 +192,14 @@ export default class Army extends Phaser.GameObjects.Container {
 
     // Modificar vida del ejercito
     addHealth(amount) {
+        // en caso de restar vida mantener maxHealth actualizado
+        if (amount > 0) {
+            const newHealth = this.lifeComponent.health + amount;
+            if (newHealth > this.maxHealth) {
+                this.maxHealth = newHealth;
+            }
+        }
+
         this.lifeComponent.addHealth(amount);
         this._syncSoldiersWithHealth();    // bajas según vida
         if (this.lifeComponent.isDead()) {
@@ -337,6 +349,12 @@ export default class Army extends Phaser.GameObjects.Container {
         if (this.state !== this.previousState) {
             this.previousState = this.state;
 
+            if (this.state === 'Fleeing') {
+                this.targetCheckpoint = this.scene.getRespawnCheckpoint(this.Team);
+                this.movementComponent.moveTo(this.targetCheckpoint.posX, this.y);
+                this.ArmyMoveTo(this.targetCheckpoint.posX);
+            }
+
             if (this.state === 'InCombat') {
                 // Ordena atacar una única vez (cada soldado ya aplica su propio delay)
                 this.ArmyOrder('Attacking');
@@ -351,6 +369,8 @@ export default class Army extends Phaser.GameObjects.Container {
 
     // Actualiza el estado del ejército según si hay enemigos cerca o no
     updateState() {
+        if (this.state === 'Fleeing') return false;
+
         // 1) ¿Hay enemigo en rango normal? -> entrar/seguir en combate con ese objetivo
         const target = this._getTargetEnemy(1.0);
 
@@ -387,7 +407,7 @@ export default class Army extends Phaser.GameObjects.Container {
         this.updateState();
         this.onEnterState();
         this._updateOrientation(t);
-        //if(this.Team) console.log(this.movementComponent.getDirectionX());
+        if (this.Team) console.log(this.state);
 
 
         switch (this.state) {
@@ -454,7 +474,15 @@ export default class Army extends Phaser.GameObjects.Container {
                 break;
 
             case 'Fleeing': // No puede recibir ordenes
-                // mirar si ha llegado a la base, si ha llegado pasa a estado 'Idle' y por tanto ya se puede mover
+                this.movementComponent.movement();
+                // mirar si ha llegado a la base, si ha llegado pasa a estado 'Healing' y por tanto ya se puede mover
+                if (this.targetCheckpoint && Math.abs(this.x - this.targetCheckpoint.posX) <= 10) {
+                    this.setState('Healing');
+                }
+                break;
+            case 'Healing':
+                // contador, cada segundo 1 añade vida, comprueba si debe añadir humanoide y comprueba si ha llegado a la maxima vida que puede curar
+                // Cuando termina con este estado pasa a Idle y pone su checkpoint en el checkpoint inicial
                 break;
         }
     }

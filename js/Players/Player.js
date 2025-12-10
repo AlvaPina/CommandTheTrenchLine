@@ -15,6 +15,8 @@ export default class Player {
             nine: Phaser.Input.Keyboard.KeyCodes.NINE,
         });
 
+        this.spaceKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
         this.selectedNumber = 1; // Numero seleccionado
         this.inputDelay = 100; // Cooldown en milisegundos
         this.canInteract = true;
@@ -32,10 +34,15 @@ export default class Player {
     }
 
     update() {
+        this.armies = this.scene.getArmies(false);
+        const selectedArmy = this.armies[this.selectedNumber - 1];
+        if (!selectedArmy) return;
+
+        if (Phaser.Input.Keyboard.JustDown(this.spaceKey)) {
+            selectedArmy.setState('Fleeing');
+        }
+
         if (this.canInteract) {
-            this.armies = this.scene.getArmies(false);
-            const selectedArmy = this.armies[this.selectedNumber - 1];
-            if (!selectedArmy) return;
             let moved = false;
 
             if (Phaser.Input.Keyboard.JustDown(this.cursors.right)) {
@@ -48,9 +55,6 @@ export default class Player {
                 this.canInteract = false;
                 this.scene.sound.play('silbatoGuerra', { volume: 0.5 });
                 setTimeout(() => this.canInteract = true, this.inputDelay);
-            }
-            else{
-                // "Ya estamos intentando avanzar señor!"
             }
         }
     }
