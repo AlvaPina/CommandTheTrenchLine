@@ -33,6 +33,30 @@ export default class Army extends Phaser.GameObjects.Container {
         this.canMove = true;
         this.canChange = true;
 
+        // Voces
+        this.voiceAttackKeys = [
+            'voiceAttack1',
+            'voiceAttack2',
+            'voiceAttack3',
+            'voiceAttack4',
+            'voiceAttack5'
+        ];
+        this.voiceAdvanceKeys = [
+            'voiceAdvance1',
+            'voiceAdvance2',
+            'voiceAdvance3',
+            'voiceAdvance4'
+        ];
+        this.voiceDeathKeys = [
+            'voiceDeath1',
+            'voiceDeath2',
+            'voiceDeath3',
+            'voiceDeath4'
+        ];
+        this.voiceRetreatKey = 'voiceRetreat';
+        this.voiceAlreadyAdvancingKey = 'voiceAlreadyAdvancing';
+
+
         // Crear background y texto
         if (config.ArmyTeam) {
             this.background = this.scene.add.image(0, 0, config.ImageKey + 'Green').setOrigin(0.5, 0.5);
@@ -155,20 +179,21 @@ export default class Army extends Phaser.GameObjects.Container {
 
         if (!nextCheckpoint) return false; // no hay más trincheras en esa dirección
 
-        // Si ya estoy yendo a ese checkpoint → mensaje y no hago nada
+        // Si ya estoy yendo a ese checkpoint
         if (this.targetCheckpoint === nextCheckpoint) {
             if (arrow === 'right') {
                 console.log("Ya estoy yendo a la derecha");
             } else {
                 console.log("Ya estoy yendo a la izquierda");
             }
+            this.playVoice(this.voiceAlreadyAdvancingKey);
             return false;
         }
 
         // Actualizar target y lanzar movimiento
         this.targetCheckpoint = nextCheckpoint;
         this.moveArmy(this.targetCheckpoint.posX);
-
+        this.playRandomFrom(this.voiceAdvanceKeys);
         return true;
     }
 
@@ -379,8 +404,10 @@ export default class Army extends Phaser.GameObjects.Container {
 
             if (this.state === 'Fleeing') {
                 this.targetCheckpoint = this.scene.getRespawnCheckpoint(this.Team);
+                this.actualCheckpoint = this.scene.getRespawnCheckpoint(this.Team);
                 this.movementComponent.moveTo(this.targetCheckpoint.posX, this.y);
                 this.ArmyMoveTo(this.targetCheckpoint.posX);
+                this.playVoice(this.voiceRetreatKey);
             }
 
             if (this.state === 'Healing') {
@@ -390,6 +417,7 @@ export default class Army extends Phaser.GameObjects.Container {
             if (this.state === 'InCombat') {
                 // Ordena atacar una única vez (cada soldado ya aplica su propio delay)
                 this.ArmyOrder('Attacking');
+                this.playRandomFrom(this.voiceAttackKeys);
             }
 
             if (this.state === 'Idle' || this.state === 'InCombat') {
@@ -529,5 +557,18 @@ export default class Army extends Phaser.GameObjects.Container {
                 }
                 break;
         }
+    }
+
+    // Helpers sonido
+    playRandomFrom(keysArray) {
+        if (!this.Team || !keysArray || keysArray.length === 0) return;
+        const index = Phaser.Math.Between(0, keysArray.length - 1);
+        const key = keysArray[index];
+        this.scene.sound.play(key);
+    }
+
+    playVoice(key) {
+        if (!this.Team || !key) return;
+        this.scene.sound.play(key);
     }
 }

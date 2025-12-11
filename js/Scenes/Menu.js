@@ -40,7 +40,7 @@ export class MenuInicial extends Phaser.Scene {
             // Saltar a la siguiente escena al hacer clic en "New Game"
             videoMenu.stop();
 
-            // Detenemos (o hacemos fade) de la música del tráiler justo aquí
+            // Detenemos de la música del tráiler justo aquí
             const trailerBgm = this.sound.get('trailerBackgroundMusic');
             if (trailerBgm) {
                 trailerBgm.stop()

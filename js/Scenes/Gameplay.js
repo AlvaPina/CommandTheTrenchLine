@@ -48,6 +48,11 @@ export class Gameplay extends Phaser.Scene {
         const gameWidth = this.game.config.width;
         const gameHeight = this.game.config.height;
 
+        //Musica ambiente
+        const backgroundMusic = this.sound.add('gameplayBackgroundMusic');
+        backgroundMusic.setVolume(0.5);
+        backgroundMusic.play({ loop: true });
+
         // Crear capas de fondo para parallax
         this.sky = this.add.tileSprite(0, 0, gameWidth * 1.2, gameHeight, 'sky').setOrigin(0, 0);
         this.clouds = this.add.tileSprite(0, 20, gameWidth * 1.2, gameHeight, 'clouds').setOrigin(0, 0);

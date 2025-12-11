@@ -64,6 +64,7 @@ export class LoadScene extends Phaser.Scene {
         this.load.audio('menuBackgroundMusic', 'Assets/Audio/EchoesOfTheTrenches.mp3');
         this.load.audio('finalSoundWin', 'Assets/Audio/Effects/FinalSoundWin.wav');
         this.load.audio('finalSoundGameOver', 'Assets/Audio/Effects/FinalSoundGameOver.wav');
+        this.load.audio('gameplayBackgroundMusic', 'Assets/Audio/MusicAmbienceGameplay.m4a');
 
         this.load.audio('gunRifleShoot1', 'Assets/Audio/Effects/Shoots/Shoot1.MP3');
         this.load.audio('gunRifleShoot2', 'Assets/Audio/Effects/Shoots/Shoot2.MP3');
@@ -73,6 +74,29 @@ export class LoadScene extends Phaser.Scene {
 
         this.load.audio('silbatoGuerra', 'Assets/Audio/Effects/SilbatoGuerra.MP3');
 
+        // VOCES
+        // Ataques
+        this.load.audio('voiceAttack1', 'Assets/Audio/Effects/Voices/Ataque1.m4a');
+        this.load.audio('voiceAttack2', 'Assets/Audio/Effects/Voices/Ataque2.m4a');
+        this.load.audio('voiceAttack3', 'Assets/Audio/Effects/Voices/Ataque3.m4a');
+        this.load.audio('voiceAttack4', 'Assets/Audio/Effects/Voices/Ataque4.m4a');
+        this.load.audio('voiceAttack5', 'Assets/Audio/Effects/Voices/Ataque5.m4a');
+        // Avanzar
+        this.load.audio('voiceAdvance1', 'Assets/Audio/Effects/Voices/avanzar1.m4a');
+        this.load.audio('voiceAdvance2', 'Assets/Audio/Effects/Voices/avanzar2.m4a');
+        this.load.audio('voiceAdvance3', 'Assets/Audio/Effects/Voices/avanzar3.m4a');
+        this.load.audio('voiceAdvance4', 'Assets/Audio/Effects/Voices/avanzar4.m4a');
+        // Muertes
+        this.load.audio('voiceDeath1', 'Assets/Audio/Effects/Voices/muerte1.m4a');
+        this.load.audio('voiceDeath2', 'Assets/Audio/Effects/Voices/muerte2.m4a');
+        this.load.audio('voiceDeath3', 'Assets/Audio/Effects/Voices/muerte3.m4a');
+        this.load.audio('voiceDeath4', 'Assets/Audio/Effects/Voices/muerte4.m4a');
+        // Retirada
+        this.load.audio('voiceRetreat', 'Assets/Audio/Effects/Voices/retirada.m4a');
+        // Ya avanzando
+        this.load.audio('voiceAlreadyAdvancing', 'Assets/Audio/Effects/Voices/ya_avanzando.m4a');
+
+        
         //FONTS
         this.load.bitmapFont('SquadaOne', 'Assets/Fonts/SquadaOne.png', 'Assets/Fonts/SquadaOne.xml');
 
