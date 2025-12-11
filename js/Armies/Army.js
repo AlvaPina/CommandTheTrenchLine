@@ -58,8 +58,6 @@ export default class Army extends Phaser.GameObjects.Container {
             'voiceDeath4'
         ];
         this.voiceRetreatKey = 'voiceRetreat';
-        this.voiceAlreadyAdvancingKey = 'voiceAlreadyAdvancing';
-
 
         // Crear background y texto
         if (config.ArmyTeam) {
@@ -267,35 +265,47 @@ export default class Army extends Phaser.GameObjects.Container {
         this.destroy();
     }
 
-    // Devuelve el enemigo más cercano en base a distanceView * Factor
+    // Devuelve el enemigo más cercano (prioriza armies, luego bases) en base a distanceView * Factor
     // Factor que puede potenciar ese distanceView. Por ejemplo rangeFactor = 1.2
     // Factor = 1 no potencia ni disminuye distanceView.
     _getTargetEnemy(rangeFactor = 1) {
-        const enemies = this.scene.getArmies(this.Team).filter(a => !a.isDestroyed);
-        if (enemies.length === 0) return null;
-
         const maxDist = this.distanceView * rangeFactor;
         const facing = Math.sign(this.movementComponent.getDirectionX() ?? 0) || 0;
 
-        let best = null; // Mejor enemigo encontrado
-        let bestAbsDx = Infinity; // Su distancia absoluta
+        // Función interna para elegir el mejor objetivo de una lista
+        const pickBest = (targets) => {
+            let best = null; // Mejor enemigo encontrado
+            let bestAbsDx = Infinity; // Su distancia absoluta
 
-        for (let i = 0; i < enemies.length; i++) {
-            const e = enemies[i];
-            const dx = e.x - this.x; // Diferencia en X
-            const absDx = Math.abs(dx); // Valor absoluto
+            for (let i = 0; i < targets.length; i++) {
+                const e = targets[i];
+                const dx = e.x - this.x; // Diferencia en X
+                const absDx = Math.abs(dx); // Valor absoluto
 
-            // Debe estar dentro de rango y delante (mismo signo que el facing)
-            const dirToEnemy = Math.sign(dx);
-            const inFront = (facing === 0) ? true : (dirToEnemy === facing); // si no hay facing, no filtramos por delante
-            if (absDx <= maxDist && dirToEnemy !== 0 && inFront) {
-                if (absDx < bestAbsDx) {
-                    best = e;
-                    bestAbsDx = absDx;
+                // Debe estar dentro de rango y delante (mismo signo que el facing)
+                const dirToEnemy = Math.sign(dx);
+                const inFront = (facing === 0) ? true : (dirToEnemy === facing); // si no hay facing, no filtramos por delante
+                if (absDx <= maxDist && dirToEnemy !== 0 && inFront) {
+                    if (absDx < bestAbsDx) {
+                        best = e;
+                        bestAbsDx = absDx;
+                    }
                 }
             }
-        }
-        return best;
+            return best;
+        };
+
+        // 1) primero vemos las armies enemigas vivas
+        const enemyArmies = this.scene.getArmies(this.Team).filter(a => !a.isDestroyed);
+        const bestArmy = pickBest(enemyArmies);
+        if (bestArmy) return bestArmy;
+
+        // 2) Si no hay armies en rango, miramos si podemos atacar base enemiga
+        const bases = (this.scene.teamBases || []).filter(
+            b => b.armyTeam === !this.Team && !b.isDestroyed
+        );
+        const bestBase = pickBest(bases);
+        return bestBase || null;
     }
 
     // Actualiza la orientación del ejército para que mire al enemigo más cercano

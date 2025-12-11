@@ -29,11 +29,11 @@ export class Gameplay extends Phaser.Scene {
             let playerArmy = new InfanteryArmy(this, posX, number, team);
             this.playerArmies.push(playerArmy);
         }
-        else if(nameType === 'SniperSoldierButton'){
+        else if (nameType === 'SniperSoldierButton') {
             let playerArmy = new SniperArmy(this, posX, number, team);
             this.playerArmies.push(playerArmy);
         }
-        else if(nameType === 'AssaultSoldierButton'){
+        else if (nameType === 'AssaultSoldierButton') {
             let playerArmy = new AssaultArmy(this, posX, number, team);
             this.playerArmies.push(playerArmy);
         }
@@ -72,10 +72,10 @@ export class Gameplay extends Phaser.Scene {
             this.spawnArmy(this.equippedTroops[i], 300 + i * 25, i + 1, true)
         }
 
-        this.numberOfEnemyArmies = 8;
+        this.numberOfEnemyArmies = 1;
         // Crear Army de enemigo y moverlos
         for (let i = 0; i < this.numberOfEnemyArmies; i++) {
-            let enemyArmy = new InfanteryArmy(this, 2800 + i * 25, i + 1, false);
+            let enemyArmy = new InfanteryArmy(this, 3800 + i * 25, i + 1, false);
             this.enemyArmies.push(enemyArmy);
         }
 
@@ -162,6 +162,19 @@ export class Gameplay extends Phaser.Scene {
                 this.scene.start('GameOver', { result: gameOver });
             });
     }
+
+    onBaseDestroyed(base) {
+        const result = base.armyTeam ? 'lose' : 'win';
+
+        this.time.delayedCall(2000, () => { // 2 segundos de delay
+            this.scene.start('GameOver', { result });
+        });
+
+        const explosionSound = this.sound.add('explosion');
+        explosionSound.setVolume(0.7);
+        explosionSound.play();
+    }
+
 
     getRespawnCheckpoint(team) {
         return team ? this.greenRespawnCheckpoint : this.greyRespawnCheckpoint;
