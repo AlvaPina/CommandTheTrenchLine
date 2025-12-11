@@ -91,6 +91,10 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         this.setOrder('Moving', [targetX, targetY]);
     }
 
+    isDead(){
+        return this.state === 'Dying';
+    }
+
     die() {
         this.#setState('Dying');
         this.play(this.animKey + this.state);

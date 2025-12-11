@@ -13,6 +13,7 @@ export default class Army extends Phaser.GameObjects.Container {
         this.state = 'Idle';
 
         this.soldiers = []; // Contiene los soldados del army
+        this.deadSoldiers = []; // Contiene soldados muertos
 
         this.armyNumber = config.ArmyNumber;
         this.SoldierHealth = config.SoldierHealth;
@@ -58,7 +59,8 @@ export default class Army extends Phaser.GameObjects.Container {
             offsetY: 0,
             background: this.background, // se la pasamos (por si mañana la quieres usar)
         });
-        this.maxHealth = ArmyHealth;
+        this.maxHealth = ArmyHealth; // vida maxima que puede tener el army
+        this.maxDamageTaken = 0; // mayor daño acumulado sufrido en toda la partida
 
         this.isDestroyed = false;
 
@@ -192,15 +194,18 @@ export default class Army extends Phaser.GameObjects.Container {
 
     // Modificar vida del ejercito
     addHealth(amount) {
-        // en caso de restar vida mantener maxHealth actualizado
-        if (amount > 0) {
-            const newHealth = this.lifeComponent.health + amount;
-            if (newHealth > this.maxHealth) {
-                this.maxHealth = newHealth;
+        this.lifeComponent.addHealth(amount);
+
+        // Si hemos recibido daño, actualizamos el máximo daño sufrido
+        if (amount < 0) {
+            const currentHealth = this.lifeComponent.health;
+            const damageTakenNow = this.maxHealth - currentHealth;
+
+            if (damageTakenNow > this.maxDamageTaken) {
+                this.maxDamageTaken = damageTakenNow;
             }
         }
 
-        this.lifeComponent.addHealth(amount);
         this._syncSoldiersWithHealth();    // bajas según vida
         if (this.lifeComponent.isDead()) {
             this.armyDestroy();
@@ -292,6 +297,19 @@ export default class Army extends Phaser.GameObjects.Container {
         }
     }
 
+    reviveDeadSoldier() { // elije un soldado muerto y lo revive
+        if (this.deadSoldiers.length === 0) {
+            console.warn("No hay soldados muertos que revivir");
+            return;
+        }
+        let soldier = this.deadSoldiers.pop();
+
+        let newSoldier = new Humanoid(this.scene, this.x, soldier.y, this);
+        newSoldier.setDepth(soldier.y);
+        newSoldier.setScale(0.2);
+        this.soldiers.push(newSoldier);
+    }
+
     // Mantiene los soldados vivos alineados con la vida del Army
     _syncSoldiersWithHealth() {
         const healthPerSoldier = this.SoldierHealth;
@@ -301,9 +319,16 @@ export default class Army extends Phaser.GameObjects.Container {
 
         let toRemove = this.soldiers.length - expected;
 
+        // matar soldados
         while (toRemove > 0 && this.soldiers.length > 0) {
             this._killOnePorximitySoldier();
             toRemove--;
+        }
+
+        // revivir soldados
+        while (toRemove < 0 && this.soldiers.length < this.numberOfSoldiers) {
+            this.reviveDeadSoldier();
+            toRemove++;
         }
     }
 
@@ -336,7 +361,10 @@ export default class Army extends Phaser.GameObjects.Container {
 
         // Seleccionamos el soldado del array de soldiers con splice y lo matamos
         const [soldier] = this.soldiers.splice(indexToRemove, 1);
-        if (soldier) soldier.die();
+        if (soldier) {
+            soldier.die();
+            this.deadSoldiers.push(soldier);
+        }
     }
 
     // Devuelve el estado actual del ejército
@@ -355,6 +383,10 @@ export default class Army extends Phaser.GameObjects.Container {
                 this.ArmyMoveTo(this.targetCheckpoint.posX);
             }
 
+            if (this.state === 'Healing') {
+                this.healthTimeCount = 0;   // para contar milisegundos
+            }
+
             if (this.state === 'InCombat') {
                 // Ordena atacar una única vez (cada soldado ya aplica su propio delay)
                 this.ArmyOrder('Attacking');
@@ -370,6 +402,7 @@ export default class Army extends Phaser.GameObjects.Container {
     // Actualiza el estado del ejército según si hay enemigos cerca o no
     updateState() {
         if (this.state === 'Fleeing') return false;
+        if (this.state === 'Healing') return false;
 
         // 1) ¿Hay enemigo en rango normal? -> entrar/seguir en combate con ese objetivo
         const target = this._getTargetEnemy(1.0);
@@ -483,6 +516,17 @@ export default class Army extends Phaser.GameObjects.Container {
             case 'Healing':
                 // contador, cada segundo 1 añade vida, comprueba si debe añadir humanoide y comprueba si ha llegado a la maxima vida que puede curar
                 // Cuando termina con este estado pasa a Idle y pone su checkpoint en el checkpoint inicial
+                this.healthTimeCount += dt;
+                if (this.healthTimeCount > 10) {
+                    this.healthTimeCount = 0;
+                    // comprobamos si le podemos subir mas la vida
+                    let maxHealing = this.maxHealth - this.maxDamageTaken * 0.5; // se puede curar maximo 50% del daño maximo recibido
+                    if (this.lifeComponent.health + 1 > this.maxHealth || this.lifeComponent.health + 1 > maxHealing) {
+                        this.setState('Idle');
+                        return; // terminamo de curar
+                    }
+                    this.addHealth(1);
+                }
                 break;
         }
     }
