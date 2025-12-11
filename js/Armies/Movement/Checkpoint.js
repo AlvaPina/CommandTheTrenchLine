@@ -1,8 +1,9 @@
 export default class Checkpoint {
-    constructor(posX, CheckpointManager, maxArmyCapacity = -1) {
+    constructor(posX, CheckpointManager, protectionBonus = 0, maxArmyCapacity = -1) {
         this.posX = posX;
         this.maxArmyCapacity = maxArmyCapacity;
         this.armies = []; // armies estacionadas
+        this.protectionBonus = protectionBonus;
         CheckpointManager.pushBack(this);
     }
 
@@ -50,6 +51,7 @@ export default class Checkpoint {
     checkAddArmy(army) { // comprueba si cabe otra army
         const index = this.getFirstFreeIndex();
         if (index === -1) return -1; // no habia hueco
+        army.setProtectionBonuss(this.protectionBonus);
         this.armies[index] = army;
         return index;
     }
@@ -58,6 +60,7 @@ export default class Checkpoint {
         const index = this.armies.indexOf(army);
         if (index !== -1) {
             // dejamos el hueco libre
+            this.armies[index].setProtectionBonuss(0);
             this.armies[index] = null;
         }
     }

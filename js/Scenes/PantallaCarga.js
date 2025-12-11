@@ -43,6 +43,7 @@ export class LoadScene extends Phaser.Scene {
 
         this.load.image("RectangleFrame", "Assets/Images/Gui/ButtonFrame.png");
         this.load.image("SquareFrame", "Assets/Images/Gui/SquareFrame.png");
+        this.load.image("shield", "Assets/Images/Gui/Shield.png");
 
         //SPRITESHEETS
         this.load.spritesheet('infanterySoldierGreenSheetMoving', 'Assets/Images/SpriteSheets/Green/Run.png', { frameWidth: 256, frameHeight: 256 });

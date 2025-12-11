@@ -72,8 +72,14 @@ export default class Army extends Phaser.GameObjects.Container {
             color: '#fff'
         }).setOrigin(0.5, 0.5);
 
+        // Escudo proteccion
+        this.protectionBonus = 0; // se lo da las trincheras para reducir el daño
+        this.shieldImage = this.scene.add.image(45, -15, 'shield').setOrigin(0.5, 0.5);
+        this.shieldImage.setScale(0.05);
+        this.shieldImage.setVisible(false);
+
         // Agrupar en el contenedor (sin la barra, que ahora la crea LifeComponent)
-        this.add([this.background, this.armyText]);
+        this.add([this.background, this.armyText, this.shieldImage]);
 
         //Vida
         const ArmyHealth = this.SoldierHealth * this.numberOfSoldiers;
@@ -221,10 +227,13 @@ export default class Army extends Phaser.GameObjects.Container {
 
     // Modificar vida del ejercito
     addHealth(amount) {
-        this.lifeComponent.addHealth(amount);
+        let newAmount = amount;
+        if (amount < 0) { newAmount = amount * (100 - this.protectionBonus)/100; } // aplicamos bonus/escudo de proteccion
+
+        this.lifeComponent.addHealth(newAmount);
 
         // Si hemos recibido daño, actualizamos el máximo daño sufrido
-        if (amount < 0) {
+        if (newAmount < 0) {
             const currentHealth = this.lifeComponent.health;
             const damageTakenNow = this.maxHealth - currentHealth;
 
@@ -263,6 +272,15 @@ export default class Army extends Phaser.GameObjects.Container {
         this.scene.getArmies(!this.Team).pop(this.armyNumber)
         this.scene.checkGameOver()
         this.destroy();
+    }
+
+    setProtectionBonuss(amount){
+        if(this.protectionBonus === amount) return;
+        this.protectionBonus = amount;
+        if(amount > 0){ // activar imagen escudito
+            this.shieldImage.setVisible(true);
+        }
+        else this.shieldImage.setVisible(false);
     }
 
     // Devuelve el enemigo más cercano (prioriza armies, luego bases) en base a distanceView * Factor

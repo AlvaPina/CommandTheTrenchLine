@@ -88,7 +88,7 @@ export class Gameplay extends Phaser.Scene {
             let startX = 500;
             let xPosition = startX + i * 630;
             let trench = new Trench(this, xPosition, 360);
-            new Checkpoint(xPosition, this.checkpointMan, 3);
+            new Checkpoint(xPosition, this.checkpointMan, 30, 3);
             this.trenches.push(trench);
         }
 
