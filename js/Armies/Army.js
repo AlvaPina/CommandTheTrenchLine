@@ -285,7 +285,7 @@ export default class Army extends Phaser.GameObjects.Container {
                 // Debe estar dentro de rango y delante (mismo signo que el facing)
                 const dirToEnemy = Math.sign(dx);
                 const inFront = (facing === 0) ? true : (dirToEnemy === facing); // si no hay facing, no filtramos por delante
-                if (absDx <= maxDist && dirToEnemy !== 0 && inFront) {
+                if (absDx <= maxDist && inFront) {
                     if (absDx < bestAbsDx) {
                         best = e;
                         bestAbsDx = absDx;
