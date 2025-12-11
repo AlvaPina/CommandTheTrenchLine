@@ -34,6 +34,10 @@ export default class Army extends Phaser.GameObjects.Container {
         this.canChange = true;
 
         // Voces
+        this.voiceVolume = 0.5;
+        this.voiceAlreadyAdvancingKey = 'voiceAlreadyAdvancing';
+        this.voiceNextPlay = {}; // Cooldown por voz (en ms)
+
         this.voiceAttackKeys = [
             'voiceAttack1',
             'voiceAttack2',
@@ -186,7 +190,7 @@ export default class Army extends Phaser.GameObjects.Container {
             } else {
                 console.log("Ya estoy yendo a la izquierda");
             }
-            this.playVoice(this.voiceAlreadyAdvancingKey);
+            this.playVoice(this.voiceAlreadyAdvancingKey, 1500);
             return false;
         }
 
@@ -388,6 +392,7 @@ export default class Army extends Phaser.GameObjects.Container {
         const [soldier] = this.soldiers.splice(indexToRemove, 1);
         if (soldier) {
             soldier.die();
+            this.playRandomFrom(this.voiceDeathKeys);
             this.deadSoldiers.push(soldier);
         }
     }
@@ -560,15 +565,27 @@ export default class Army extends Phaser.GameObjects.Container {
     }
 
     // Helpers sonido
-    playRandomFrom(keysArray) {
+    playRandomFrom(keysArray, cooldownMs = 0) {
         if (!this.Team || !keysArray || keysArray.length === 0) return;
+
         const index = Phaser.Math.Between(0, keysArray.length - 1);
         const key = keysArray[index];
-        this.scene.sound.play(key);
+        this.playVoice(key, cooldownMs);
     }
 
-    playVoice(key) {
+    playVoice(key, cooldownMs = 0) {
         if (!this.Team || !key) return;
-        this.scene.sound.play(key);
+
+        // Comprobamos cooldown por key
+        const now = this.scene.time.now || 0;
+        const nextAllowed = this.voiceNextPlay[key] || 0;
+
+        if (now < nextAllowed) {
+            // todavía en cooldown, no sonamos
+            return;
+        }
+
+        this.voiceNextPlay[key] = now + cooldownMs;
+        this.scene.sound.play(key, { volume: this.voiceVolume });
     }
 }
