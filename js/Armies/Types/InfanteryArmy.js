@@ -12,6 +12,7 @@ export default class InfanteryArmy extends Army {
             NumberOfSoldiers: 15,
             ArmySpeed: 50,
             DistanceView : 300,
+            ArmyDamage : 1,
             ArmyTeam: team,
             ArmyAnimKey: 'infanterySoldier',
             ImageKey : 'infanterySoldier'

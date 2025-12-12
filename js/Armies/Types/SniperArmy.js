@@ -1,6 +1,6 @@
 import Army from "../Army.js";
 
-export default class InfanteryArmy extends Army {
+export default class SniperArmy extends Army {
 
     constructor(scene, x, armyNumber, team) {
         if (typeof team !== 'boolean') {
@@ -12,6 +12,7 @@ export default class InfanteryArmy extends Army {
             NumberOfSoldiers: 4,
             ArmySpeed: 45,
             DistanceView : 400,
+            ArmyDamage : 2,
             ArmyTeam: team,
             ArmyAnimKey: 'infanterySoldier',
             ImageKey : 'sniperSoldier'

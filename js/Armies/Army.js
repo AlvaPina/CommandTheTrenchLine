@@ -20,6 +20,7 @@ export default class Army extends Phaser.GameObjects.Container {
         this.numberOfSoldiers = config.NumberOfSoldiers;
         this.ArmySpeed = config.ArmySpeed;
         this.distanceView = config.DistanceView;
+        this.ArmyDamage = config.ArmyDamage;
         this.Team = config.ArmyTeam; // true es army de jugador
         this.ArmyAnimKey = config.ArmyAnimKey;
         this.x = xPos; this.y = 100;
@@ -299,6 +300,23 @@ export default class Army extends Phaser.GameObjects.Container {
         else this.hideIcon();
     }
 
+    _getDistanceMultiplier(enemy) {
+        const dx = Math.abs(enemy.x - this.x);
+
+        // Cerca(distancia 0): 1.0, Lejos(limite de vision): 0.5
+        const t = Phaser.Math.Clamp(dx / this.distanceView, 0, 1);
+        return Phaser.Math.Linear(1.0, 0.5, t);
+    }
+
+    getArmyDamage(enemy) {
+        const aliveSoldiers = this.soldiers.length;
+        if (aliveSoldiers === 0) return 0;
+
+        const distanceMultiplier = this._getDistanceMultiplier(enemy);
+        
+        return this.ArmyDamage * distanceMultiplier * aliveSoldiers / 10;
+    }
+
     // Devuelve el enemigo más cercano (prioriza armies, luego bases) en base a distanceView * Factor
     // Factor que puede potenciar ese distanceView. Por ejemplo rangeFactor = 1.2
     // Factor = 1 no potencia ni disminuye distanceView.
@@ -539,7 +557,8 @@ export default class Army extends Phaser.GameObjects.Container {
         switch (this.state) {
             case 'InCombat': // Solo puede recibir la orden de retirarse y de moverse para atras
                 if (this.currentEnemy && !this.currentEnemy.isDestroyed) {
-                    this.currentEnemy.addHealth(-1);
+                    const damage = this.getArmyDamage(this.currentEnemy);
+                    this.currentEnemy.addHealth(-damage);
                 }
                 break;
 

@@ -12,6 +12,7 @@ export default class AssaultArmy extends Army {
             NumberOfSoldiers: 10,
             ArmySpeed: 365,
             DistanceView : 200,
+            ArmyDamage : 1.25,
             ArmyTeam: team,
             ArmyAnimKey: 'infanterySoldier',
             ImageKey : 'assaultSoldier'
