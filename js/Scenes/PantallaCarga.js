@@ -8,12 +8,15 @@ export class LoadScene extends Phaser.Scene {
         this.load.image("ground", "Assets/Images/Map/Parallax/Ground.png");
         this.load.image("groundDecoration", "Assets/Images/Map/Parallax/GroundDecoration.png");
         this.load.image("sky", "Assets/Images/Map/Parallax/Sky.png");
+        this.load.image("rockLine", "Assets/Images/Map/Parallax/RockLine.png");
 
         this.load.image("trench", "Assets/Images/Map/Props/Trench.png");
         this.load.image("trench2", "Assets/Images/Map/Props/Trench2.png");
         this.load.image("fence", "Assets/Images/Map/Props/Fence.png");
         this.load.image("clouds", "Assets/Images/Map/Props/nube.png");
         this.load.image("trees", "Assets/Images/Map/Props/arboles.png");
+        this.load.image("hospitalGreen", "Assets/Images/Map/Props/HospitalGreen.png");
+        this.load.image("hospitalGrey", "Assets/Images/Map/Props/HospitalGrey.png");
 
         this.load.image("BaseGreen", "Assets/Images/Map/Props/BaseGreen.png");
         this.load.image("BaseGrey", "Assets/Images/Map/Props/BaseGrey.png");
@@ -44,6 +47,9 @@ export class LoadScene extends Phaser.Scene {
         this.load.image("RectangleFrame", "Assets/Images/Gui/ButtonFrame.png");
         this.load.image("SquareFrame", "Assets/Images/Gui/SquareFrame.png");
         this.load.image("shield", "Assets/Images/Gui/Shield.png");
+        this.load.image("flee", "Assets/Images/Gui/Flee.png");
+        this.load.image("healing", "Assets/Images/Gui/healing.png");
+        this.load.image("inCombat", "Assets/Images/Gui/InCombat.png");
 
         //SPRITESHEETS
         this.load.spritesheet('infanterySoldierGreenSheetMoving', 'Assets/Images/SpriteSheets/Green/Run.png', { frameWidth: 256, frameHeight: 256 });

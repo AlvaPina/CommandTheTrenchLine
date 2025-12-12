@@ -164,8 +164,10 @@ El jugador pordrá elegir hasta 9 ejercitos para ir a la batalla. Mecánica de t
   - El **último soldado** muere **solo cuando** la vida del Army llega a **0**.
 - **Herencia**: Los tipos de ejercitos heredan de la clase Army (se explican detalladamente más abajo)
 - **Estados**: función updateState(), enterState()
-  - `Idle`, `Moving`, `InCombat`
-  - En `InCombat`, no se puede ordenar movimiento **hacia** el enemigo (solo retirada/atrás).
+  - `Idle`, `Moving`, `InCombat`, `Fleeing`, `Healing`
+  - En `InCombat`, no se puede ordenar movimiento **hacia** el enemigo (solo atrás).
+  - En `Fleeing` y `Healing` no pueden recibir ordenes hasta que no termine de curarse.
+- **Iconos**: dan feedback al jugador sobre el estado del Army.
 - **Métodos**:
     - `constructor(scene, xPos, config)`: crea container, background, texto, componentes y spawnea humanoides.
     - `setState(newState)`: cambia el estado actual del Army.
@@ -309,19 +311,19 @@ Su propósito es servir como puntos de referencia o “nodos” por los que los 
 - Que muera el soldado que esté más adelantado con probabilidad 70% y 30% es aleatorio y no como lo hacen ahora que lo hacen de abajo a arriba y queda muy mal. ✅  
 - Sonidos, voces graciosas, más sprites necesarios, efectos (balas, explosiones etc). ✅  
 - Escalar y mejorar la web ✅  
-- Los sonidos deben reproducirse en una posición y tener en cuenta la lejanía de la cámara.  
-- Que las armies no se salgan del mapa. Para ello implementaremos la clase checkpoint nombrada anteriormente. Los checkpoints de los dos extremos (que no serán trincheras) no tendrán límite de armies que pueden estacionarse. De esta forma evitaremos que se salgan de la pantalla.  
-- Crear una clase trinchera en la que las armies puedan entrar y protegerse. Tendrá un límite de 3 armies dentro. El resto de armies que vayan llegando no podrán refugiarse si ya hay 3 y por tanto seguirán avanzando.  
+- Los sonidos deben reproducirse en una posición y tener en cuenta la lejanía de la cámara. 
+- Que las armies no se salgan del mapa. Para ello implementaremos la clase checkpoint nombrada anteriormente. Los checkpoints de los dos extremos (que no serán trincheras) no tendrán límite de armies que pueden estacionarse. De esta forma evitaremos que se salgan de la pantalla. ✅ 
+- Crear una clase trinchera en la que las armies puedan entrar y protegerse. Tendrá un límite de 3 armies dentro. El resto de armies que vayan llegando no podrán refugiarse si ya hay 3 y por tanto seguirán avanzando. ✅
 - Ahora mismo la IA solo mueve armies de forma aleatoria. Hay que mejorarla para que juegue mejor.  
-- Las bases destructibles para poder ganar. Para ello las armies deberán poder hacer daño a cualquier cosa que tenga LifeComponent (podemos poner un atributo de team a ese componente) y no como está ahora que simplemente busca armies.  
+- Las bases destructibles para poder ganar. Para ello las armies deberán poder hacer daño a cualquier cosa que tenga LifeComponent (podemos poner un atributo de team a ese componente) y no como está ahora que simplemente busca armies. ✅
 - Primera pantalla, en vez de "Play" mejor una anim chula de imagen desvaneciéndose y texto "Sonido Recomendado" y un botón de “Okay”.  
 - Nueva tropa “Tanque”. Dispara proyectiles explosivos. Cuando se queda sin proyectiles explosivos, sale un soldadito de arriba y comienza a disparar. El tanque debe hacer focus a otros tanques. Renta mandarlo asaltar una trinchera cuando está ya sin proyectiles explosivos ya que llegados a ese punto solo sirve de escudo humano.  
 - Otras tropas que usarán el mismo spritesheet que el de infantería pero le pondré iconos a cada uno para diferenciarlos. Implementaré tropas ya especificadas arriba como asalto, francotiradores, granaderos, etc.  
-- Mejorar la GUI.  
+- Mejorar la GUI. ✅
 - Daño basado en la distancia, tipo y número de soldados.
 - Daño en area, crear la clase splash para generar explosiones en una posicion concreta.
-- Retirada de las armies al hospital y curación.
-- Es posible que conforme vaya desarrollando los hitos, surja algún otro que necesite.  
+- Retirada de las armies al hospital y curación. ✅
+- Dar algo mas de feedback al jugador tanto con iconos al entrar en trincheras, retirarse, atacar y curarse como con las voces. ✅
 
 **Opcional (cosas que no creo que vaya a hacer):**
 - Las tropas tienen ahora una barra de munición debajo de la barra de vida.  

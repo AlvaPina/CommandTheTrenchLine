@@ -8,7 +8,6 @@ export default class Trench extends Phaser.GameObjects.Sprite {
 
         this.scene.physics.add.existing(this, true); // "true" lo hace estatico
 
-        this.setSize(this.width, this.height);
         this.setOrigin(0.5, 0.5);
     }
 

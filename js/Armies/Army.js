@@ -74,12 +74,14 @@ export default class Army extends Phaser.GameObjects.Container {
 
         // Escudo proteccion
         this.protectionBonus = 0; // se lo da las trincheras para reducir el daño
-        this.shieldImage = this.scene.add.image(45, -15, 'shield').setOrigin(0.5, 0.5);
-        this.shieldImage.setScale(0.05);
-        this.shieldImage.setVisible(false);
+
+        this.statusIcon = this.scene.add.image(45, -15, 'shield').setOrigin(0.5, 0.5);
+        this.statusIcon.setScale(0.05);
+        this.statusIcon.setVisible(false);
+        this.iconKey = null;
 
         // Agrupar en el contenedor (sin la barra, que ahora la crea LifeComponent)
-        this.add([this.background, this.armyText, this.shieldImage]);
+        this.add([this.background, this.armyText, this.statusIcon]);
 
         //Vida
         const ArmyHealth = this.SoldierHealth * this.numberOfSoldiers;
@@ -228,7 +230,7 @@ export default class Army extends Phaser.GameObjects.Container {
     // Modificar vida del ejercito
     addHealth(amount) {
         let newAmount = amount;
-        if (amount < 0) { newAmount = amount * (100 - this.protectionBonus)/100; } // aplicamos bonus/escudo de proteccion
+        if (amount < 0) { newAmount = amount * (100 - this.protectionBonus) / 100; } // aplicamos bonus/escudo de proteccion
 
         this.lifeComponent.addHealth(newAmount);
 
@@ -274,13 +276,27 @@ export default class Army extends Phaser.GameObjects.Container {
         this.destroy();
     }
 
-    setProtectionBonuss(amount){
-        if(this.protectionBonus === amount) return;
-        this.protectionBonus = amount;
-        if(amount > 0){ // activar imagen escudito
-            this.shieldImage.setVisible(true);
+    setIcon(key) {
+        if (!key) return this.hideIcon();
+        if (this.iconKey !== key) {
+            this.statusIcon.setTexture(key);
+            this.iconKey = key;
         }
-        else this.shieldImage.setVisible(false);
+        this.statusIcon.setVisible(true);
+    }
+
+    hideIcon() {
+        this.statusIcon.setVisible(false);
+        this.iconKey = null;
+    }
+
+    setProtectionBonuss(amount) {
+        if (this.protectionBonus === amount) return;
+        this.protectionBonus = amount;
+        if (amount > 0) { // activar imagen escudito
+            this.setIcon('shield');
+        }
+        else this.hideIcon();
     }
 
     // Devuelve el enemigo más cercano (prioriza armies, luego bases) en base a distanceView * Factor
@@ -436,19 +452,30 @@ export default class Army extends Phaser.GameObjects.Container {
             this.previousState = this.state;
 
             if (this.state === 'Fleeing') {
-                this.targetCheckpoint = this.scene.getRespawnCheckpoint(this.Team);
-                this.actualCheckpoint = this.scene.getRespawnCheckpoint(this.Team);
+                // Si estaba estacionado en una trinchera, lo sacamos de la trinchera
+                if (this.actualCheckpoint) {
+                    this.actualCheckpoint.removeArmy(this);
+                    this.actualCheckpoint = null;
+                }
+                // Actualizamos targetCheckpoint y actualCheckpoint porque doy por hecho que va a llegar al
+                // checkpoint de hospital ya que no hay nada que pueda cambiar eso, al retirarse no se
+                // procesa ya mas input y debe ir si o si alli. Por eso pongo actualCheckpoint con ese valor ya
+                this.targetCheckpoint = this.scene.getHospitalCheckpoint(this.Team);
+                this.actualCheckpoint = this.scene.getHospitalCheckpoint(this.Team);
                 this.movementComponent.moveTo(this.targetCheckpoint.posX, this.y);
                 this.ArmyMoveTo(this.targetCheckpoint.posX);
                 this.playVoice(this.voiceRetreatKey);
+                this.setIcon('flee');
             }
 
             if (this.state === 'Healing') {
                 this.healthTimeCount = 0;   // para contar milisegundos
+                this.setIcon('healing');
             }
 
             if (this.state === 'InCombat') {
                 // Ordena atacar una única vez (cada soldado ya aplica su propio delay)
+                this.setIcon('inCombat');
                 this.ArmyOrder('Attacking');
                 this.playRandomFrom(this.voiceAttackKeys);
             }
@@ -456,6 +483,11 @@ export default class Army extends Phaser.GameObjects.Container {
             if (this.state === 'Idle' || this.state === 'InCombat') {
                 this._refreshFacingToNearestEnemy();
                 this._nextFacingAt = 0; // refresco rápido la primera vez
+            }
+
+            if (this.state === 'Idle') {
+                if (this.protectionBonus > 0) this.setIcon('shield');
+                else this.hideIcon();
             }
         }
     }

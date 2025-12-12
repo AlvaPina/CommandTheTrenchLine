@@ -1,5 +1,6 @@
 import Trench from '../Structures/Trench.js';
 import TeamBase from '../Structures/TeamBase.js';
+import Hospital from '../Structures/Hospital.js';
 import InfanteryArmy from '../Armies/Types/InfanteryArmy.js';
 import SniperArmy from '../Armies/Types/SniperArmy.js';
 import AssaultArmy from '../Armies/Types/AssaultArmy.js';
@@ -47,6 +48,7 @@ export class Gameplay extends Phaser.Scene {
 
         const gameWidth = this.game.config.width;
         const gameHeight = this.game.config.height;
+        this.worldWidth = gameWidth * 5;
 
         //Musica ambiente
         const backgroundMusic = this.sound.add('gameplayBackgroundMusic');
@@ -54,28 +56,40 @@ export class Gameplay extends Phaser.Scene {
         backgroundMusic.play({ loop: true });
 
         // Crear capas de fondo para parallax
-        this.sky = this.add.tileSprite(0, 0, gameWidth * 1.2, gameHeight, 'sky').setOrigin(0, 0);
-        this.clouds = this.add.tileSprite(0, 20, gameWidth * 1.2, gameHeight, 'clouds').setOrigin(0, 0);
-        this.trees = this.add.tileSprite(0, 40, gameWidth * 1.2, gameHeight, 'trees').setOrigin(0, 0);
-        this.ground = this.add.tileSprite(0, 0, gameWidth * 1.2, gameHeight, 'ground').setOrigin(0, 0);
-        this.groundDecoration = this.add.tileSprite(0, 0, gameWidth * 1.2, gameHeight, 'groundDecoration').setOrigin(0, 0);
+        this.sky = this.add.tileSprite(0, 0, this.worldWidth, gameHeight, 'sky').setOrigin(0, 0);
+        this.clouds = this.add.tileSprite(0, 20, this.worldWidth, gameHeight, 'clouds').setOrigin(0, 0);
+        this.trees = this.add.tileSprite(0, 40, this.worldWidth, gameHeight, 'trees').setOrigin(0, 0);
+        this.ground = this.add.tileSprite(0, 0, this.worldWidth, gameHeight, 'ground').setOrigin(0, 0);
+        this.groundDecoration = this.add.tileSprite(0, 0, this.worldWidth, gameHeight, 'groundDecoration').setOrigin(0, 0);
 
         // Checkpoint Manager
         this.checkpointMan = new CheckpointManager();
 
-        // Crear los dos checkpoints de reaparicion
-        this.greenRespawnCheckpoint = new Checkpoint(100, this.checkpointMan);
-        this.greyRespawnCheckpoint = new Checkpoint(2800, this.checkpointMan);
+        // Crear los dos checkpoints de reaparicion y alguna decoracion para la zona de respawn
+        this.greenRespawnCheckpoint = new Checkpoint(500, this.checkpointMan);
+        this.greyRespawnCheckpoint = new Checkpoint(4300, this.checkpointMan);
+
+        // rockLines y fences
+        this.add.image(550, 360, 'rockLine');
+        this.add.image(4250, 360, 'rockLine');
+        this.add.image(320, 160, 'fence');
+        this.add.image(4480, 160, 'fence');
+
+        // Crear los dos checkpoints de hospital
+        let playerHospitalPosX = 100;
+        let enemyHospitalPosX = 4700;
+        this.greenHospitalCheckpoint = new Checkpoint(playerHospitalPosX, this.checkpointMan);
+        this.greyHospitalCheckpoint = new Checkpoint(enemyHospitalPosX, this.checkpointMan);
 
         // Crear Army de player y moverlos
         for (let i = 0; i < this.equippedTroops.length; i++) {
-            this.spawnArmy(this.equippedTroops[i], 300 + i * 25, i + 1, true)
+            this.spawnArmy(this.equippedTroops[i], playerHospitalPosX + i * 25, i + 1, true)
         }
 
         this.numberOfEnemyArmies = 1;
         // Crear Army de enemigo y moverlos
         for (let i = 0; i < this.numberOfEnemyArmies; i++) {
-            let enemyArmy = new InfanteryArmy(this, 2800 + i * 25, i + 1, false);
+            let enemyArmy = new InfanteryArmy(this, enemyHospitalPosX + i * 25, i + 1, false);
             this.enemyArmies.push(enemyArmy);
         }
 
@@ -85,7 +99,7 @@ export class Gameplay extends Phaser.Scene {
 
         // Crear trincheras
         for (let i = 0; i < 4; i++) {
-            let startX = 500;
+            let startX = 1450;
             let xPosition = startX + i * 630;
             let trench = new Trench(this, xPosition, 360);
             new Checkpoint(xPosition, this.checkpointMan, 30, 3);
@@ -93,14 +107,18 @@ export class Gameplay extends Phaser.Scene {
         }
 
         // Crear las dos bases
-        let PlayerBase = new TeamBase(this, 100, 360, true);
+        let PlayerBase = new TeamBase(this, 790, 360, true);
         this.teamBases.push(PlayerBase);
-        let EnemyBase = new TeamBase(this, 2800, 360, false);
+        let EnemyBase = new TeamBase(this, 4000, 360, false);
         this.teamBases.push(EnemyBase);
+
+        // Crear los dos hospitales
+        let PlayerHospital = new Hospital(this, playerHospitalPosX, 360, true);
+        let EnemyHospital = new Hospital(this, enemyHospitalPosX, 360, false);
 
         // Configurar camara
         this.cameraSpeed = 7; // Velocidad de movimiento de la camara
-        this.cameras.main.setBounds(0, 0, gameWidth * 3, gameHeight); // Ajustar los limites de la camara
+        this.cameras.main.setBounds(0, 0, this.worldWidth, gameHeight); // Ajustar los limites de la camara
 
         // Configurar las teclas de entrada
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -140,7 +158,7 @@ export class Gameplay extends Phaser.Scene {
         if (pointer.x <= screenWidth * 0.1) {
             this.cameras.main.scrollX = Math.max(0, this.cameras.main.scrollX - this.cameraSpeed);
         } else if (pointer.x >= screenWidth * 0.9) {
-            this.cameras.main.scrollX = Math.min(this.game.config.width * 3 - screenWidth, this.cameras.main.scrollX + this.cameraSpeed);
+            this.cameras.main.scrollX = Math.min(this.worldWidth - screenWidth, this.cameras.main.scrollX + this.cameraSpeed);
         }
 
         // Actualizar jugador y IA
@@ -178,6 +196,10 @@ export class Gameplay extends Phaser.Scene {
 
     getRespawnCheckpoint(team) {
         return team ? this.greenRespawnCheckpoint : this.greyRespawnCheckpoint;
+    }
+
+    getHospitalCheckpoint(team){
+        return team ? this.greenHospitalCheckpoint : this.greyHospitalCheckpoint;
     }
 
     getCheckpointManager() {
