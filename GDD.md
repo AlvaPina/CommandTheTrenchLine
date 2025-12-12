@@ -37,7 +37,7 @@
 
 ---
 ## 2. Esquema / Mapa Visual
-- [Mapa Visual (Click)](https://lucid.app/lucidspark/a2e86426-1e05-4f65-b270-78839354f714/edit?viewport_loc=-998%2C-24%2C3107%2C2158%2CgHjjwlkrc_Jt&invitationId=inv_3b6cdbfa-b7d0-4974-9222-9df48437eda9)
+- [Mapa Visual/Arquitectura (Click)](https://lucid.app/lucidspark/b199ce75-16a2-4367-bb7c-02310af99a1b/edit?viewport_loc=-611%2C-139%2C5246%2C2513%2CgHjjwlkrc_Jt&invitationId=inv_0a35ce45-5fb9-4f64-a0cc-a690eb3825fb)
 ```text
 Juego
 ├─ Armies (con diferentes clases que heredan)
@@ -293,7 +293,7 @@ Su propósito es servir como puntos de referencia o “nodos” por los que los 
 ---
 
 ## 8. IA
-- Al bajar a **50%** y **25%** de vida: **50%** probabilidad de **retroceder**.
+- Al bajar a **50%** y **25%** de vida: **50%** probabilidad de **retirada**.
 - Tendencia general a **avanzar más que retroceder**. 
 - Adelantar tropas que **counterean** a las del rival; retrasar tropas en **desventaja**.
 - La IA registra lo fuerte que se siente en base a la vida de sus ejércitos.
@@ -301,6 +301,7 @@ Su propósito es servir como puntos de referencia o “nodos” por los que los 
   - **Agresivo**: avanza con mayor frecuencia.  
   - **Defensivo**: retrocede más a menudo. Posición más defensiva, menos movimientos.
 - Como checkpoint devuelve las Army, si detecta que hay ya 3 en una trinchera les manda a los 3 a que ataquen.
+- Juega con el mismo numero de ejercitos que tu. Si eliges 3, ella juega con 3.
 
 ---
 
@@ -318,9 +319,9 @@ Su propósito es servir como puntos de referencia o “nodos” por los que los 
 - Las bases destructibles para poder ganar. Para ello las armies deberán poder hacer daño a cualquier cosa que tenga LifeComponent (podemos poner un atributo de team a ese componente) y no como está ahora que simplemente busca armies. ✅
 - Primera pantalla, en vez de "Play" mejor una anim chula de imagen desvaneciéndose y texto "Sonido Recomendado" y un botón de “Okay”.  
 - Nueva tropa “Tanque”. Dispara proyectiles explosivos. Cuando se queda sin proyectiles explosivos, sale un soldadito de arriba y comienza a disparar. El tanque debe hacer focus a otros tanques. Renta mandarlo asaltar una trinchera cuando está ya sin proyectiles explosivos ya que llegados a ese punto solo sirve de escudo humano.  
-- Otras tropas que usarán el mismo spritesheet que el de infantería pero le pondré iconos a cada uno para diferenciarlos. Implementaré tropas ya especificadas arriba como asalto, francotiradores, granaderos, etc.  
+- Otras tropas que usarán el mismo spritesheet que el de infantería pero le pondré iconos a cada uno para diferenciarlos. Implementaré tropas ya especificadas arriba como asalto, francotiradores, granaderos, etc. ✅
 - Mejorar la GUI. ✅
-- Daño basado en la distancia, tipo y número de soldados.
+- Daño basado en la distancia, tipo y número de soldados. ✅
 - Daño en area, crear la clase splash para generar explosiones en una posicion concreta.
 - Retirada de las armies al hospital y curación. ✅
 - Dar algo mas de feedback al jugador tanto con iconos al entrar en trincheras, retirarse, atacar y curarse como con las voces. ✅
@@ -341,6 +342,8 @@ El juego se ambienta en una guerra ficticia inspirada en los conflictos de trinc
 No hay héroes ni grandes estrategias, solo órdenes, barro y supervivencia. Cada avance cuesta vidas, y cada retirada, territorio.
 El jugador asume el papel de un comandante que intenta mantener la línea mientras todo a su alrededor se desmorona.
 
+## 10. Gameplay Video
+- [GameplayVideo (Click)](https://youtu.be/m7nuxFr0Tqs)
 
 ## 11. Enlaces y Capturas
 - **Web pública (GitHub Pages):** [link](https://alvapina.github.io/CommandTheTrenchLine/) 
