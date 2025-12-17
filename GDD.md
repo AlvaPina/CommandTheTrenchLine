@@ -47,7 +47,8 @@ Juego
 │
 ├─ Estructuras
 │  ├─ Trincheras (capacidad 3; bonus defensa)
-│  └─ Bases (destructibles; condición de derrota)
+│  ├─ Bases (destructibles; condición de derrota)
+│  └─ Hospital (donde la army se puede curar tras retirarse)
 │
 ├─ Sistemas
 │  ├─ Sonido (posicional, volumen por cámara)
@@ -121,37 +122,21 @@ El jugador pordrá elegir hasta 9 ejercitos para ir a la batalla. Mecánica de t
   - **Normal**: afectado por distancia y por nº de soldados vivos en el pelotón.
   - **Área**: se elige un humanoide enemigo (pseudo-aleatorio con precisión X) y aplica splash. Para esto se implementará una clase splash a la que se le indica la posición, radio de explosión y daño.
 - **Fórmula de daño:** Daño Total = Daño Base de la unidad * Multiplicador de Distancia * Número de soldados vivos.
+- La distancia de disparo es prolongada a modo de bonificador cuando un enemigo huye.​
 
 ### 4.3 Componentes
 #### LifeComponent: gestiona la vida y barra visual. Metodos para añadir vida
-- **Constructor**
-    - `new LifeComponent(initialHealth, owner, cfg = {})`
-        - `initialHealth`: vida inicial y máxima.
-        - `owner`: objeto dueño (puede ser `Phaser.GameObjects.Container` o `Sprite`).
-        - `cfg.team` (bool): determina el color de barra (`barGreen`/`barGrey`).
-        - `cfg.barWidth`, `cfg.barHeight`: tamaño visual de la barra.
-        - `cfg.offsetX`, `cfg.offsetY`: desplazamiento de la barra respecto al owner.
-- **API pública**
-    - `addHealth(amount)`: suma/resta vida (clampa a `[0, initialHealth]`) y refresca la barra.
-    - `setHealth(value)`: fija la vida a un valor concreto (clampeado) y refresca la barra.
-    - `isDead()`: `true` si la vida ≤ 0.
-    - `getRatio()`: vida normalizada en `[0, 1]`.
-    - `destroy()`: destruye la barra y desuscribe el seguimiento si aplica.
+- Controla la vida actual y máxima de un objeto del juego.
+- Actualiza automáticamente la barra de vida según el estado.
+- Permite recibir daño o curación de forma uniforme.
+- Detecta cuándo la vida llega a cero para activar su destrucción.
+- Puede reutilizarse tanto en ejércitos como en estructuras.
 
 #### MovementComponent: calcula direcciones normalizadas y velocidades según deltaTime.
-- **Constructor**
-    - `new MovementComponent(gameObject, speed)`
-        - `gameObject`: sprite o container a mover.
-        - `speed`: unidades por segundo.
-- **API pública**
-    - `moveTo(x, y)`: establece objetivo y calcula dirección inicial.
-    - `movement()`: avanza hacia el objetivo según `speed * deltaTime`. Si está a < 1px, limpia objetivo.
-    - `updateDistanceAndDirection()`: recalcula `distance`, `directionX`, `directionY` (normaliza y evita división por 0).
-    - `soldierOrientation(direction, team)`: devuelve `1` o `-1` para orientar (p. ej. hacia “EnemyBase” / “TeamBase” según el equipo).
-    - `getDirectionX()`: dirección X actual (útil para “facing” y lógica de combate).
-    - `setDirection(newDir)`: fuerza la dirección X (p. ej. mirar hacia el enemigo).
-    - `getTargetPosition()`: devuelve `{x, y}` o `null` si no hay objetivo.
-    - `stopMovement()`: detiene el movimiento y pone direcciones a `0`.
+- Mueve objetos hacia una posición objetivo usando velocidad y tiempo real.
+- Calcula direcciones normalizadas para el movimiento.
+- Permite cambiar o cancelar destinos dinámicamente.
+- Proporciona información de orientación para animaciones y combate.
 
 ### 4.4 Armies
 - **Descripción**: Cada equipo podrá contar con hasta 9 armies. Será una composición de humanoides que recibirán órdenes. Visualmente es la banderita de la Army.
@@ -168,27 +153,19 @@ El jugador pordrá elegir hasta 9 ejercitos para ir a la batalla. Mecánica de t
   - En `InCombat`, no se puede ordenar movimiento **hacia** el enemigo (solo atrás).
   - En `Fleeing` y `Healing` no pueden recibir ordenes hasta que no termine de curarse.
 - **Iconos**: dan feedback al jugador sobre el estado del Army.
-- **Métodos**:
-    - `constructor(scene, xPos, config)`: crea container, background, texto, componentes y spawnea humanoides.
-    - `setState(newState)`: cambia el estado actual del Army.
-    - `moveArmy(movementX) -> boolean`: mueve el Army en **X** (con cooldown).  
-        - Devuelve **false** si intenta **avanzar hacia el enemigo** estando en `InCombat` a distancia de visión.
-    - `ArmyOrder(newOrder)`: envía una **orden** a **todos** los humanoides (p. ej. `'Attacking'`).
-    - `ArmyMoveTo(targetX)`: ordena a todos los humanoides moverse a `targetX`.
-    - `groupArmy()`: (placeholder) reagrupación futura.
-    - `addHealth(amount)`: suma/resta vida del Army y sincroniza bajas; si muere, llama a `armyDestroy()`.
-    - `updateHealthBar()`: (legacy visual) ajusta la barra; actualmente la lleva `LifeComponent`.
-    - `getConfig() -> { speed, animKey, team }`: datos para construir Humanoids.
-    - `armyDestroy()`: marca destruido, lo saca de listas de escena y chequea `GameOver`.
-    - `_getTargetEnemy(rangeFactor=1)`: enemigo **más cercano** dentro de rango `distanceView * factor` y **delante** del facing.
-    - `_refreshFacingToNearestEnemy()`: ajusta facing hacia el enemigo más cercano (o por defecto: jugador mira +1, enemigo -1).
-    - `_updateOrientation(t)`: **cooldown** para refrescar facing en `Idle` / `InCombat`.
-    - `_syncSoldiersWithHealth()`: calcula soldados esperados con `ceil(health / SoldierHealth)` y elimina exceso.
-    - `_killOnePorximitySoldier()`: elimina **uno** con sesgo hacia el **más adelantado** (70% frente, 30% random).
-    - `getArmyState()`: devuelve el estado actual.
-    - `onEnterState()`: lógica al **entrar** a un estado (p. ej. al pasar a `InCombat` → ordena `'Attacking'`).
-    - `updateState()`: FSM simple; entra/sale de `InCombat` según detección en `_getTargetEnemy()`.
-    - `preUpdate(t, dt)`: tick del Army (IA básica, movimiento y daño “tick” al enemigo actual).
+- **Comportamiento del Army**:
+  - Gestiona el estado general del pelotón (reposo, movimiento, combate, retirada y curación).
+  - Coordina el movimiento conjunto del pelotón y de sus soldados.
+  - Decide automáticamente cuándo entrar o salir de combate según enemigos cercanos.
+  - Mientras está en combate, inflige daño continuo al objetivo actual.
+  - La vida del pelotón y el número de soldados visibles están sincronizados: al perder vida, se reflejan bajas.
+  - Cuando hay una baja, el soldado que muere se elige con un sesgo realista:
+    - **70%** de probabilidad de morir el soldado **más adelantado** (en primera línea).
+    - **30%** de probabilidad de morir un soldado **aleatorio** del pelotón.
+  - El pelotón solo desaparece completamente cuando su vida llega a **0** (el último soldado cae al final).
+  - Si el pelotón se retira, se desplaza hasta el hospital y entra en un periodo de curación donde no acepta órdenes.
+  - Puede recibir bonificadores defensivos al estar estacionado en una trinchera (reducción de daño).
+  - Al destruirse, se elimina del campo de batalla y se comprueba la condición de victoria/derrota.
 
 ### 4.5 Humanoids
 - **Descripción**: Clase humanoide maneja animaciones/estados de cada humanoide por individual. Es decir, es una clase estética y visual para la clase Army. Estos humanoides no tendrán que hacer ningún tipo de cálculo, para eso está la clase army que les dice que animación, sonido etc deben hacer.
@@ -196,20 +173,14 @@ El jugador pordrá elegir hasta 9 ejercitos para ir a la batalla. Mecánica de t
 - **Ordenes Delay**: Ellos tienen un método para ejecutar esas órdenes con un pequeño delay random.
 - **Estados**: función updateState(), enterState()
   - `Idle`, `Moving`, `Atacking`, `Dying`
-- **Métodos**:
-    - `constructor(scene, x, y, army)`: configura anim key por equipo, origins para flip, movement, sonidos de disparo y pausas.
-    - `#setState(newState)`: cambia estado (privado) y llama a `#onEnterState()`.
-    - `setOrder(newState, params?)`: **único** método externo para dar órdenes; aplica **delay aleatorio** y respeta la última orden.
-    - `moveTo(targetX, targetY)`: helper que manda la orden `'Moving'` con destino.
-    - `die()`: cambia a `Dying` y reproduce la animación correspondiente.
-    - `#soldierOrientationAux(dir)`: aplica flip/origen según dir `1` o `-1`.
-    - `#movement()`: integra movimiento por `MovementComponent`; al llegar, pasa a `Idle`.
-    - `#playRandomShoot()`: reproduce uno de los 5 sonidos de disparo, con volumen configurado.
-    - `#attack()`: hook visual (p. ej., partículas/proyectiles si se añaden en el futuro).
-    - `#attackCycle()`: **una sola vez**, vincula evento `animationcomplete` de `'Attacking'` para meter **pausas Idle** entre ráfagas.
-    - `#onEnterState()`: reproduce la animación del estado y orienta al soldado (Idle/Attacking mira a EnemyBase).
-    - `#movingOrientation()`: orienta según `MovementComponent.getDirectionX()`.
-    - `preUpdate(time, delta)`: tick por estado (mover/atacar/idle/dying).
+- **Comportamiento de los soldados**:
+  - Reciben órdenes del Army y las ejecutan con un pequeño retraso aleatorio para dar sensación de desorganización realista.
+  - Mantienen animaciones segun las ordenes que le dan.
+  - Se desplazan individualmente hacia la posición indicada manteniendo la formación del pelotón.
+  - Cuando atacan, disparan en ráfagas con pausas variables entre ellas.
+  - Reproducen sonidos de disparo de forma aleatoria para evitar repetición.
+  - Ajustan su orientación visual según la dirección de movimiento o el enemigo.
+  - Al morir, reproducen su animación de muerte y dejan de responder a órdenes.
 
 ### 4.6 Checkpoints
 
@@ -238,11 +209,12 @@ Su propósito es servir como puntos de referencia o “nodos” por los que los 
 
     Las bases actúan sin límite de capacidad (`-1`) para evitar que los ejércitos puedan salirse del área jugable.
 
-- #### Métodos:
-    - `constructor(scene, x, y, object)`: object es el objeto de la escena que va a hacer de checkpoint.
-    - `getnextCheckPoint(dir)`: retorna el siguiente checkpoint al que ir dependiendo de la dirección.
-    - `getArmies()`: retorna las armies que están estacionadas/protegidas en ese checkpoint.
-    - `addArmie()`: añade una armie a la protección de la trinchera. Comprueba que no supere el límite.
+- #### Comportamiento del checkpoint
+    - Controla la entrada y salida de ejércitos.
+    - Aplica bonificadores defensivos.
+    - Mantiene organizados visualmente los ejércitos estacionados.
+    - Permite detectar si una posición está llena y forzar a los ejércitos a continuar avanzando.
+    - Actúa como referencia para que el movimiento de los ejércitos.
 
 ### 4.7 Estructuras Especiales
 - **Trincheras**:  La clase trinchera usará el componente checkpoint. Gracias a esto, los pelones los cuales se mueven de checkpoint en checkpoint, se moverán de trinchera en trinchera. La trinchera puede acceder a las army estacionadas del checkpoint. Gracias a esto, la trinchera puede registrar ese army para poder aplicar un bonus de **protección a daños del 30%**. Se les pondrá un icono de un escudo a los armies que estén estacionados. La trinchera tiene capacidad **máx. 3** armies (eso es una propiedad de checkpoint)

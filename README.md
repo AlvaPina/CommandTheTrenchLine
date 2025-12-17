@@ -7,6 +7,9 @@ Bienvenido a **Command The Trench Line**, un juego de estrategia táctica de tri
 
 ## Documentación
 - 👉 [Game Design Document (GDD)](GDD.md)
+
+## Esquema Visual
+- ✏️ [Mapa Visual/Arquitectura (Click)](https://lucid.app/lucidspark/b199ce75-16a2-4367-bb7c-02310af99a1b/edit?viewport_loc=-611%2C-139%2C5246%2C2513%2CgHjjwlkrc_Jt&invitationId=inv_0a35ce45-5fb9-4f64-a0cc-a690eb3825fb)
 ---
 
 ## 📝 Descripción General
