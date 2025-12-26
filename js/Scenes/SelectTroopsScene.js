@@ -1,3 +1,5 @@
+import { getTroopStatsFromButtonKey } from '../Armies/TroopRegistry.js'
+
 export class SelectTroopsScene extends Phaser.Scene {
     constructor() {
         super({ key: 'SelectTroopsScene' });
@@ -9,10 +11,11 @@ export class SelectTroopsScene extends Phaser.Scene {
         console.log("Inicia el TroopSelection");
     }
 
-    createButton(typeName, index, params){
+    createButton(typeName, index, params) {
         console.log(params)
         let soldierButton = this.add.image(params.centerX - params.offsetX + 130 * index, params.centerY + 190, typeName).setScale(0.35);
         soldierButton.setInteractive();
+        this.attachTooltipToGameObject(soldierButton, typeName); // Tooltip (hover)
         soldierButton.on('pointerdown', () => {
             this.addTroop(typeName);
             console.log("EquipedTroops: " + this.equipedTroops);
@@ -28,7 +31,7 @@ export class SelectTroopsScene extends Phaser.Scene {
 
         this.add.image(centerX, centerY, 'troopSelectionBackground').setScale(0.65);
 
-        let params = {centerX, centerY, offsetX};
+        let params = { centerX, centerY, offsetX };
 
         // Army Buttons
         this.createButton('InfanterySoldierButton', 0, params);
@@ -44,6 +47,8 @@ export class SelectTroopsScene extends Phaser.Scene {
                 .setTintFill(0xa37e48);
             i++;
         }
+
+        this.createTroopTooltip();
 
         //ReadyButton
 
@@ -64,6 +69,111 @@ export class SelectTroopsScene extends Phaser.Scene {
             .setOrigin(0.5)
             .setTintFill(0xffffff);
     }
+
+    createTroopTooltip() {
+        // Container para agrupar rect + texto
+        this.troopTooltip = this.add.container(0, 0).setDepth(9999).setVisible(false);
+
+        this.troopTooltipBg = this.add.graphics();
+        this.troopTooltipText = this.add.text(0, 0, '', {
+            fontFamily: 'Arial',
+            fontSize: '18px',
+            color: '#ffffff',
+            align: 'left',
+            wordWrap: { width: 260 }
+        });
+
+        this.troopTooltip.add([this.troopTooltipBg, this.troopTooltipText]);
+
+        // para seguir el ratón mientras está visible
+        this.input.on('pointermove', (pointer) => {
+            if (!this.troopTooltip.visible) return;
+            this.positionTooltip(pointer);
+        });
+    }
+
+    formatTroopStats(buttonKey) {
+        const s = getTroopStatsFromButtonKey(buttonKey);
+        if (!s) return `Sin datos para: ${buttonKey}`;
+
+        const totalHealth = s.SoldierHealth * s.NumberOfSoldiers;
+
+        return [
+            `${s.DisplayName ?? buttonKey}`,
+            ``,
+            `HP soldado: ${s.SoldierHealth}`,
+            `Soldados: ${s.NumberOfSoldiers}`,
+            `HP total: ${totalHealth}`,
+            `Daño: ${s.ArmyDamage}`,
+            `Velocidad: ${s.ArmySpeed}`,
+            `Rango visión: ${s.DistanceView}`,
+        ].join('\n');
+    }
+
+    showTroopTooltip(pointer, buttonKey) {
+        const text = this.formatTroopStats(buttonKey);
+
+        this.troopTooltipText.setText(text);
+
+        // dibujar rect según el tamaño del texto
+        const pad = 10;
+        const bounds = this.troopTooltipText.getBounds();
+
+        this.troopTooltipBg.clear();
+        this.troopTooltipBg.fillStyle(0x000000, 0.85);
+        this.troopTooltipBg.lineStyle(2, 0xffffff, 0.9);
+
+        // rect redondeado
+        const w = bounds.width + pad * 2;
+        const h = bounds.height + pad * 2;
+        this.troopTooltipBg.fillRoundedRect(0, 0, w, h, 10);
+        this.troopTooltipBg.strokeRoundedRect(0, 0, w, h, 10);
+
+        // coloca texto dentro
+        this.troopTooltipText.setPosition(pad, pad);
+
+        this.troopTooltip.setVisible(true);
+        this.positionTooltip(pointer);
+    }
+
+    hideTroopTooltip() {
+        this.troopTooltip.setVisible(false);
+    }
+
+    positionTooltip(pointer) {
+        const margin = 12;
+        const cam = this.cameras.main;
+
+        // posición “ideal” al lado del cursor (en pantalla)
+        let x = pointer.x + margin;
+        let y = pointer.y + margin;
+
+        // tamaño del tooltip
+        const b = this.troopTooltip.getBounds();
+        const w = b.width;
+        const h = b.height;
+
+        // clamp dentro de la pantalla
+        const maxX = cam.width - w - margin;
+        const maxY = cam.height - h - margin;
+
+        x = Phaser.Math.Clamp(x, margin, maxX);
+        y = Phaser.Math.Clamp(y, margin, maxY);
+
+        // IMPORTANTE: el tooltip está en coords de pantalla (UI), no del mundo
+        this.troopTooltip.setScrollFactor(0);
+        this.troopTooltip.setPosition(x, y);
+    }
+
+    attachTooltipToGameObject(go, buttonKey) {
+        // hover
+        go.on('pointerover', (pointer) => this.showTroopTooltip(pointer, buttonKey));
+        go.on('pointerout', () => this.hideTroopTooltip());
+
+        // opcional: si quieres que al hacer click también se oculte
+        go.on('pointerdown', () => this.hideTroopTooltip());
+    }
+
 
     addTroop(type) {
         if (this.equipedTroops.length >= 10) return
@@ -98,6 +208,7 @@ export class SelectTroopsScene extends Phaser.Scene {
             console.log(troop)
             let infanteryButton = this.add.image(index % 5 * gridSpace + offsetX, Phaser.Math.FloorTo(index / 5) * gridSpace + 200, troop).setScale(0.3);
             infanteryButton.setInteractive();
+            this.attachTooltipToGameObject(infanteryButton, troop); // Tooltip (hover)
             this.gridGroup.add(infanteryButton);
 
             infanteryButton.on('pointerdown', () => {
