@@ -12,13 +12,11 @@ export class SelectTroopsScene extends Phaser.Scene {
     }
 
     createButton(typeName, index, params) {
-        console.log(params)
         let soldierButton = this.add.image(params.centerX - params.offsetX + 130 * index, params.centerY + 190, typeName).setScale(0.35);
         soldierButton.setInteractive();
         this.attachTooltipToGameObject(soldierButton, typeName); // Tooltip (hover)
         soldierButton.on('pointerdown', () => {
             this.addTroop(typeName);
-            console.log("EquipedTroops: " + this.equipedTroops);
         });
         this.buttons.push(soldierButton);
     }
@@ -205,7 +203,6 @@ export class SelectTroopsScene extends Phaser.Scene {
 
         // Render of troops
         this.equipedTroops.forEach((troop, i) => {
-            console.log(troop)
             let infanteryButton = this.add.image(index % 5 * gridSpace + offsetX, Phaser.Math.FloorTo(index / 5) * gridSpace + 200, troop).setScale(0.3);
             infanteryButton.setInteractive();
             this.attachTooltipToGameObject(infanteryButton, troop); // Tooltip (hover)
@@ -213,7 +210,6 @@ export class SelectTroopsScene extends Phaser.Scene {
 
             infanteryButton.on('pointerdown', () => {
                 this.removeTroop(i);
-                console.log("EquipedTroops: " + this.equipedTroops);
                 infanteryButton.destroy();
             });
             index++;

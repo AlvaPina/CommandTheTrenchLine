@@ -216,9 +216,9 @@ export default class Army extends Phaser.GameObjects.Container {
         // Si ya estoy yendo a ese checkpoint
         if (this.targetCheckpoint === nextCheckpoint) {
             if (arrow === 'right') {
-                console.log("Ya estoy yendo a la derecha");
+                //console.log("Ya estoy yendo a la derecha");
             } else {
-                console.log("Ya estoy yendo a la izquierda");
+                //console.log("Ya estoy yendo a la izquierda");
             }
             this.playVoice(this.voiceAlreadyAdvancingKey, 1500);
             return false;
@@ -240,7 +240,6 @@ export default class Army extends Phaser.GameObjects.Container {
 
     // Mueve todos los soldados hacia una posición X específica
     ArmyMoveTo(targetX) {
-        if (this.Team) console.log("MoveArmy");
         this.soldiers.forEach(soldier => {
             soldier.moveTo(targetX, soldier.y);
         });
@@ -291,10 +290,7 @@ export default class Army extends Phaser.GameObjects.Container {
 
     // Destruye el ejército completamente cuando muere
     armyDestroy() {
-        console.log("DestroyArmy") + this.Team;
         this.isDestroyed = true;
-        if (this.Team) console.log("Retornando NPC Army")
-        else console.log("Retornando playerArmy")
         this.scene.getArmies(!this.Team).pop(this.armyNumber)
         this.scene.checkGameOver()
         this.destroy();
@@ -569,13 +565,9 @@ export default class Army extends Phaser.GameObjects.Container {
     // Actualiza la IA y movimiento del ejército en cada frame
     preUpdate(t, dt) {
         if (this.isDestroyed) return;
-        //console.log(this.state);
-        //console.log(this.soldiers.length);
         this.updateState();
         this.onEnterState();
         this._updateOrientation(t);
-        if (this.Team) console.log(this.state);
-
 
         switch (this.state) {
             case 'InCombat': // Solo puede recibir la orden de retirarse y de moverse para atras

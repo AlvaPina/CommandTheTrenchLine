@@ -5,7 +5,6 @@ export default class CheckpointManager {
 
     pushBack(checkpoint) { // insertamos de forma ordenada
         let MyPosX = checkpoint.posX;
-        console.log(checkpoint.posX)
         let i = 0;
 
         // Si orderedCheckpoints esta vacio metemos el primero
