@@ -68,6 +68,29 @@ export default class Army extends Phaser.GameObjects.Container {
         }
         this.background.setDisplaySize(100, 50);
 
+        // Highlight de seleccion
+        const stroke = 4;
+        const radius = 10;
+
+        const w = this.background.displayWidth;
+        const h = this.background.displayHeight;
+
+        this.selectionGfx = this.scene.add.graphics();
+        this.selectionGfx.lineStyle(stroke, 0xffff00, 1);
+
+        // desplazamos medio stroke hacia fuera
+        const offset = stroke / 2;
+
+        this.selectionGfx.strokeRoundedRect(
+            -w / 2 - offset,
+            -h / 2 - offset,
+            w + stroke,
+            h + stroke,
+            radius
+        );
+
+        this.selectionGfx.setVisible(false);
+
         this.armyText = this.scene.add.text(20, -5, this.armyNumber, {
             fontSize: '32px',
             color: '#fff'
@@ -82,7 +105,7 @@ export default class Army extends Phaser.GameObjects.Container {
         this.iconKey = null;
 
         // Agrupar en el contenedor (sin la barra, que ahora la crea LifeComponent)
-        this.add([this.background, this.armyText, this.statusIcon]);
+        this.add([this.background, this.armyText, this.statusIcon, this.selectionGfx]);
 
         //Vida
         const ArmyHealth = this.SoldierHealth * this.numberOfSoldiers;
@@ -313,7 +336,7 @@ export default class Army extends Phaser.GameObjects.Container {
         if (aliveSoldiers === 0) return 0;
 
         const distanceMultiplier = this._getDistanceMultiplier(enemy);
-        
+
         return this.ArmyDamage * distanceMultiplier * aliveSoldiers / 10;
     }
 
@@ -666,5 +689,14 @@ export default class Army extends Phaser.GameObjects.Container {
 
         this.voiceNextPlay[key] = now + cooldownMs;
         this.scene.sound.play(key, { volume: this.voiceVolume });
+    }
+
+    setSelected(isSelected) {
+        if (!this.selectionGfx) return;
+
+        const sel = !!isSelected;
+        this.selectionGfx.setVisible(sel);
+
+        this.background.setDisplaySize(sel ? 110 : 100, sel ? 55 : 50);
     }
 }

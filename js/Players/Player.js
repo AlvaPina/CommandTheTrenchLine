@@ -35,6 +35,17 @@ export default class Player {
 
     update() {
         this.armies = this.scene.getArmies(false);
+
+        // Si te quedas con un número fuera de rango (porque ha el army), clamp:
+        if (this.selectedNumber < 1) this.selectedNumber = 1;
+        if (this.selectedNumber > this.armies.length) this.selectedNumber = this.armies.length;
+
+        // Pintar highlight en el seleccionado
+        for (let i = 0; i < this.armies.length; i++) {
+            const a = this.armies[i];
+            if (a && a.setSelected) a.setSelected(i === this.selectedNumber - 1);
+        }
+
         const selectedArmy = this.armies[this.selectedNumber - 1];
         if (!selectedArmy) return;
 
