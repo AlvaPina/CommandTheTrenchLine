@@ -125,6 +125,9 @@ export default class Army extends Phaser.GameObjects.Container {
         //Movimiento
         this.movementComponent = new MovementComponent(this, this.ArmySpeed);
 
+        const SoldierClass = config.HumanoidClass ?? Humanoid;
+        if(this.Team) console.log(SoldierClass);
+
         // Definir los limites del area vertical para los soldados
         const minY = 250;
         const maxY = window.game.config.height - 40;
@@ -144,8 +147,8 @@ export default class Army extends Phaser.GameObjects.Container {
             let y = minY + i * minSpacing;
 
             y += getRandomInt(1, maxVariation);
-
-            let soldier = new Humanoid(scene, x, y, this);
+ 
+            let soldier = new SoldierClass(scene, x, y, this);
             soldier.setDepth(y);
             soldier.setScale(0.2);
             this.soldiers.push(soldier);

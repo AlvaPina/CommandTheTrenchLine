@@ -35,9 +35,10 @@ export class SelectTroopsScene extends Phaser.Scene {
         this.createButton('InfanterySoldierButton', 0, params);
         this.createButton('SniperSoldierButton', 1, params);
         this.createButton('AssaultSoldierButton', 2, params);
+        this.createButton('TankSoldierButton', 3, params);
 
         // Soon Troops
-        let i = 3;
+        let i = 4;
         while (i < 4) {
             this.add.image(centerX - offsetX + 130 * i, centerY + 190, 'SquareFrame').setScale(0.35);
             this.add.bitmapText(centerX - offsetX + 130 * i, centerY + 185, 'SquadaOne', 'Soon', 40)

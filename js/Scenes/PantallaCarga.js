@@ -42,6 +42,7 @@ export class LoadScene extends Phaser.Scene {
         this.load.image("InfanterySoldierButton", "Assets/Images/Gui/TroopSelector/InfanterySoldier.png");
         this.load.image("SniperSoldierButton", "Assets/Images/Gui/TroopSelector/SniperSoldier.png");
         this.load.image("AssaultSoldierButton", "Assets/Images/Gui/TroopSelector/AssaultSoldier.png");
+        this.load.image("TankSoldierButton", "Assets/Images/Gui/TroopSelector/TankSoldier.png");
         this.load.image("Ready", "Assets/Images/Gui/TroopSelector/Ready.png");
 
         this.load.image("RectangleFrame", "Assets/Images/Gui/ButtonFrame.png");
@@ -65,6 +66,18 @@ export class LoadScene extends Phaser.Scene {
         this.load.spritesheet('infanterySoldierGreyAttackingCrouch', 'Assets/Images/SpriteSheets/Grey/ShootCrouch.png', { frameWidth: 256, frameHeight: 256 });
         this.load.spritesheet('infanterySoldierGreySheetDyingCrouch', 'Assets/Images/SpriteSheets/Grey/DeadCrouch.png', { frameWidth: 256, frameHeight: 256 });
         this.load.spritesheet('infanterySoldierGreySheetDying', 'Assets/Images/SpriteSheets/Grey/Dead.png', { frameWidth: 256, frameHeight: 256 });
+
+        this.load.spritesheet('lightTankGreenMovingSheet', 'Assets/Images/SpriteSheets/Green/Tank/TankMoving.png', { frameWidth: 512, frameHeight: 512 });
+        this.load.spritesheet('lightTankGreenShootSheet', 'Assets/Images/SpriteSheets/Green/Tank/LightTankShoot.png', { frameWidth: 512, frameHeight: 512 });
+        this.load.spritesheet('lightTankGreenOpenSheet', 'Assets/Images/SpriteSheets/Green/Tank/LightTankOpen.png', { frameWidth: 512, frameHeight: 512 });
+        this.load.spritesheet('lightTankGreenDeadSheet', 'Assets/Images/SpriteSheets/Green/Tank/LightTankDead.png', { frameWidth: 512, frameHeight: 512 });
+        this.load.spritesheet('lightTankGreenDeadLoopSheet', 'Assets/Images/SpriteSheets/Green/Tank/LightTankDeadLoop.png', { frameWidth: 512, frameHeight: 512 });
+
+        this.load.spritesheet('lightTankGreyMovingSheet', 'Assets/Images/SpriteSheets/Grey/Tank/TankMoving.png', { frameWidth: 512, frameHeight: 512 });
+        this.load.spritesheet('lightTankGreyShootSheet', 'Assets/Images/SpriteSheets/Grey/Tank/LightTankShoot.png', { frameWidth: 512, frameHeight: 512 });
+        this.load.spritesheet('lightTankGreyOpenSheet', 'Assets/Images/SpriteSheets/Grey/Tank/LightTankOpen.png', { frameWidth: 512, frameHeight: 512 });
+        this.load.spritesheet('lightTankGreyDeadSheet', 'Assets/Images/SpriteSheets/Grey/Tank/LightTankDead.png', { frameWidth: 512, frameHeight: 512 });
+        this.load.spritesheet('lightTankGreyDeadLoopSheet', 'Assets/Images/SpriteSheets/Grey/Tank/LightTankDeadLoop.png', { frameWidth: 512, frameHeight: 512 });
 
         //AUDIOS
         this.load.audio('trailerBackgroundMusic', 'Assets/Audio/MarchOfToys.mp3');
@@ -104,7 +117,7 @@ export class LoadScene extends Phaser.Scene {
         // Ya avanzando
         this.load.audio('voiceAlreadyAdvancing', 'Assets/Audio/Effects/Voices/ya_avanzando.m4a');
 
-        
+
         //FONTS
         this.load.bitmapFont('SquadaOne', 'Assets/Fonts/SquadaOne.png', 'Assets/Fonts/SquadaOne.xml');
 
@@ -188,6 +201,43 @@ export class LoadScene extends Phaser.Scene {
             repeat: 0
         });
 
+        //////
+
+        this.anims.create({
+            key: 'lightTankGreenMoving',
+            frames: this.anims.generateFrameNumbers('lightTankGreenMovingSheet', { start: 0, end: 3 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'lightTankGreenAttacking',
+            frames: this.anims.generateFrameNumbers('lightTankGreenShootSheet', { start: 0, end: 5 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'lightTankGreenOpen',
+            frames: this.anims.generateFrameNumbers('lightTankGreenOpenSheet', { start: 0, end: 5 }),
+            frameRate: 10,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'lightTankGreenDying',
+            frames: this.anims.generateFrameNumbers('lightTankGreenDeadSheet', { start: 0, end: 5 }),
+            frameRate: 8,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'lightTankGreenDeadLoop',
+            frames: this.anims.generateFrameNumbers('lightTankGreenDeadLoopSheet', { start: 0, end: 5 }),
+            frameRate: 8,
+            repeat: -1
+        });
+
         //ANIMS GREY
         this.anims.create({
             key: 'infanterySoldierGreyMoving',
@@ -236,6 +286,43 @@ export class LoadScene extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('infanterySoldierGreySheetDyingCrouch', { start: 0, end: 9 }),
             frameRate: 6,
             repeat: 0
+        });
+
+        //////
+
+        this.anims.create({
+            key: 'lightTankGreyMoving',
+            frames: this.anims.generateFrameNumbers('lightTankGreyMovingSheet', { start: 0, end: 5 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'lightTankGreyAttacking',
+            frames: this.anims.generateFrameNumbers('lightTankGreyShootSheet', { start: 0, end: 5 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'lightTankGreyOpen',
+            frames: this.anims.generateFrameNumbers('lightTankGreyOpenSheet', { start: 0, end: 5 }),
+            frameRate: 10,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'lightTankGreyDying',
+            frames: this.anims.generateFrameNumbers('lightTankGreyDeadSheet', { start: 0, end: 5 }),
+            frameRate: 8,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'lightTankGreyDeadLoop',
+            frames: this.anims.generateFrameNumbers('lightTankGreyDeadLoopSheet', { start: 0, end: 5 }),
+            frameRate: 8,
+            repeat: -1
         });
     }
 }

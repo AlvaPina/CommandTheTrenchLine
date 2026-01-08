@@ -4,6 +4,7 @@ import Hospital from '../Structures/Hospital.js';
 import InfanteryArmy from '../Armies/Types/InfanteryArmy.js';
 import SniperArmy from '../Armies/Types/SniperArmy.js';
 import AssaultArmy from '../Armies/Types/AssaultArmy.js';
+import TankArmy from '../Armies/Types/TankArmy.js';
 import Player from '../Players/Player.js';
 import AI from '../Players/AI.js';
 import Checkpoint from '../Armies/Movement/Checkpoint.js';
@@ -36,6 +37,10 @@ export class Gameplay extends Phaser.Scene {
         }
         else if (nameType === 'AssaultSoldierButton') {
             let playerArmy = new AssaultArmy(this, posX, number, team);
+            this.playerArmies.push(playerArmy);
+        }
+        else if (nameType === 'TankSoldierButton') {
+            let playerArmy = new TankArmy(this, posX, number, team);
             this.playerArmies.push(playerArmy);
         }
     }
@@ -198,7 +203,7 @@ export class Gameplay extends Phaser.Scene {
         return team ? this.greenRespawnCheckpoint : this.greyRespawnCheckpoint;
     }
 
-    getHospitalCheckpoint(team){
+    getHospitalCheckpoint(team) {
         return team ? this.greenHospitalCheckpoint : this.greyHospitalCheckpoint;
     }
 

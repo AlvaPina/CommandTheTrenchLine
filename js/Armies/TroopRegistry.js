@@ -1,11 +1,13 @@
 import InfanteryArmy from '../Armies/Types/InfanteryArmy.js';
 import SniperArmy from '../Armies/Types/SniperArmy.js';
 import AssaultArmy from '../Armies/Types/AssaultArmy.js';
+import TankArmy from './Types/TankArmy.js';
 
 export const TROOP_CLASS_BY_BUTTON = {
   InfanterySoldierButton: InfanteryArmy,
   SniperSoldierButton: SniperArmy,
   AssaultSoldierButton: AssaultArmy,
+  TankSoldierButton: TankArmy,
 };
 
 export function getTroopStatsFromButtonKey(buttonKey) {
