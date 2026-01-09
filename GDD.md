@@ -265,19 +265,21 @@ Su propósito es servir como puntos de referencia o “nodos” por los que los 
 ---
 
 ## 8. IA
-- Al bajar a **50%** y **25%** de vida: **50%** probabilidad de **retirada**.
-- Tendencia general a **avanzar más que retroceder**. 
-- Adelantar tropas que **counterean** a las del rival; retrasar tropas en **desventaja**.
-- La IA registra lo fuerte que se siente en base a la vida de sus ejércitos.
-- Dos perfiles básicos. Cuando la IA se note fuerte optará por el agresivo.
-  - **Agresivo**: avanza con mayor frecuencia.  
-  - **Defensivo**: retrocede más a menudo. Posición más defensiva, menos movimientos.
-- Como checkpoint devuelve las Army, si detecta que hay ya 3 en una trinchera les manda a los 3 a que ataquen.
-- Juega con el mismo numero de ejercitos que tu. Si eliges 3, ella juega con 3.
-- Estrategia que va a seguir la ia:
-  - Los tanques van a intentar ir siempre adelantados.
-  - Los Snipers siempre detrás de alguna unidad, intentar no exponerse al daño.
-  - La resto de tropas avanzaran conforme a ese grado de agresividad.
+**Concepto General:**
+La IA, a la hora de elegir tropas utiliza una **estrategia de espejo**, generando la misma composición y cantidad de ejércitos que el jugador. Evalúa el campo de batalla periódicamente (cada 1.5s) para mantener una formación basada en roles específicos.
+
+**Sistema de Supervivencia:**
+- **Retirada por Daño:** Al bajar al **50%** y **25%** de vida, cada unidad tiene un **50% de probabilidad** de ordenar una retirada inmediata al hospital para curarse.
+
+**Comportamiento de Tropa (Roles):**
+- **Tanques (Vanguardia):**
+  - Prioridad absoluta de **avance**. Actúan como escudo y abren camino; nunca retroceden, solo avanzan.
+- **Francotiradores (Retaguardia):**
+  - Evitan el daño directo. **Retroceden** inmediatamente si reciben daño o si quedan expuestos en primera línea (sin aliados delante). Solo avanzan si están protegidos.
+- **Asalto (Escolta):**
+  - Mantienen formación siguiendo al líder. Priorizan seguir a los **Tanques**; si no hay, siguen a la **Infantería** más adelantada.
+- **Infantería (Núcleo):**
+  - Intentan escoltar a los Tanques. Si no hay Tanques disponibles, asumen el liderazgo y **avanzan** hacia el enemigo.
 ---
 
 ## 9. Hitos del Año
