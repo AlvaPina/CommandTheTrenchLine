@@ -15,10 +15,6 @@ export default class TankHumanoid extends Phaser.GameObjects.Sprite {
     this.state = 'Moving';
     this.lastorder = 'Moving';
 
-    // orientaciones como en Humanoid
-    this.originRight = 1 - 20 / this.width;
-    this.originLeft = 20 / this.width;
-
     this.movementComponent = new MovementComponent(this, this.speed);
 
     // Sounds (copiado)
@@ -34,11 +30,11 @@ export default class TankHumanoid extends Phaser.GameObjects.Sprite {
     this._tankSoundTimer = null;
 
     const suffix = this.team ? 'Green' : 'Grey';
-        this.tankAnimMove = `lightTank${suffix}Moving`;
-        this.tankAnimShoot = `lightTank${suffix}Attacking`;
-        this.tankAnimOpen = `lightTank${suffix}Open`;
-        this.tankAnimDead = `lightTank${suffix}Dying`;
-        this.tankAnimDeadLoop = `lightTank${suffix}DeadLoop`;
+    this.tankAnimMove = `lightTank${suffix}Moving`;
+    this.tankAnimShoot = `lightTank${suffix}Attacking`;
+    this.tankAnimOpen = `lightTank${suffix}Open`;
+    this.tankAnimDead = `lightTank${suffix}Dying`;
+    this.tankAnimDeadLoop = `lightTank${suffix}DeadLoop`;
 
     // arrancar visual
     this.play(this.tankAnimMove, true);
@@ -147,7 +143,10 @@ export default class TankHumanoid extends Phaser.GameObjects.Sprite {
 
   die() {
     if (this.state === 'Dying') return;
-
+    if (this.timerOrder) {
+      this.timerOrder.remove(false);
+      this.timerOrder = null;
+    }
     this.state = 'Dying';
     this.lastorder = 'Dying';
     this._stopTankShootingLoop();
@@ -170,13 +169,18 @@ export default class TankHumanoid extends Phaser.GameObjects.Sprite {
       this._pendingParams = params;
       return;
     }
+    if (this.timerOrder) {
+        this.timerOrder.remove(false);
+        this.timerOrder = null;
+    }
 
     this.lastorder = newState;
 
     // retraso random como Humanoid (para que se comporte parecido)
     const randomDelay = Phaser.Math.Between(100, 800);
 
-    this.scene.time.delayedCall(randomDelay, () => {
+    this.timerOrder = this.scene.time.delayedCall(randomDelay, () => {
+      this.timerOrder = null;
       if (this.state === 'Dying') return;
       if (this.lastorder !== newState) return;
 
@@ -228,6 +232,7 @@ export default class TankHumanoid extends Phaser.GameObjects.Sprite {
       this.movementComponent.movement();
       if (!this.movementComponent.targetPosition) {
         this.state = 'Idle';
+        this._faceEnemyBase();
         this.play(this.tankAnimMove, true);
       }
     }

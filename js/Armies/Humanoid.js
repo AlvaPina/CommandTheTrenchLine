@@ -11,7 +11,7 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         const config = this.army.getConfig();
         this.speed = config.speed;
         this.team = config.team;
-        if(config.team) this.animKey = config.animKey + 'Green';
+        if (config.team) this.animKey = config.animKey + 'Green';
         else this.animKey = config.animKey + 'Grey';
         this.state = 'Moving';
 
@@ -35,6 +35,9 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         // pausas entre disparos
         this.attackPauseMinMs = 500;
         this.attackPauseMaxMs = 2000;
+
+        // Variable para guardar el timer de la orden pendiente
+        this.timerOrder = null;
     }
 
     #setState(newState) {
@@ -49,13 +52,23 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         //console.log("NEW STATE:" + newState);
         if (this.state == 'Dying') return;
 
+        // Esto evita que si das una orden y luego otra rápida, la primera se ejecute tarde y pise a la nueva.
+        if (this.timerOrder) {
+            this.timerOrder.remove(false);
+            this.timerOrder = null;
+        }
+
         this.lastorder = newState;
 
         // Retraso aleatorio entre 0 y 800 ms
         const randomDelay = Phaser.Math.Between(100, 800);
 
         // Ejecuta la orden después del retraso
-        this.scene.time.delayedCall(randomDelay, () => {
+        // Guardamos la referencia del timer
+        this.timerOrder = this.scene.time.delayedCall(randomDelay, () => {
+
+            this.timerOrder = null; // Limpiamos referencia al terminar
+
             if (this.state == 'Dying') return;
 
             // Si no se dio otra orden diferente no ejecutaremos esta orden porque ya no tiene sentido...
@@ -91,11 +104,16 @@ export default class Humanoid extends Phaser.GameObjects.Sprite {
         this.setOrder('Moving', [targetX, targetY]);
     }
 
-    isDead(){
+    isDead() {
         return this.state === 'Dying';
     }
 
     die() {
+        // Cancelar ordenes pendientes al morir, creo que este era el fallo que me envio Toni por correo
+        if (this.timerOrder) {
+            this.timerOrder.remove(false);
+            this.timerOrder = null;
+        }
         this.#setState('Dying');
         this.play(this.animKey + this.state);
     }

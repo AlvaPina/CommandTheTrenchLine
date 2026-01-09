@@ -2,11 +2,11 @@ import Army from "../Army.js";
 import TankHumanoid from "../TankHumanoid.js";
 
 const BASE_CONFIG = {
-  SoldierHealth: 400,
-  NumberOfSoldiers: 1,
+  SoldierHealth: 800,
+  NumberOfSoldiers: 4,
   ArmySpeed: 30,
   DistanceView: 450,
-  ArmyDamage: 6,
+  ArmyDamage: 1.5,
 
   ImageKey: 'tankSoldier',
   ArmyAnimKey: 'tankSoldier',
