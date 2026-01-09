@@ -29,7 +29,7 @@ export class LoadScene extends Phaser.Scene {
 
         this.load.image("infanterySoldierGrey", "Assets/Images/Gui/InfanteryIconGrey.png");
         this.load.image("medicSoldierGrey", "Assets/Images/Gui/MedicIconGrey.png");
-        this.load.image("infanterySoldierGrey", "Assets/Images/Gui/SniperIconGrey.png");
+        this.load.image("sniperSoldierGrey", "Assets/Images/Gui/SniperIconGrey.png");
         this.load.image("assaultSoldierGrey", "Assets/Images/Gui/AssaultIconGrey.png");
         this.load.image("tankSoldierGrey", "Assets/Images/Gui/TankIconGrey.png");
 

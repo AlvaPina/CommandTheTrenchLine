@@ -3,7 +3,7 @@ import Army from "../Army.js";
 const BASE_CONFIG = {
   SoldierHealth: 150,
   NumberOfSoldiers: 10,
-  ArmySpeed: 65,
+  ArmySpeed: 165,
   DistanceView: 200,
   ArmyDamage: 1.25,
   ArmyAnimKey: 'infanterySoldier',

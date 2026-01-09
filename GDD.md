@@ -274,7 +274,10 @@ Su propósito es servir como puntos de referencia o “nodos” por los que los 
   - **Defensivo**: retrocede más a menudo. Posición más defensiva, menos movimientos.
 - Como checkpoint devuelve las Army, si detecta que hay ya 3 en una trinchera les manda a los 3 a que ataquen.
 - Juega con el mismo numero de ejercitos que tu. Si eliges 3, ella juega con 3.
-
+- Estrategia que va a seguir la ia:
+  - Los tanques van a intentar ir siempre adelantados.
+  - Los Snipers siempre detrás de alguna unidad, intentar no exponerse al daño.
+  - La resto de tropas avanzaran conforme a ese grado de agresividad.
 ---
 
 ## 9. Hitos del Año

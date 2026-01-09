@@ -26,7 +26,7 @@ export class Gameplay extends Phaser.Scene {
         console.log("Inicia el Gameplay");
     }
 
-    spawnArmy(nameType, posX, number, team) {
+   spawnArmy(nameType, posX, number, team) {
         if (nameType === 'InfanterySoldierButton') {
             let playerArmy = new InfanteryArmy(this, posX, number, team);
             this.playerArmies.push(playerArmy);
@@ -42,6 +42,17 @@ export class Gameplay extends Phaser.Scene {
         else if (nameType === 'TankSoldierButton') {
             let playerArmy = new TankArmy(this, posX, number, team);
             this.playerArmies.push(playerArmy);
+        }
+    }
+
+    // Factoria de tropas, devuelve la instancia de la tropa según el string, sin añadirla a ninguna lista todavía
+    createArmyFactory(nameType, posX, number, team) {
+        switch (nameType) {
+            case 'InfanterySoldierButton': return new InfanteryArmy(this, posX, number, team);
+            case 'SniperSoldierButton':    return new SniperArmy(this, posX, number, team);
+            case 'AssaultSoldierButton':   return new AssaultArmy(this, posX, number, team);
+            case 'TankSoldierButton':      return new TankArmy(this, posX, number, team);
+            default:                       return new InfanteryArmy(this, posX, number, team);
         }
     }
 
@@ -94,8 +105,9 @@ export class Gameplay extends Phaser.Scene {
         this.numberOfEnemyArmies = this.equippedTroops.length;
         // Crear Army de enemigo y moverlos
         for (let i = 0; i < this.numberOfEnemyArmies; i++) {
-            let enemyArmy = new InfanteryArmy(this, enemyHospitalPosX + i * 25, i + 1, false);
-            this.enemyArmies.push(enemyArmy);
+                        // false = equipo enemigo
+            let army = this.createArmyFactory(this.equippedTroops[i], enemyHospitalPosX + i * 25, i + 1, false);
+            this.enemyArmies.push(army);
         }
 
         // Player y AI

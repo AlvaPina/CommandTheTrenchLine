@@ -126,7 +126,6 @@ export default class Army extends Phaser.GameObjects.Container {
         this.movementComponent = new MovementComponent(this, this.ArmySpeed);
 
         const SoldierClass = config.HumanoidClass ?? Humanoid;
-        if(this.Team) console.log(SoldierClass);
 
         // Definir los limites del area vertical para los soldados
         const minY = 250;

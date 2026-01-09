@@ -34,7 +34,12 @@ export default class Player {
     }
 
     update() {
-        this.armies = this.scene.getArmies(false);
+        // Esto evita seleccionar armies que ya han sido destruidas por Phaser
+        const allArmies = this.scene.getArmies(false);
+        this.armies = allArmies.filter(a => a.active && !a.isDestroyed && a.scene);
+
+        // Si no quedan armies, no hacemos nada
+        if (this.armies.length === 0) return;
 
         // Si te quedas con un número fuera de rango (porque ha el army), clamp:
         if (this.selectedNumber < 1) this.selectedNumber = 1;
@@ -43,11 +48,14 @@ export default class Player {
         // Pintar highlight en el seleccionado
         for (let i = 0; i < this.armies.length; i++) {
             const a = this.armies[i];
-            if (a && a.setSelected) a.setSelected(i === this.selectedNumber - 1);
+            if (a && a.scene && a.setSelected) {
+                a.setSelected(i === this.selectedNumber - 1);
+            }
         }
 
         const selectedArmy = this.armies[this.selectedNumber - 1];
-        if (!selectedArmy) return;
+        // Si por alguna razón la army seleccionada no es válida, salimos
+        if (!selectedArmy || !selectedArmy.scene || selectedArmy.isDestroyed) return;
 
         if (Phaser.Input.Keyboard.JustDown(this.spaceKey)) {
             selectedArmy.setState('Fleeing');
