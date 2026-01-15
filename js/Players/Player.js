@@ -44,12 +44,6 @@ export default class Player {
         // Buscar el army por "armyNumber" (NO por índice del array)
         let selectedArmy = this.armies.find(a => a.armyNumber === this.selectedNumber);
 
-        // Si el número seleccionado ya no existe (porque murió), fallback al primero vivo
-        if (!selectedArmy) {
-            selectedArmy = this.armies[0];
-            this.selectedNumber = selectedArmy.armyNumber;
-        }
-
         // Pintar highlight en el seleccionado (comparando por armyNumber)
         for (let i = 0; i < this.armies.length; i++) {
             const a = this.armies[i];
