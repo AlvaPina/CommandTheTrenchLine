@@ -34,6 +34,9 @@ export default class Army extends Phaser.GameObjects.Container {
         this.canMove = true;
         this.canChange = true;
 
+        this._nextFacingAt = 0;
+        this.facingRefreshCooldownMs = 250;
+
         // Voces
         this.voiceVolume = 0.5;
         this.voiceAlreadyAdvancingKey = 'voiceAlreadyAdvancing';
@@ -146,7 +149,7 @@ export default class Army extends Phaser.GameObjects.Container {
             let y = minY + i * minSpacing;
 
             y += getRandomInt(1, maxVariation);
- 
+
             let soldier = new SoldierClass(scene, x, y, this);
             soldier.setDepth(y);
             soldier.setScale(0.2);
@@ -357,7 +360,8 @@ export default class Army extends Phaser.GameObjects.Container {
 
                 // Debe estar dentro de rango y delante (mismo signo que el facing)
                 const dirToEnemy = Math.sign(dx);
-                const inFront = (facing === 0) ? true : (dirToEnemy === facing); // si no hay facing, no filtramos por delante
+                const ignoreFrontFilter = (this.state === 'Idle' || this.actualCheckpoint != null);
+                const inFront = ignoreFrontFilter ? true : (facing === 0 ? true : dirToEnemy === facing);
                 if (absDx <= maxDist && inFront) {
                     if (absDx < bestAbsDx) {
                         best = e;
@@ -527,6 +531,10 @@ export default class Army extends Phaser.GameObjects.Container {
             if (this.state === 'Idle') {
                 if (this.protectionBonus > 0) this.setIcon('shield');
                 else this.hideIcon();
+            }
+
+            if (this.state === 'Moving') {
+                this.hideIcon();
             }
         }
     }
