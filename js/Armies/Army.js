@@ -296,7 +296,9 @@ export default class Army extends Phaser.GameObjects.Container {
     // Destruye el ejército completamente cuando muere
     armyDestroy() {
         this.isDestroyed = true;
-        this.scene.getArmies(!this.Team).pop(this.armyNumber)
+        const arr = this.scene.getArmies(!this.Team);
+        const idx = arr.indexOf(this);
+        if (idx !== -1) arr.splice(idx, 1);
         this.scene.checkGameOver()
         this.destroy();
     }

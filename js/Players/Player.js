@@ -41,19 +41,23 @@ export default class Player {
         // Si no quedan armies, no hacemos nada
         if (this.armies.length === 0) return;
 
-        // Si te quedas con un número fuera de rango (porque ha el army), clamp:
-        if (this.selectedNumber < 1) this.selectedNumber = 1;
-        if (this.selectedNumber > this.armies.length) this.selectedNumber = this.armies.length;
+        // Buscar el army por "armyNumber" (NO por índice del array)
+        let selectedArmy = this.armies.find(a => a.armyNumber === this.selectedNumber);
 
-        // Pintar highlight en el seleccionado
+        // Si el número seleccionado ya no existe (porque murió), fallback al primero vivo
+        if (!selectedArmy) {
+            selectedArmy = this.armies[0];
+            this.selectedNumber = selectedArmy.armyNumber;
+        }
+
+        // Pintar highlight en el seleccionado (comparando por armyNumber)
         for (let i = 0; i < this.armies.length; i++) {
             const a = this.armies[i];
             if (a && a.scene && a.setSelected) {
-                a.setSelected(i === this.selectedNumber - 1);
+                a.setSelected(a.armyNumber === this.selectedNumber);
             }
         }
 
-        const selectedArmy = this.armies[this.selectedNumber - 1];
         // Si por alguna razón la army seleccionada no es válida, salimos
         if (!selectedArmy || !selectedArmy.scene || selectedArmy.isDestroyed) return;
 
