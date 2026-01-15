@@ -76,8 +76,8 @@ export class LoadScene extends Phaser.Scene {
         this.load.spritesheet('lightTankGreyMovingSheet', 'Assets/Images/SpriteSheets/Grey/Tank/TankMoving.png', { frameWidth: 512, frameHeight: 512 });
         this.load.spritesheet('lightTankGreyShootSheet', 'Assets/Images/SpriteSheets/Grey/Tank/LightTankShoot.png', { frameWidth: 512, frameHeight: 512 });
         this.load.spritesheet('lightTankGreyOpenSheet', 'Assets/Images/SpriteSheets/Grey/Tank/LightTankOpen.png', { frameWidth: 512, frameHeight: 512 });
-        this.load.spritesheet('lightTankGreyDeadSheet', 'Assets/Images/SpriteSheets/Grey/Tank/LightTankDead.png', { frameWidth: 512, frameHeight: 512 });
-        this.load.spritesheet('lightTankGreyDeadLoopSheet', 'Assets/Images/SpriteSheets/Grey/Tank/LightTankDeadLoop.png', { frameWidth: 512, frameHeight: 512 });
+        this.load.spritesheet('lightTankGreyDeadSheet', 'Assets/Images/SpriteSheets/Grey/Tank/LightTankDead.png', { frameWidth: 1024, frameHeight: 512 });
+        this.load.spritesheet('lightTankGreyDeadLoopSheet', 'Assets/Images/SpriteSheets/Grey/Tank/LightTankDeadLoop.png', { frameWidth: 1024, frameHeight: 512 });
 
         //AUDIOS
         this.load.audio('trailerBackgroundMusic', 'Assets/Audio/MarchOfToys.mp3');
@@ -320,7 +320,7 @@ export class LoadScene extends Phaser.Scene {
 
         this.anims.create({
             key: 'lightTankGreyDeadLoop',
-            frames: this.anims.generateFrameNumbers('lightTankGreyDeadLoopSheet', { start: 0, end: 5 }),
+            frames: this.anims.generateFrameNumbers('lightTankGreyDeadLoopSheet', { start: 0, end: 2 }),
             frameRate: 8,
             repeat: -1
         });

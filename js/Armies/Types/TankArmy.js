@@ -5,7 +5,7 @@ const BASE_CONFIG = {
   SoldierHealth: 800,
   NumberOfSoldiers: 4,
   ArmySpeed: 30,
-  DistanceView: 450,
+  DistanceView: 190,
   ArmyDamage: 1.5,
 
   ImageKey: 'tankSoldier',
