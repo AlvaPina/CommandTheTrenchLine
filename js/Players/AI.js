@@ -32,7 +32,7 @@ export default class AI {
 
         sortedArmies.forEach(army => {
             // Actualizar memoria de daño
-            const currentHP = army.getCurrentHealth ? army.getCurrentHealth() : army.lifeComponent.currentHealth; 
+            const currentHP = army.getCurrentHealth ? army.getCurrentHealth() : army.lifeComponent.health; 
             const prevHP = this.healthMemory.get(army) || currentHP;
             const tookDamage = currentHP < prevHP;
             this.healthMemory.set(army, currentHP);
@@ -77,7 +77,7 @@ export default class AI {
     // retirada cuando 50% o 25% de vida
     checkRetreatConditions(army) {
         const maxHP = army.getMaxHealth ? army.getMaxHealth() : army.lifeComponent.maxHealth;
-        const currentHP = army.getCurrentHealth ? army.getCurrentHealth() : army.lifeComponent.currentHealth;
+        const currentHP = army.getCurrentHealth ? army.getCurrentHealth() : army.lifeComponent.health;
         const pct = currentHP / maxHP;
 
         if (!army._aichecked50 && pct <= 0.50) {

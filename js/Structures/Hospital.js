@@ -1,5 +1,3 @@
-import LifeComponent from '../Armies/LifeComponent.js';
-
 export default class Hospital extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, armyTeam) {
         let texture;
